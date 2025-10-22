@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:asksurf.ai)",
+      "Bash(npm run dev)",
+      "mcp__ide__getDiagnostics",
+      "Bash(lsof -ti:3000)",
+      "Bash(curl -s http://localhost:3000/hub/trending/1)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
