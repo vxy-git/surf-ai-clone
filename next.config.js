@@ -32,6 +32,20 @@ const nextConfig = {
       },
     ],
   },
+  // 添加响应头以允许剪贴板操作和其他权限
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Permissions-Policy',
+            value: 'clipboard-read=*, clipboard-write=*, camera=*, microphone=*, geolocation=*',
+          },
+        ],
+      },
+    ]
+  },
 };
 
 module.exports = nextConfig;

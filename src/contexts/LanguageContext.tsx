@@ -37,6 +37,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // 保存到 localStorage
     localStorage.setItem("language", language);
+
+    // 同步更新 HTML 标签的 lang 属性,避免 hydration 错误
+    document.documentElement.lang = language;
   }, [language]);
 
   return (

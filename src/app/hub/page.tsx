@@ -249,11 +249,7 @@ const watchlistProjects = [
   },
 ];
 
-interface HubPageProps {
-  onToggleSidebar?: () => void;
-}
-
-export default function HubPage({ onToggleSidebar }: HubPageProps) {
+export default function HubPage() {
   const { t } = useTranslation();
   const { watchlist, isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
   const [activeTab, setActiveTab] = useState<"pre-tge" | "trending" | "watchlist">("pre-tge");
@@ -295,7 +291,6 @@ export default function HubPage({ onToggleSidebar }: HubPageProps) {
       {/* Top Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 md:px-8 py-4 flex items-center md:hidden">
         <button
-          onClick={onToggleSidebar}
           className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors mr-auto"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
