@@ -10,6 +10,7 @@ interface ChatInterfaceProps {
   mode: 'ask' | 'research';
   sessionId: string;
   initialMessages: Message[];
+  initialMessage?: string;
   onUpdateMessages: (sessionId: string, messages: Message[]) => void;
 }
 
@@ -17,14 +18,27 @@ export default function ChatInterface({
   mode,
   sessionId,
   initialMessages,
+  initialMessage,
   onUpdateMessages
 }: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hasAutoSent = useRef(false);
+  const lastSyncedLength = useRef(0);
+  const currentSessionIdRef = useRef(sessionId);
 
   const { messages, isLoading, error, append } = useChat({
     api: mode === 'research' ? '/api/research' : '/api/chat',
     initialMessages: initialMessages,
   });
+
+  // 会话切换时重置
+  useEffect(() => {
+    if (sessionId !== currentSessionIdRef.current) {
+      currentSessionIdRef.current = sessionId;
+      lastSyncedLength.current = initialMessages.length;
+      hasAutoSent.current = false;
+    }
+  }, [sessionId, initialMessages.length]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -34,20 +48,21 @@ export default function ChatInterface({
     scrollToBottom();
   }, [messages]);
 
-  // 同步消息到会话
+  // 同步消息到会话 - 只在消息数量增加时同步
   useEffect(() => {
-    if (messages.length > 0 && messages !== initialMessages) {
+    if (messages.length > lastSyncedLength.current && messages.length > 0) {
+      lastSyncedLength.current = messages.length;
       onUpdateMessages(sessionId, messages);
     }
-  }, [messages, sessionId, onUpdateMessages, initialMessages]);
+  }, [messages, sessionId, onUpdateMessages]);
 
-  // 如果是新会话(只有一条用户消息且没有AI回复),自动发送
+  // 如果是新会话且有初始消息,自动发送一次
   useEffect(() => {
-    if (initialMessages.length === 1 && messages.length === 1 && messages[0].role === 'user') {
-      append({ role: 'user', content: messages[0].content });
+    if (initialMessage && messages.length === 0 && !hasAutoSent.current) {
+      hasAutoSent.current = true;
+      append({ role: 'user', content: initialMessage });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialMessage, messages.length, append]);
 
   const handleSendMessage = (message: string, newMode: 'ask' | 'research') => {
     append({ role: 'user', content: message });
