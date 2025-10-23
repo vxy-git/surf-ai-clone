@@ -1,27 +1,29 @@
 "use client";
 
 import { useChat } from 'ai/react';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import FloatingInput from '@/components/FloatingInput';
+import { Message } from 'ai';
 
 interface ChatInterfaceProps {
   mode: 'ask' | 'research';
-  onClose: () => void;
+  sessionId: string;
+  initialMessages: Message[];
+  onUpdateMessages: (sessionId: string, messages: Message[]) => void;
 }
 
-export default function ChatInterface({ mode, onClose }: ChatInterfaceProps) {
-  const [initialMessage, setInitialMessage] = useState('');
+export default function ChatInterface({
+  mode,
+  sessionId,
+  initialMessages,
+  onUpdateMessages
+}: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
+  const { messages, isLoading, error, append } = useChat({
     api: mode === 'research' ? '/api/research' : '/api/chat',
-    initialMessages: initialMessage ? [
-      {
-        id: 'initial',
-        role: 'user',
-        content: initialMessage,
-      }
-    ] : [],
+    initialMessages: initialMessages,
   });
 
   const scrollToBottom = () => {
@@ -32,17 +34,29 @@ export default function ChatInterface({ mode, onClose }: ChatInterfaceProps) {
     scrollToBottom();
   }, [messages]);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-    handleSubmit(e);
+  // 同步消息到会话
+  useEffect(() => {
+    if (messages.length > 0 && messages !== initialMessages) {
+      onUpdateMessages(sessionId, messages);
+    }
+  }, [messages, sessionId, onUpdateMessages, initialMessages]);
+
+  // 如果是新会话(只有一条用户消息且没有AI回复),自动发送
+  useEffect(() => {
+    if (initialMessages.length === 1 && messages.length === 1 && messages[0].role === 'user') {
+      append({ role: 'user', content: messages[0].content });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSendMessage = (message: string, newMode: 'ask' | 'research') => {
+    append({ role: 'user', content: message });
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl h-[80vh] flex flex-col">
+    <div className="flex-1 flex flex-col bg-[#f7f7f7] dark:bg-gray-900 h-full overflow-hidden relative">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#de5586] to-[#de99a7] flex items-center justify-center text-white font-bold">
               S
@@ -58,15 +72,6 @@ export default function ChatInterface({ mode, onClose }: ChatInterfaceProps) {
               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="4" y1="4" x2="16" y2="16" />
-              <line x1="16" y1="4" x2="4" y2="16" />
-            </svg>
-          </button>
         </div>
 
         {/* Messages */}
@@ -185,43 +190,15 @@ export default function ChatInterface({ mode, onClose }: ChatInterfaceProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
-        <div className="border-t border-gray-200 dark:border-gray-700 p-4">
-          <form onSubmit={onSubmit} className="flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={handleInputChange}
-              placeholder={
-                mode === 'research'
-                  ? 'Ask me to research any crypto project...'
-                  : 'Ask me anything about crypto...'
-              }
-              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#de5586]"
-              disabled={isLoading}
-            />
-            <button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className="px-6 py-3 bg-gradient-to-r from-[#de5586] to-[#de99a7] text-white rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-            >
-              {isLoading ? (
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M2 3l16 7-16 7V3z" />
-                </svg>
-              )}
-            </button>
-          </form>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-            Surf AI can make mistakes. Please verify important information.
-          </p>
-        </div>
+        {/* Spacer for floating input */}
+        <div className="h-32" />
+
+        {/* Floating Input - 相对聊天容器定位 */}
+        <FloatingInput
+          onSubmit={handleSendMessage}
+          disabled={isLoading}
+          relative={true}
+        />
       </div>
-    </div>
   );
 }

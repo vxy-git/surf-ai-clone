@@ -4,10 +4,10 @@ import Image from "next/image";
 import { useState } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
 import WalletButton from "@/components/WalletButton";
-import ChatInterface from "@/components/ChatInterface";
 
 interface MainContentProps {
   onToggleSidebar: () => void;
+  onStartChat: (message: string, mode: 'ask' | 'research') => void;
 }
 
 const hotQuestions = [
@@ -38,9 +38,8 @@ const hotQuestions = [
   }
 ];
 
-export default function MainContent({ onToggleSidebar }: MainContentProps) {
+export default function MainContent({ onToggleSidebar, onStartChat }: MainContentProps) {
   const { t } = useTranslation();
-  const [chatMode, setChatMode] = useState<'ask' | 'research' | null>(null);
   const [inputValue, setInputValue] = useState('');
 
   const agentTools = [
@@ -129,7 +128,7 @@ export default function MainContent({ onToggleSidebar }: MainContentProps) {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && inputValue.trim()) {
-                    setChatMode('ask');
+                    onStartChat(inputValue, 'ask');
                   }
                 }}
                 placeholder="Challenge Surf AI with your crypto curiosity"
@@ -138,18 +137,21 @@ export default function MainContent({ onToggleSidebar }: MainContentProps) {
             </div>
             <div className="px-4 md:px-6 pb-4 flex items-center gap-2 flex-wrap">
               <button
-                onClick={() => inputValue.trim() && setChatMode('ask')}
+                onClick={() => inputValue.trim() && onStartChat(inputValue, 'ask')}
                 className="px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 transition-all"
               >
                 Ask
               </button>
               <button
-                onClick={() => inputValue.trim() && setChatMode('research')}
+                onClick={() => inputValue.trim() && onStartChat(inputValue, 'research')}
                 className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#de5586] to-[#de99a7] text-white text-sm hover:shadow-md hover:scale-105 transition-all"
               >
                 Research
               </button>
-              <button className="px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 transition-all flex items-center gap-1">
+              <button
+                disabled
+                className="px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 transition-all flex items-center gap-1 opacity-50 cursor-not-allowed"
+              >
                 Executor
                 <span className="text-xs bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">Beta</span>
               </button>
@@ -232,17 +234,6 @@ export default function MainContent({ onToggleSidebar }: MainContentProps) {
           </div>
         </div>
       </div>
-
-      {/* Chat Interface Modal */}
-      {chatMode && (
-        <ChatInterface
-          mode={chatMode}
-          onClose={() => {
-            setChatMode(null);
-            setInputValue('');
-          }}
-        />
-      )}
     </main>
   );
 }
