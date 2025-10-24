@@ -5,7 +5,9 @@
       "Bash(npm run dev)",
       "mcp__ide__getDiagnostics",
       "Bash(lsof -ti:3000)",
-      "Bash(curl -s http://localhost:3000/hub/trending/1)"
+      "Bash(curl -s http://localhost:3000/hub/trending/1)",
+      "WebSearch",
+      "WebFetch(domain:ai-sdk.dev)"
     ],
     "deny": [],
     "ask": []

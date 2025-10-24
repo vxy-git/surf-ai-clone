@@ -89,9 +89,9 @@ export async function POST(req: Request) {
       tools: allTools,
       maxSteps: 10, // 研究模式允许更多步骤
       temperature: 0.5, // 降低温度以提高准确性
-    });
+    } as Parameters<typeof streamText>[0]);
 
-    return result.toDataStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error) {
     console.error('Research API Error:', error);
     return new Response(

@@ -46,9 +46,9 @@ export async function POST(req: Request) {
       tools: allTools,
       maxSteps: 5,
       temperature: 0.7,
-    });
+    } as Parameters<typeof streamText>[0]);
 
-    return result.toDataStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error) {
     console.error('Chat API Error:', error);
     return new Response(

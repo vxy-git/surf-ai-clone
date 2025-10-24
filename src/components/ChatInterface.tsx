@@ -4,7 +4,7 @@ import { useChat } from 'ai/react';
 import { useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import FloatingInput from '@/components/FloatingInput';
-import { Message } from 'ai';
+import type { Message } from 'ai/react';
 
 interface ChatInterfaceProps {
   mode: 'ask' | 'research';
@@ -70,25 +70,6 @@ export default function ChatInterface({
 
   return (
     <div className="flex-1 flex flex-col bg-[#f7f7f7] dark:bg-gray-900 h-full overflow-hidden relative">
-        {/* Header */}
-        <div className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#de5586] to-[#de99a7] flex items-center justify-center text-white font-bold">
-              S
-            </div>
-            <div>
-              <h2 className="font-bold text-lg">
-                {mode === 'research' ? 'Surf Research Agent' : 'Surf AI Assistant'}
-              </h2>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {mode === 'research'
-                  ? 'Comprehensive cryptocurrency research reports'
-                  : 'Quick answers to your crypto questions'}
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 && (

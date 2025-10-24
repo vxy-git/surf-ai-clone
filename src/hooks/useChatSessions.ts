@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Message } from 'ai';
+import type { Message } from 'ai/react';
 import { ChatSession, ChatMode } from '@/types/chat';
 
 const STORAGE_KEY = 'surf-ai-chat-sessions';

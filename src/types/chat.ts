@@ -1,4 +1,4 @@
-import { Message } from 'ai';
+import type { Message } from 'ai/react';
 
 export interface ChatSession {
   id: string;
