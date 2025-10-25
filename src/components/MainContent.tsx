@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
 import WalletButton from "@/components/WalletButton";
+import ChatInput from "@/components/ChatInput";
 
 interface MainContentProps {
   onToggleSidebar: () => void;
@@ -40,7 +40,6 @@ const hotQuestions = [
 
 export default function MainContent({ onToggleSidebar, onStartChat }: MainContentProps) {
   const { t } = useTranslation();
-  const [inputValue, setInputValue] = useState('');
 
   const agentTools = [
     {
@@ -119,45 +118,11 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
         </div>
 
         {/* Search Input */}
-        <div className="mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-            <div className="p-4 md:p-6">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && inputValue.trim()) {
-                    onStartChat(inputValue, 'ask');
-                  }
-                }}
-                placeholder="Challenge Surf AI with your crypto curiosity"
-                className="w-full text-base md:text-lg outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent dark:text-white"
-              />
-            </div>
-            <div className="px-4 md:px-6 pb-4 flex items-center gap-2 flex-wrap">
-              <button
-                onClick={() => inputValue.trim() && onStartChat(inputValue, 'ask')}
-                className="px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 transition-all"
-              >
-                Ask
-              </button>
-              <button
-                onClick={() => inputValue.trim() && onStartChat(inputValue, 'research')}
-                className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#de5586] to-[#de99a7] text-white text-sm hover:shadow-md hover:scale-105 transition-all"
-              >
-                Research
-              </button>
-              <button
-                disabled
-                className="px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 transition-all flex items-center gap-1 opacity-50 cursor-not-allowed"
-              >
-                Executor
-                <span className="text-xs bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">Beta</span>
-              </button>
-            </div>
-          </div>
-        </div>
+        <ChatInput
+          onSubmit={onStartChat}
+          variant="inline"
+          currentMode="ask"
+        />
 
         {/* Hot Questions */}
         <div className="mb-8 md:mb-12">
@@ -165,6 +130,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
             {hotQuestions.map((question, index) => (
               <div
                 key={index}
+                onClick={() => onStartChat(question.title, 'research')}
                 className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 md:p-4 hover:shadow-lg transition-all cursor-pointer group"
               >
                 <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-3">
@@ -180,7 +146,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
                       height={24}
                       className="rounded-full ring-2 ring-gray-100"
                     />
-                    <span className="text-xs font-medium text-gray-600">{question.tag}</span>
+                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{question.tag}</span>
                   </div>
                 </div>
               </div>

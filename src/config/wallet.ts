@@ -1,5 +1,6 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi'
 import { bsc, bscTestnet } from 'wagmi/chains'
+import type { Config } from 'wagmi'
 
 // 1. 从 WalletConnect Cloud 获取项目ID (https://cloud.walletconnect.com)
 // 这是一个示例ID,您需要替换为自己的项目ID
@@ -16,13 +17,28 @@ const metadata = {
 // 3. 配置支持的区块链网络
 export const chains = [bsc, bscTestnet] as const
 
-// 4. 创建 Wagmi 配置
-export const config = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata,
-  enableWalletConnect: true,
-  enableInjected: true,
-  enableEIP6963: true,
-  enableCoinbase: true,
-})
+// 4. 创建 Wagmi 配置 - 懒加载,只在客户端调用
+let cachedConfig: Config | null = null
+
+export function getWalletConfig(): Config {
+  if (cachedConfig) {
+    return cachedConfig
+  }
+
+  // 只在浏览器环境中创建配置
+  if (typeof window === 'undefined') {
+    throw new Error('Wallet config can only be created in browser environment')
+  }
+
+  cachedConfig = defaultWagmiConfig({
+    chains,
+    projectId,
+    metadata,
+    enableWalletConnect: true,
+    enableInjected: true,
+    enableEIP6963: true,
+    enableCoinbase: true,
+  })
+
+  return cachedConfig
+}

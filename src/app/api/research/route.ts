@@ -82,7 +82,7 @@ export async function POST(req: Request) {
       ...messages
     ];
 
-    const result = streamText({
+    const result = await streamText({
       model: aiProvider('gpt-4o'),
       system: researchSystemPrompt,
       messages: enhancedMessages,

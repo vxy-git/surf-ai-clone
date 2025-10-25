@@ -3,7 +3,7 @@
 import { useChat } from 'ai/react';
 import { useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import FloatingInput from '@/components/FloatingInput';
+import ChatInput from '@/components/ChatInput';
 import type { Message } from 'ai/react';
 
 interface ChatInterfaceProps {
@@ -29,6 +29,7 @@ export default function ChatInterface({
   const { messages, isLoading, error, append } = useChat({
     api: mode === 'research' ? '/api/research' : '/api/chat',
     initialMessages: initialMessages,
+    streamProtocol: 'text',
   });
 
   // 会话切换时重置
@@ -190,10 +191,11 @@ export default function ChatInterface({
         <div className="h-32" />
 
         {/* Floating Input - 相对聊天容器定位 */}
-        <FloatingInput
+        <ChatInput
           onSubmit={handleSendMessage}
           disabled={isLoading}
-          relative={true}
+          variant="floating"
+          currentMode={mode}
         />
       </div>
   );

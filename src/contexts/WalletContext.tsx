@@ -3,8 +3,9 @@
 import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { config, projectId } from '@/config/wallet'
+import { getWalletConfig, projectId } from '@/config/wallet'
 import { ReactNode, useEffect, useState, createContext, useContext } from 'react'
+import type { Config } from 'wagmi'
 
 // 创建 QueryClient 实例
 const queryClient = new QueryClient()
@@ -21,12 +22,16 @@ interface WalletProviderProps {
 
 export function WalletProvider({ children }: WalletProviderProps) {
   const [initialized, setInitialized] = useState(false)
+  const [config, setConfig] = useState<Config | null>(null)
 
   useEffect(() => {
-    // 在客户端挂载后立即初始化 Web3Modal
+    // 在客户端挂载后创建配置并初始化 Web3Modal
     try {
+      const walletConfig = getWalletConfig()
+      setConfig(walletConfig)
+
       createWeb3Modal({
-        wagmiConfig: config,
+        wagmiConfig: walletConfig,
         projectId,
         enableAnalytics: true,
         enableOnramp: false,
@@ -38,10 +43,15 @@ export function WalletProvider({ children }: WalletProviderProps) {
       setInitialized(true)
     } catch (error) {
       // 忽略重复创建的错误
-      console.warn('Web3Modal already initialized')
+      console.warn('Web3Modal initialization error:', error)
       setInitialized(true)
     }
   }, [])
+
+  // 在配置创建前显示 loading 或返回 null
+  if (!config) {
+    return <>{children}</>
+  }
 
   return (
     <WagmiProvider config={config}>
