@@ -26,20 +26,23 @@ export default function ChatInterface({
   const lastSyncedLength = useRef(0);
   const currentSessionIdRef = useRef(sessionId);
 
-  const { messages, isLoading, error, append } = useChat({
+  const { messages, setMessages, isLoading, error, append } = useChat({
     api: mode === 'research' ? '/api/research' : '/api/chat',
+    id: sessionId, // 使用sessionId作为会话标识
     initialMessages: initialMessages,
     streamProtocol: 'text',
   });
 
-  // 会话切换时重置
+  // 会话切换时手动更新消息 - 避免组件重新挂载
   useEffect(() => {
     if (sessionId !== currentSessionIdRef.current) {
       currentSessionIdRef.current = sessionId;
+      // 手动设置消息,避免组件卸载
+      setMessages(initialMessages);
       lastSyncedLength.current = initialMessages.length;
       hasAutoSent.current = false;
     }
-  }, [sessionId, initialMessages.length]);
+  }, [sessionId, setMessages, initialMessages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -49,20 +52,20 @@ export default function ChatInterface({
     scrollToBottom();
   }, [messages]);
 
-  // 同步消息到会话 - 只在消息数量增加时同步
+  // 合并消息同步逻辑 - 避免重复保存
   useEffect(() => {
-    if (messages.length > lastSyncedLength.current && messages.length > 0) {
-      lastSyncedLength.current = messages.length;
-      onUpdateMessages(sessionId, messages);
-    }
-  }, [messages, sessionId, onUpdateMessages]);
+    const shouldSync =
+      messages.length > 0 &&
+      (messages.length > lastSyncedLength.current || !isLoading);
 
-  // 在流结束时强制同步，确保助手完整内容被保存
-  useEffect(() => {
-    if (!isLoading && messages.length > 0) {
-      onUpdateMessages(sessionId, messages);
+    if (shouldSync) {
+      // 只在实际需要时更新
+      if (messages.length > lastSyncedLength.current || !isLoading) {
+        lastSyncedLength.current = messages.length;
+        onUpdateMessages(sessionId, messages);
+      }
     }
-  }, [isLoading, messages, sessionId, onUpdateMessages]);
+  }, [messages, isLoading, sessionId, onUpdateMessages]);
 
   // 如果是新会话且有初始消息,自动发送一次
   useEffect(() => {
@@ -120,9 +123,9 @@ export default function ChatInterface({
             </div>
           )}
 
-          {messages.map((message) => (
+          {messages.map((message, index) => (
             <div
-              key={message.id || `${message.role}-${Math.random().toString(36).slice(2)}`}
+              key={message.id || `${sessionId}-${index}-${message.role}`}
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div

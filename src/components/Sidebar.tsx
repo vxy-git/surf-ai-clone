@@ -20,6 +20,7 @@ interface SidebarProps {
   currentSessionId: string | null;
   onSelectSession: (sessionId: string) => void;
   onNewChat: () => void;
+  onDeleteSession: (sessionId: string) => void;
 }
 
 export default function Sidebar({
@@ -28,7 +29,8 @@ export default function Sidebar({
   sessions,
   currentSessionId,
   onSelectSession,
-  onNewChat
+  onNewChat,
+  onDeleteSession
 }: SidebarProps) {
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
@@ -169,28 +171,55 @@ export default function Sidebar({
               <div className="mb-2">
                 {/* <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-3 mb-2">今天</p> */}
                 {sessions.map((session) => (
-                  <button
+                  <div
                     key={session.id}
-                    onClick={() => onSelectSession(session.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left ${
+                    className={`group relative w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                       currentSessionId === session.id
                         ? 'bg-gray-100 dark:bg-gray-700'
                         : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                     }`}
                   >
-                    <svg
-                      className={`shrink-0 ${currentSessionId === session.id ? 'text-[#de5586]' : ''}`}
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
+                    <button
+                      onClick={() => onSelectSession(session.id)}
+                      className="flex items-center gap-3 flex-1 text-left min-w-0"
                     >
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    </svg>
-                    <span className="text-sm font-medium truncate">{session.title}</span>
-                  </button>
+                      <svg
+                        className={`shrink-0 ${currentSessionId === session.id ? 'text-[#de5586]' : ''}`}
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                      <span className="text-sm font-medium truncate">{session.title}</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteSession(session.id);
+                      }}
+                      className="shrink-0 p-1.5 opacity-0 group-hover:opacity-100 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-all"
+                      title="删除会话"
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="text-red-600 dark:text-red-400"
+                      >
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <line x1="10" y1="11" x2="10" y2="17" />
+                        <line x1="14" y1="11" x2="14" y2="17" />
+                      </svg>
+                    </button>
+                  </div>
                 ))}
               </div>
             )}

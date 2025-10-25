@@ -19,6 +19,7 @@ export default function Home() {
     currentSession,
     createSession,
     updateSessionMessages,
+    deleteSession,
     selectSession,
     startNewChat,
   } = useChatSessions();
@@ -31,8 +32,22 @@ export default function Home() {
   }, []);
 
   const handleStartChat = (message: string, mode: 'ask' | 'research') => {
-    // 生成会话标题(取前30个字符)
-    const title = message.length > 30 ? message.substring(0, 30) + '...' : message;
+    // 生成智能会话标题
+    let title = message.trim();
+
+    // 如果消息太长,智能截断
+    if (title.length > 50) {
+      // 尝试在句子边界截断
+      const sentenceEnd = title.substring(0, 50).match(/[。.!?]+/);
+      if (sentenceEnd && sentenceEnd.index) {
+        title = title.substring(0, sentenceEnd.index + 1);
+      } else {
+        // 否则在词边界截断
+        const lastSpace = title.substring(0, 50).lastIndexOf(' ');
+        title = title.substring(0, lastSpace > 30 ? lastSpace : 50) + '...';
+      }
+    }
+
     // 创建新会话并保存初始消息
     const { sessionId, initialMessage: msg } = createSession(title, mode, message);
     setInitialMessage(msg);
@@ -60,11 +75,13 @@ export default function Home() {
         currentSessionId={currentSessionId}
         onSelectSession={selectSession}
         onNewChat={startNewChat}
+        onDeleteSession={deleteSession}
       />
 
       {/* 显示欢迎页或聊天界面 */}
       {currentSession ? (
         <ChatInterface
+          key="chat-interface-stable" // 使用固定key保持组件稳定,不再根据sessionId重新挂载
           mode={currentSession.mode}
           sessionId={currentSession.id}
           initialMessages={currentSession.messages}

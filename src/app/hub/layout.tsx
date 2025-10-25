@@ -17,6 +17,7 @@ export default function HubLayout({
     sessions,
     currentSessionId,
     selectSession,
+    deleteSession,
     startNewChat,
   } = useChatSessions();
 
@@ -45,6 +46,7 @@ export default function HubLayout({
         currentSessionId={currentSessionId}
         onSelectSession={handleSelectSession}
         onNewChat={handleNewChat}
+        onDeleteSession={deleteSession}
       />
       <div className="flex-1 overflow-y-auto">
         {childrenWithProps}
