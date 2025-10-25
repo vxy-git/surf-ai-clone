@@ -57,6 +57,13 @@ export default function ChatInterface({
     }
   }, [messages, sessionId, onUpdateMessages]);
 
+  // 在流结束时强制同步，确保助手完整内容被保存
+  useEffect(() => {
+    if (!isLoading && messages.length > 0) {
+      onUpdateMessages(sessionId, messages);
+    }
+  }, [isLoading, messages, sessionId, onUpdateMessages]);
+
   // 如果是新会话且有初始消息,自动发送一次
   useEffect(() => {
     if (initialMessage && messages.length === 0 && !hasAutoSent.current) {
@@ -115,60 +122,33 @@ export default function ChatInterface({
 
           {messages.map((message) => (
             <div
-              key={message.id}
+              key={message.id || `${message.role}-${Math.random().toString(36).slice(2)}`}
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                className={`max-w-[80%] rounded-2xl p-3 text-sm leading-relaxed ${
                   message.role === 'user'
-                    ? 'bg-gradient-to-r from-[#de5586] to-[#de99a7] text-white'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                    ? 'bg-[#de5586] text-white rounded-br-none'
+                    : 'bg-white dark:bg-gray-800 dark:text-white rounded-bl-none shadow-sm border border-gray-100 dark:border-gray-700'
                 }`}
               >
-                {message.role === 'user' ? (
-                  <p className="whitespace-pre-wrap">{message.content}</p>
-                ) : (
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown
-                      components={{
-                        h1: ({ children }) => <h1 className="text-xl font-bold mt-4 mb-2">{children}</h1>,
-                        h2: ({ children }) => <h2 className="text-lg font-bold mt-3 mb-2">{children}</h2>,
-                        h3: ({ children }) => <h3 className="text-base font-bold mt-2 mb-1">{children}</h3>,
-                        ul: ({ children }) => <ul className="list-disc list-inside space-y-1 my-2">{children}</ul>,
-                        ol: ({ children }) => <ol className="list-decimal list-inside space-y-1 my-2">{children}</ol>,
-                        p: ({ children }) => <p className="my-2">{children}</p>,
-                        code: ({ children, className }) => {
-                          const isInline = !className;
-                          return isInline ? (
-                            <code className="bg-gray-200 dark:bg-gray-600 px-1 py-0.5 rounded text-sm">
-                              {children}
-                            </code>
-                          ) : (
-                            <code className="block bg-gray-200 dark:bg-gray-600 p-2 rounded text-sm overflow-x-auto">
-                              {children}
-                            </code>
-                          );
-                        },
-                      }}
-                    >
-                      {message.content}
-                    </ReactMarkdown>
-                  </div>
-                )}
+                <div className="prose dark:prose-invert prose-sm">
+                  {message.role === 'assistant' ? (
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  ) : (
+                    <p>{message.content}</p>
+                  )}
+                </div>
               </div>
             </div>
           ))}
 
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-gray-100 dark:bg-gray-700 rounded-2xl px-4 py-3">
+              <div className="bg-white dark:bg-gray-800 dark:text-white rounded-2xl rounded-bl-none p-3 text-sm shadow-sm border border-gray-100 dark:border-gray-700">
                 <div className="flex items-center gap-2">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                  </div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                  <span className="inline-flex h-2 w-2 rounded-full bg-[#de5586] animate-pulse" />
+                  <span className="text-gray-500 dark:text-gray-400 text-xs">
                     {mode === 'research' ? 'Researching...' : 'Thinking...'}
                   </span>
                 </div>
