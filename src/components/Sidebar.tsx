@@ -148,7 +148,7 @@ export default function Sidebar({
             </button>
 
             {/* Crypto Data Hub */}
-            <Link href="/hub" className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg mt-1 transition-all ${isOpen ? 'gap-3 px-3 py-2.5' : 'justify-center px-3 py-2.5 md:justify-center md:px-0'}`}>
+            {/* <Link href="/hub" className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg mt-1 transition-all ${isOpen ? 'gap-3 px-3 py-2.5' : 'justify-center px-3 py-2.5 md:justify-center md:px-0'}`}>
               <svg className="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="3" width="7" height="9" rx="1" />
                 <rect x="14" y="3" width="7" height="5" rx="1" />
@@ -159,7 +159,7 @@ export default function Sidebar({
               <span className={`ml-auto bg-gradient-to-r from-[#de5586] to-[#de99a7] text-white text-xs px-2 py-1 rounded-full whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>
                 {t("preTgeReport")}
               </span>
-            </Link>
+            </Link> */}
 
             {/* Divider */}
             {isOpen && <div className="my-3 border-t border-gray-200 dark:border-gray-700" />}
@@ -167,7 +167,7 @@ export default function Sidebar({
             {/* Chat History */}
             {isOpen && sessions.length > 0 && (
               <div className="mb-2">
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-3 mb-2">今天</p>
+                {/* <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-3 mb-2">今天</p> */}
                 {sessions.map((session) => (
                   <button
                     key={session.id}

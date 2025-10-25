@@ -130,7 +130,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
             {hotQuestions.map((question, index) => (
               <div
                 key={index}
-                onClick={() => onStartChat(question.title, 'research')}
+                onClick={() => onStartChat(question.title, 'ask')}
                 className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 md:p-4 hover:shadow-lg transition-all cursor-pointer group"
               >
                 <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-3">
