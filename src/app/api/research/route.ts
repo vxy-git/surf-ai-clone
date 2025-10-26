@@ -4,8 +4,8 @@ import { allTools } from '@/lib/ai-tools';
 
 // 使用 Node.js runtime 以支持完整的 fetch 功能
 export const runtime = 'nodejs';
-// 研究模式需要更长的执行时间
-export const maxDuration = 60;
+// 研究模式需要更长的执行时间（Vercel 免费版最多 10 秒）
+export const maxDuration = 10;
 
 // 配置 AI 提供商 (支持 OpenAI 或 CometAPI)
 const aiProvider = process.env.OPENAI_BASE_URL
