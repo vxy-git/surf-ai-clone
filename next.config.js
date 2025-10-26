@@ -42,6 +42,10 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: 'clipboard-read=*, clipboard-write=*, camera=*, microphone=*, geolocation=*',
           },
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-src 'self' https://verify.walletconnect.com https://verify.walletconnect.org https://secure.walletconnect.com https://secure.walletconnect.org https://secure-mobile.walletconnect.com https://secure-mobile.walletconnect.org;",
+          },
         ],
       },
     ]
