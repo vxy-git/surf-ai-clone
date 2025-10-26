@@ -30,7 +30,7 @@ export default function ChatInterface({
     api: mode === 'research' ? '/api/research' : '/api/chat',
     id: sessionId, // 使用sessionId作为会话标识
     initialMessages: initialMessages,
-    streamProtocol: 'text',
+    streamProtocol: 'data',
   });
 
   // 会话切换时手动更新消息 - 避免组件重新挂载

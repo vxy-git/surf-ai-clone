@@ -116,7 +116,7 @@ export async function POST(req: Request) {
     const elapsedTime = Date.now() - startTime;
     console.log(`[Chat API] Stream created successfully in ${elapsedTime}ms`);
 
-    return result.toTextStreamResponse();
+    return result.toDataStreamResponse();
   } catch (error) {
     const elapsedTime = Date.now() - startTime;
     console.error(`[Chat API] Error after ${elapsedTime}ms:`, error);

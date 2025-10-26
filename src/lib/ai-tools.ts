@@ -608,6 +608,74 @@ export const deepSearchTool = tool({
       // 首先尝试使用多数据源获取基础项目信息
       const projectInfo = await fetchProjectInfoWithFallback(projectName);
 
+      // 如果成功获得项目信息，构建基础研究结果并返回
+      if (projectInfo) {
+        return {
+          projectName: projectInfo.name || projectName,
+          symbol: projectInfo.symbol?.toUpperCase() || projectName.toUpperCase(),
+          researched: aspects,
+          dataSource: `🔍 ${projectInfo.source}`,
+          overview: {
+            description: projectInfo.description || `${projectName} is a cryptocurrency project.`,
+            category: projectInfo.categories?.length ? projectInfo.categories.join(', ') : 'Cryptocurrency',
+            launchDate: 'Unknown',
+            currentPhase: 'Unknown',
+            website: projectInfo.homepage || 'N/A',
+            blockchain: projectInfo.blockchain || 'Unknown',
+          },
+          marketData: {
+            currentPrice: 'N/A',
+            marketCap: 'N/A',
+            marketCapRank: projectInfo.marketCapRank ?? 'N/A',
+            totalVolume24h: 'N/A',
+            priceChange24h: 'N/A',
+            priceChange7d: 'N/A',
+            priceChange30d: 'N/A',
+            allTimeHigh: 'N/A',
+            allTimeLow: 'N/A',
+          },
+          tokenomics: {
+            totalSupply: 'N/A',
+            circulatingSupply: 'N/A',
+            maxSupply: 'N/A',
+            circulatingPercentage: 'N/A',
+          },
+          community: {
+            twitterFollowers: 'N/A',
+            redditSubscribers: 'N/A',
+            telegramUsers: 'N/A',
+            facebookLikes: 'N/A',
+          },
+          development: {
+            githubStars: 'N/A',
+            githubForks: 'N/A',
+            githubSubscribers: 'N/A',
+            totalIssues: 'N/A',
+            closedIssues: 'N/A',
+            pullRequests: 'N/A',
+            commits4weeks: 'N/A',
+            activityLevel: 'Unknown',
+          },
+          links: {
+            website: projectInfo.homepage || 'N/A',
+            whitepaper: 'N/A',
+            github: 'N/A',
+            twitter: 'N/A',
+            reddit: 'N/A',
+            telegram: 'N/A',
+          },
+          sentiment: {
+            overall: 'Neutral',
+            upVotes: 'N/A',
+            downVotes: 'N/A',
+            communityScore: 'N/A',
+            developerScore: 'N/A',
+            liquidityScore: 'N/A',
+          },
+          risks: [],
+        };
+      }
+
       // 如果多数据源都失败，尝试使用 CoinGecko 详细 API
       if (!projectInfo) {
         const id = await getCoinGeckoId(projectName);
@@ -731,9 +799,8 @@ export const deepSearchTool = tool({
         note: errorMsg.includes('RATE_LIMIT')
           ? 'Rate limit reached - detailed project data temporarily unavailable. Try again in a moment.'
           : errorMsg.includes('HTTP_404')
-          ? `Project "${projectName}" not found in CoinGecko database. This may be a new project, or try using the full project name or trading symbol.`
-          : 'Detailed project information temporarily unavailable',
-        suggestion: 'For more established projects like BTC, ETH, or SOL, comprehensive data is usually available. For newer projects, try using Social Sentiment or Technical Analysis tools.',
+          ? `Cryptocurrency "${projectName}" not found in database. It may be a new or less common project.`
+          : 'Deep research temporarily unavailable - showing minimal information',
         timestamp: new Date().toISOString(),
       };
     }

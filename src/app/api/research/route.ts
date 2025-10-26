@@ -159,7 +159,7 @@ export async function POST(req: Request) {
     const elapsedTime = Date.now() - startTime;
     console.log(`[Research API] Stream created successfully in ${elapsedTime}ms`);
 
-    return result.toTextStreamResponse();
+    return result.toDataStreamResponse();
   } catch (error) {
     const elapsedTime = Date.now() - startTime;
     console.error(`[Research API] Error after ${elapsedTime}ms:`, error);
