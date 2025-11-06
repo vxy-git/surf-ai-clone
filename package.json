@@ -29,6 +29,7 @@
     "tailwindcss-animate": "^1.0.7",
     "viem": "~2.38.3",
     "wagmi": "^2.18.2",
+    "x402-next": "^0.7.1",
     "zod": "^3.25.76"
   },
   "devDependencies": {

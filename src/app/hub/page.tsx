@@ -308,7 +308,7 @@ export default function HubPage() {
           />
           <span className="font-bold dark:text-white">Surf</span>
         </div>
-        <button className="ml-auto px-4 py-2 border-2 border-[#de5586] text-[#de5586] rounded-full font-medium hover:bg-[#de5586] hover:text-white transition-colors text-sm">
+        <button className="ml-auto px-4 py-2 border-2 border-[#A78BFA] text-[#A78BFA] rounded-full font-medium hover:bg-[#A78BFA] hover:text-white transition-colors text-sm">
           {t("login")}
         </button>
       </header>
@@ -337,7 +337,7 @@ export default function HubPage() {
               placeholder="Search a project, token, or CA"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-6 py-4 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white outline-none focus:border-[#de5586] transition-colors text-lg"
+              className="w-full px-6 py-4 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white outline-none focus:border-[#A78BFA] transition-colors text-lg"
             />
           </div>
         </div>
@@ -351,7 +351,7 @@ export default function HubPage() {
               onClick={() => setActiveTab("pre-tge")}
               className={`py-4 px-2 font-medium border-b-2 transition-colors ${
                 activeTab === "pre-tge"
-                  ? "border-[#de5586] text-[#de5586]"
+                  ? "border-[#A78BFA] text-[#A78BFA]"
                   : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
               }`}
             >
@@ -363,7 +363,7 @@ export default function HubPage() {
               onClick={() => setActiveTab("trending")}
               className={`py-4 px-2 font-medium border-b-2 transition-colors ${
                 activeTab === "trending"
-                  ? "border-[#de5586] text-[#de5586]"
+                  ? "border-[#A78BFA] text-[#A78BFA]"
                   : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
               }`}
             >
@@ -375,7 +375,7 @@ export default function HubPage() {
               onClick={() => setActiveTab("watchlist")}
               className={`py-4 px-2 font-medium border-b-2 transition-colors ${
                 activeTab === "watchlist"
-                  ? "border-[#de5586] text-[#de5586]"
+                  ? "border-[#A78BFA] text-[#A78BFA]"
                   : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
               }`}
             >
@@ -426,9 +426,9 @@ export default function HubPage() {
                         />
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold dark:text-white hover:text-[#de5586] dark:hover:text-[#de5586] transition-colors">{project.name}</span>
+                            <span className="font-semibold dark:text-white hover:text-[#A78BFA] dark:hover:text-[#A78BFA] transition-colors">{project.name}</span>
                             {project.featured && (
-                              <span className="text-xs bg-gradient-to-r from-[#de5586] to-[#de99a7] text-white px-2 py-0.5 rounded-full">
+                              <span className="text-xs bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white px-2 py-0.5 rounded-full">
                                 Featured
                               </span>
                             )}
@@ -485,7 +485,7 @@ export default function HubPage() {
                         </button>
                         <Link
                           href={`/hub/project/${project.id}`}
-                          className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[#de5586] transition-colors"
+                          className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[#A78BFA] transition-colors"
                           title="View Details"
                         >
                           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -508,9 +508,9 @@ export default function HubPage() {
                         />
                         <Link href={`/hub/project/${project.id}`} className="flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold dark:text-white hover:text-[#de5586] dark:hover:text-[#de5586] transition-colors">{project.name}</span>
+                            <span className="font-semibold dark:text-white hover:text-[#A78BFA] dark:hover:text-[#A78BFA] transition-colors">{project.name}</span>
                             {project.featured && (
-                              <span className="text-xs bg-gradient-to-r from-[#de5586] to-[#de99a7] text-white px-2 py-0.5 rounded-full">
+                              <span className="text-xs bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white px-2 py-0.5 rounded-full">
                                 Featured
                               </span>
                             )}

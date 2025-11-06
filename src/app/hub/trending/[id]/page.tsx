@@ -168,7 +168,7 @@ export default function TrendingDetailPage({ params }: TrendingDetailPageProps) 
       <div className="min-h-screen bg-[#f7f7f7] dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold dark:text-white mb-4">Project Not Found</h1>
-          <Link href="/hub" className="text-[#de5586] hover:underline">
+          <Link href="/hub" className="text-[#A78BFA] hover:underline">
             Back to Hub
           </Link>
         </div>
@@ -215,7 +215,7 @@ export default function TrendingDetailPage({ params }: TrendingDetailPageProps) 
         </Link>
         <button
           onClick={handleWatchlistToggle}
-          className="text-[#de5586] hover:text-[#c94976] flex items-center gap-1 transition-colors"
+          className="text-[#A78BFA] hover:text-[#6D28D9] flex items-center gap-1 transition-colors"
         >
           <span className="hidden md:inline">Add to watchlist</span>
           <span>⭐</span>
@@ -224,7 +224,7 @@ export default function TrendingDetailPage({ params }: TrendingDetailPageProps) 
           href={`https://twitter.com/${project.socialAccounts.twitter.handle.replace('@', '')}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#de5586] hover:text-[#c94976] transition-colors"
+          className="text-[#A78BFA] hover:text-[#6D28D9] transition-colors"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />

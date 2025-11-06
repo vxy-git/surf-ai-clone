@@ -2,8 +2,11 @@
 
 import { useChat } from 'ai/react';
 import { useRef, useEffect } from 'react';
+import { useAccount } from 'wagmi';
 import ReactMarkdown from 'react-markdown';
 import ChatInput from '@/components/ChatInput';
+import { useUsage } from '@/hooks/useUsage';
+import { usePaymentModal } from '@/contexts/PaymentModalContext';
 import type { Message } from 'ai/react';
 
 interface ChatInterfaceProps {
@@ -25,12 +28,27 @@ export default function ChatInterface({
   const hasAutoSent = useRef(false);
   const lastSyncedLength = useRef(0);
   const currentSessionIdRef = useRef(sessionId);
+  const { address } = useAccount();
+  const { recordUsage, checkCanUse } = useUsage();
+  const { openPaymentModal } = usePaymentModal();
 
   const { messages, setMessages, isLoading, error, append } = useChat({
     api: mode === 'research' ? '/api/research' : '/api/chat',
     id: sessionId, // 使用sessionId作为会话标识
     initialMessages: initialMessages,
     streamProtocol: 'data',
+    headers: {
+      'x-wallet-address': address || ''
+    },
+    onFinish: () => {
+      // AI 响应成功后，扣除一次使用次数
+      const success = recordUsage();
+      if (success) {
+        console.log('[ChatInterface] Usage recorded successfully');
+      } else {
+        console.warn('[ChatInterface] Failed to record usage - quota exceeded');
+      }
+    }
   });
 
   // 会话切换时手动更新消息 - 避免组件重新挂载
@@ -71,11 +89,26 @@ export default function ChatInterface({
   useEffect(() => {
     if (initialMessage && messages.length === 0 && !hasAutoSent.current) {
       hasAutoSent.current = true;
+
+      // 发送前检查次数
+      if (!checkCanUse()) {
+        console.log('[ChatInterface] Usage quota exceeded when auto-sending, opening payment modal');
+        openPaymentModal();
+        return;
+      }
+
       append({ role: 'user', content: initialMessage });
     }
-  }, [initialMessage, messages.length, append]);
+  }, [initialMessage, messages.length, append, checkCanUse, openPaymentModal]);
 
   const handleSendMessage = (message: string, newMode: 'ask' | 'research') => {
+    // 发送前检查次数
+    if (!checkCanUse()) {
+      console.log('[ChatInterface] Usage quota exceeded, opening payment modal');
+      openPaymentModal();
+      return;
+    }
+
     append({ role: 'user', content: message });
   };
 
@@ -131,7 +164,7 @@ export default function ChatInterface({
               <div
                 className={`max-w-[80%] rounded-2xl p-3 text-sm leading-relaxed ${
                   message.role === 'user'
-                    ? 'bg-[#de5586] text-white rounded-br-none'
+                    ? 'bg-[#A78BFA] text-white rounded-br-none'
                     : 'bg-white dark:bg-gray-800 dark:text-white rounded-bl-none shadow-sm border border-gray-100 dark:border-gray-700'
                 }`}
               >
@@ -150,7 +183,7 @@ export default function ChatInterface({
             <div className="flex justify-start">
               <div className="bg-white dark:bg-gray-800 dark:text-white rounded-2xl rounded-bl-none p-3 text-sm shadow-sm border border-gray-100 dark:border-gray-700">
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-[#de5586] animate-pulse" />
+                  <span className="inline-flex h-2 w-2 rounded-full bg-[#A78BFA] animate-pulse" />
                   <span className="text-gray-500 dark:text-gray-400 text-xs">
                     {mode === 'research' ? 'Researching...' : 'Thinking...'}
                   </span>

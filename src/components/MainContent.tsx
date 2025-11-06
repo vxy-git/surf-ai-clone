@@ -99,23 +99,25 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
           {t("mainTitle")}
         </h1>
 
-        {/* Product Hunt Badge */}
-        <div className="flex justify-center mb-12">
-          <a
-            href="https://www.producthunt.com/products/surf-9"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-900 rounded-full hover:shadow-md transition-shadow"
-          >
-            <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold">
-              🏆
-            </div>
-            <div className="text-left">
-              <div className="text-xs text-orange-500 font-semibold">Product Hunt</div>
-              <div className="text-sm font-bold text-orange-600">#1 Product of the Day</div>
-            </div>
-          </a>
-        </div>
+        {/* Product Hunt Badge - Hidden by default, controlled by env */}
+        {process.env.NEXT_PUBLIC_SHOW_PRODUCT_HUNT === 'true' && (
+          <div className="flex justify-center mb-12">
+            <a
+              href="https://www.producthunt.com/products/surf-9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-900 rounded-full hover:shadow-md transition-shadow"
+            >
+              <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold">
+                🏆
+              </div>
+              <div className="text-left">
+                <div className="text-xs text-orange-500 font-semibold">Product Hunt</div>
+                <div className="text-sm font-bold text-orange-600">#1 Product of the Day</div>
+              </div>
+            </a>
+          </div>
+        )}
 
         {/* Search Input */}
         <ChatInput
@@ -134,7 +136,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
                 className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 md:p-4 hover:shadow-lg transition-all cursor-pointer group"
               >
                 <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-3">
-                  <span className="text-[#de5586] text-xs font-semibold whitespace-nowrap bg-pink-50 dark:bg-pink-900/30 px-2.5 py-1 rounded-md self-start">
+                  <span className="text-[#A78BFA] text-xs font-semibold whitespace-nowrap bg-purple-50 dark:bg-purple-900/30 px-2.5 py-1 rounded-md self-start">
                     🔥 Hottest Question
                   </span>
                   <p className="flex-1 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{question.title}</p>

@@ -75,7 +75,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
       <div className="min-h-screen bg-[#f7f7f7] dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold dark:text-white mb-4">Project Not Found</h1>
-          <Link href="/hub" className="text-[#de5586] hover:underline">
+          <Link href="/hub" className="text-[#A78BFA] hover:underline">
             Back to Hub
           </Link>
         </div>
@@ -106,7 +106,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-6">
-          <Link href="/hub" className="text-[#de5586] hover:underline mb-4 inline-block">
+          <Link href="/hub" className="text-[#A78BFA] hover:underline mb-4 inline-block">
             ← Back to Hub
           </Link>
 
@@ -139,7 +139,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                     href={project.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#de5586] hover:underline"
+                    className="text-sm text-[#A78BFA] hover:underline"
                   >
                     🌐 Website
                   </a>
@@ -149,7 +149,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                     href={project.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#de5586] hover:underline"
+                    className="text-sm text-[#A78BFA] hover:underline"
                   >
                     🐦 Twitter
                   </a>
@@ -159,7 +159,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                     href={project.telegram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#de5586] hover:underline"
+                    className="text-sm text-[#A78BFA] hover:underline"
                   >
                     ✈️ Telegram
                   </a>
@@ -172,8 +172,8 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
               onClick={handleWatchlistToggle}
               className={`px-6 py-3 rounded-full font-medium transition-all ${
                 inWatchlist
-                  ? "bg-[#de5586] text-white hover:bg-[#c94976]"
-                  : "border-2 border-[#de5586] text-[#de5586] hover:bg-[#de5586] hover:text-white"
+                  ? "bg-[#A78BFA] text-white hover:bg-[#6D28D9]"
+                  : "border-2 border-[#A78BFA] text-[#A78BFA] hover:bg-[#A78BFA] hover:text-white"
               }`}
             >
               {inWatchlist ? "⭐ In Watchlist" : "Add to Watchlist"}
@@ -235,7 +235,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add your notes about this project..."
-              className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 dark:text-white outline-none focus:border-[#de5586] transition-colors resize-none"
+              className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 dark:text-white outline-none focus:border-[#A78BFA] transition-colors resize-none"
               rows={4}
             />
           </div>

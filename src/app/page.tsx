@@ -5,6 +5,7 @@ import Sidebar from "@/components/Sidebar";
 import MainContent from "@/components/MainContent";
 import ChatInterface from "@/components/ChatInterface";
 import { useChatSessions } from "@/hooks/useChatSessions";
+import { PaymentModalProvider } from "@/contexts/PaymentModalContext";
 
 export default function Home() {
   // 默认为 false,避免 hydration 不匹配
@@ -67,8 +68,9 @@ export default function Home() {
   }, [currentSessionId, currentSession]);
 
   return (
-    <div className="flex h-screen bg-[#f7f7f7] dark:bg-gray-900">
-      <Sidebar
+    <PaymentModalProvider>
+      <div className="flex h-screen bg-[#f7f7f7] dark:bg-gray-900">
+        <Sidebar
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         sessions={sessions}
@@ -94,6 +96,7 @@ export default function Home() {
           onStartChat={handleStartChat}
         />
       )}
-    </div>
+      </div>
+    </PaymentModalProvider>
   );
 }

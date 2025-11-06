@@ -1,11 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useUsage } from "@/hooks/useUsage";
+import { usePaymentModal } from "@/contexts/PaymentModalContext";
 import { ChatSession } from "@/types/chat";
+import { UsageIndicator } from "@/components/UsageIndicator";
+import { PaymentModal } from "@/components/PaymentModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +40,8 @@ export default function Sidebar({
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
   const { t } = useTranslation();
+  const { refresh: refreshUsage } = useUsage();
+  const { isPaymentModalOpen, openPaymentModal, closePaymentModal } = usePaymentModal();
 
   const getLanguageLabel = () => {
     switch (language) {
@@ -106,11 +113,11 @@ export default function Sidebar({
         bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700
         flex flex-col
         z-50
-        transition-all duration-300 ease-in-out
+        md:transition-none transition-all duration-300 ease-in-out
         ${isOpen ? 'translate-x-0 w-80' : '-translate-x-full md:translate-x-0 md:w-16'}
       `}>
         {/* Logo and Toggle */}
-        <div className={`p-4 border-b border-gray-200 dark:border-gray-700 flex items-center transition-all duration-300 ${isOpen ? 'justify-between' : 'justify-between md:justify-center'}`}>
+        <div className={`p-4 border-b border-gray-200 dark:border-gray-700 flex items-center ${isOpen ? 'justify-between' : 'justify-between md:justify-center'}`}>
           <div className={`flex items-center gap-2 ${isOpen ? 'opacity-100' : 'opacity-0 md:hidden'}`}>
             <Image
               src="https://ext.same-assets.com/501684899/3670575781.svg"
@@ -139,7 +146,7 @@ export default function Sidebar({
             {/* New Chat */}
             <button
               onClick={onNewChat}
-              className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all ${isOpen ? 'gap-3 px-3 py-2.5' : 'justify-center px-3 py-2.5 md:justify-center md:px-0'}`}
+              className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors ${isOpen ? 'gap-3 px-3 py-2.5' : 'justify-center px-3 py-2.5 md:justify-center md:px-0'}`}
             >
               <svg className="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
@@ -148,6 +155,19 @@ export default function Sidebar({
               </svg>
               <span className={`font-medium whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>{t("newChat")}</span>
             </button>
+
+            {/* About Project */}
+            <Link
+              href="/about"
+              className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg mt-1 transition-colors ${isOpen ? 'gap-3 px-3 py-2.5' : 'justify-center px-3 py-2.5 md:justify-center md:px-0'}`}
+            >
+              <svg className="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+              <span className={`font-medium whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>{t("aboutProject")}</span>
+            </Link>
 
             {/* Crypto Data Hub */}
             {/* <Link href="/hub" className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg mt-1 transition-all ${isOpen ? 'gap-3 px-3 py-2.5' : 'justify-center px-3 py-2.5 md:justify-center md:px-0'}`}>
@@ -158,7 +178,7 @@ export default function Sidebar({
                 <rect x="3" y="16" width="7" height="5" rx="1" />
               </svg>
               <span className={`font-medium whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>{t("cryptoDataHub")}</span>
-              <span className={`ml-auto bg-gradient-to-r from-[#de5586] to-[#de99a7] text-white text-xs px-2 py-1 rounded-full whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>
+              <span className={`ml-auto bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white text-xs px-2 py-1 rounded-full whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>
                 {t("preTgeReport")}
               </span>
             </Link> */}
@@ -173,7 +193,7 @@ export default function Sidebar({
                 {sessions.map((session) => (
                   <div
                     key={session.id}
-                    className={`group relative w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+                    className={`group relative w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                       currentSessionId === session.id
                         ? 'bg-gray-100 dark:bg-gray-700'
                         : 'hover:bg-gray-100 dark:hover:bg-gray-700'
@@ -184,7 +204,7 @@ export default function Sidebar({
                       className="flex items-center gap-3 flex-1 text-left min-w-0"
                     >
                       <svg
-                        className={`shrink-0 ${currentSessionId === session.id ? 'text-[#de5586]' : ''}`}
+                        className={`shrink-0 ${currentSessionId === session.id ? 'text-[#A78BFA]' : ''}`}
                         width="16"
                         height="16"
                         viewBox="0 0 24 24"
@@ -201,7 +221,7 @@ export default function Sidebar({
                         e.stopPropagation();
                         onDeleteSession(session.id);
                       }}
-                      className="shrink-0 p-1.5 opacity-0 group-hover:opacity-100 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-all"
+                      className="shrink-0 p-1.5 opacity-0 group-hover:opacity-100 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors"
                       title="删除会话"
                     >
                       <svg
@@ -228,6 +248,13 @@ export default function Sidebar({
 
         {/* Bottom Settings */}
         <div className="border-t border-gray-200 dark:border-gray-700">
+          {/* Usage Indicator - 只在展开时显示 */}
+          {isOpen && (
+            <div className="p-3 pb-0">
+              <UsageIndicator onClick={openPaymentModal} />
+            </div>
+          )}
+
           <div className="p-3">
             {/* Appearance */}
             <DropdownMenu>
@@ -362,6 +389,13 @@ export default function Sidebar({
           </div>
         </div>
       </aside>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={closePaymentModal}
+        onPaymentSuccess={refreshUsage}
+      />
     </>
   );
 }

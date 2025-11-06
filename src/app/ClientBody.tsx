@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { WatchlistProvider } from "@/contexts/WatchlistContext";
 import { WalletProvider } from "@/contexts/WalletContext";
+import { UsageProvider } from "@/hooks/useUsage";
 
 export default function ClientBody({
   children,
@@ -19,13 +20,15 @@ export default function ClientBody({
 
   return (
     <WalletProvider>
-      <ThemeProvider>
-        <LanguageProvider>
-          <WatchlistProvider>
-            <div className="antialiased">{children}</div>
-          </WatchlistProvider>
-        </LanguageProvider>
-      </ThemeProvider>
+      <UsageProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <WatchlistProvider>
+              <div className="antialiased">{children}</div>
+            </WatchlistProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </UsageProvider>
     </WalletProvider>
   );
 }

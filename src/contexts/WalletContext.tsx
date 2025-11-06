@@ -37,7 +37,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
         enableOnramp: false,
         themeMode: 'light',
         themeVariables: {
-          '--w3m-accent': '#de5586',
+          '--w3m-accent': '#A78BFA',
         }
       })
       setInitialized(true)
@@ -48,9 +48,9 @@ export function WalletProvider({ children }: WalletProviderProps) {
     }
   }, [])
 
-  // 在配置创建前显示 loading 或返回 null
+  // 在配置创建前返回 null，避免在 WagmiProvider 外渲染子组件
   if (!config) {
-    return <>{children}</>
+    return null
   }
 
   return (

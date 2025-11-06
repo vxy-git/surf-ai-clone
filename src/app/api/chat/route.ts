@@ -1,6 +1,7 @@
 import { openai, createOpenAI } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { allTools } from '@/lib/ai-tools';
+import { canUseAPI, consumeUsage } from '@/lib/usage-tracker';
 
 // 使用 Node.js runtime 以支持完整的 fetch 功能
 export const runtime = 'nodejs';
@@ -59,7 +60,48 @@ export async function POST(req: Request) {
   console.log('[Chat API] Received request at', new Date().toISOString());
 
   try {
-    // 1. 检查环境变量配置
+    // 1. 获取钱包地址并检查使用额度
+    const walletAddress = req.headers.get('x-wallet-address');
+
+    if (!walletAddress) {
+      console.log('[Chat API] No wallet address provided');
+      return new Response(
+        JSON.stringify({
+          error: 'Wallet required',
+          message: '请先连接钱包以使用 AI 功能',
+        }),
+        {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+    // 检查使用额度
+    const usageCheck = canUseAPI(walletAddress);
+    console.log('[Chat API] Usage check:', usageCheck);
+
+    if (!usageCheck.canUse) {
+      console.log('[Chat API] Payment required for wallet:', walletAddress);
+      return new Response(
+        JSON.stringify({
+          error: 'Payment required',
+          message: usageCheck.message,
+          needPayment: true,
+          freeRemaining: usageCheck.freeRemaining,
+          paidRemaining: usageCheck.paidRemaining
+        }),
+        {
+          status: 402,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Payment-Required': 'true'
+          }
+        }
+      );
+    }
+
+    // 2. 检查环境变量配置
     if (!process.env.OPENAI_API_KEY) {
       console.error('[Chat API] ERROR: OPENAI_API_KEY not configured');
       return new Response(
@@ -115,6 +157,9 @@ export async function POST(req: Request) {
 
     const elapsedTime = Date.now() - startTime;
     console.log(`[Chat API] Stream created successfully in ${elapsedTime}ms`);
+
+    // 注意：次数扣除已移到客户端 ChatInterface 组件中处理
+    // 服务端无法访问 localStorage，不应在此扣除次数
 
     return result.toDataStreamResponse();
   } catch (error) {
