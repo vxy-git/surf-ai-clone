@@ -1,96 +1,38 @@
 /**
- * 使用次数追踪模块
- * Usage Tracking Module
+ * 使用次数追踪模块 - 数据库版本
+ * Usage Tracking Module - Database Version
  *
- * 管理用户的免费额度和支付状态
- * Manages user free quota and payment status
+ * 管理用户的免费额度和支付状态(通过数据库 API)
+ * Manages user free quota and payment status (via database API)
  */
 
 import { PAYMENT_CONFIG } from '@/config/payment-config';
-import type { UsageData, UsageCheckResult, Payment } from '@/types/usage';
-
-const STORAGE_KEY_PREFIX = 'surfai_usage_';
+import type { UsageData, UsageCheckResult } from '@/types/usage';
 
 /**
- * 获取存储键名
- * Get storage key for a wallet address
+ * 获取使用数据(从数据库)
+ * Get usage data from database
  */
-function getStorageKey(walletAddress: string): string {
-  return `${STORAGE_KEY_PREFIX}${walletAddress.toLowerCase()}`;
-}
-
-/**
- * 初始化使用数据
- * Initialize usage data for a new user
- */
-function initializeUsageData(walletAddress: string): UsageData {
-  return {
-    walletAddress: walletAddress.toLowerCase(),
-    freeUsage: 0,
-    paidCredits: 0,
-    lastFreeReset: Date.now(),
-    totalPurchased: 0,
-    paymentHistory: []
-  };
-}
-
-/**
- * 检查是否需要重置免费额度
- * Check if free quota needs to be reset
- */
-function shouldResetFreeQuota(lastReset: number): boolean {
-  const now = Date.now();
-  const daysSinceReset = (now - lastReset) / (1000 * 60 * 60 * 24);
-  return daysSinceReset >= PAYMENT_CONFIG.FREE_TIER_RESET_DAYS;
-}
-
-/**
- * 获取本地存储的使用数据
- * Get usage data from localStorage
- */
-export function getUsageData(walletAddress: string): UsageData {
-  if (typeof window === 'undefined') {
-    return initializeUsageData(walletAddress);
-  }
-
+export async function getUsageData(walletAddress: string): Promise<UsageData> {
   try {
-    const key = getStorageKey(walletAddress);
-    const stored = localStorage.getItem(key);
+    const response = await fetch(`/api/usage?walletAddress=${encodeURIComponent(walletAddress)}`);
 
-    if (!stored) {
-      const initial = initializeUsageData(walletAddress);
-      localStorage.setItem(key, JSON.stringify(initial));
-      return initial;
+    if (!response.ok) {
+      throw new Error('Failed to fetch usage data');
     }
 
-    const data = JSON.parse(stored) as UsageData;
-
-    // 检查是否需要重置免费额度
-    if (shouldResetFreeQuota(data.lastFreeReset)) {
-      data.freeUsage = 0;
-      data.lastFreeReset = Date.now();
-      localStorage.setItem(key, JSON.stringify(data));
-    }
-
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error('Failed to parse usage data:', error);
-    return initializeUsageData(walletAddress);
-  }
-}
-
-/**
- * 保存使用数据
- * Save usage data to localStorage
- */
-export function saveUsageData(walletAddress: string, data: UsageData): void {
-  if (typeof window === 'undefined') return;
-
-  try {
-    const key = getStorageKey(walletAddress);
-    localStorage.setItem(key, JSON.stringify(data));
-  } catch (error) {
-    console.error('Failed to save usage data:', error);
+    console.error('获取使用数据失败:', error);
+    // 返回默认数据
+    return {
+      walletAddress: walletAddress.toLowerCase(),
+      freeUsage: 0,
+      paidCredits: 0,
+      lastFreeReset: Date.now(),
+      totalPurchased: 0,
+      paymentHistory: []
+    };
   }
 }
 
@@ -98,8 +40,8 @@ export function saveUsageData(walletAddress: string, data: UsageData): void {
  * 检查是否可以使用 API
  * Check if user can use the API
  */
-export function canUseAPI(walletAddress: string): UsageCheckResult {
-  const data = getUsageData(walletAddress);
+export async function canUseAPI(walletAddress: string): Promise<UsageCheckResult> {
+  const data = await getUsageData(walletAddress);
 
   const freeRemaining = Math.max(0, PAYMENT_CONFIG.FREE_TIER_LIMIT - data.freeUsage);
   const paidRemaining = data.paidCredits;
@@ -137,66 +79,78 @@ export function canUseAPI(walletAddress: string): UsageCheckResult {
 }
 
 /**
- * 消耗一次使用额度
+ * 消耗一次使用额度(调用数据库 API)
  * Consume one usage credit
  */
-export function consumeUsage(walletAddress: string): boolean {
-  const data = getUsageData(walletAddress);
+export async function consumeUsage(walletAddress: string): Promise<boolean> {
+  try {
+    const response = await fetch('/api/usage/consume', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ walletAddress })
+    });
 
-  // 优先消耗免费额度
-  if (data.freeUsage < PAYMENT_CONFIG.FREE_TIER_LIMIT) {
-    data.freeUsage++;
-    saveUsageData(walletAddress, data);
-    return true;
+    const result = await response.json();
+    return result.success === true;
+  } catch (error) {
+    console.error('消耗额度失败:', error);
+    return false;
   }
-
-  // 消耗付费次数
-  if (data.paidCredits > 0) {
-    data.paidCredits--;
-    saveUsageData(walletAddress, data);
-    return true;
-  }
-
-  return false;
 }
 
 /**
- * 增加付费次数
- * Add paid credits after successful payment
+ * 验证支付并增加付费次数(调用数据库 API)
+ * Verify payment and add paid credits
  */
-export function addPaidCredits(
+export async function verifyPaymentAndAddCredits(
   walletAddress: string,
   txHash: string,
-  creditsToAdd?: number
-): UsageData {
-  const data = getUsageData(walletAddress);
-  const credits = creditsToAdd || PAYMENT_CONFIG.PAYMENT_CREDITS;
+  network: 'base' | 'base-sepolia'
+): Promise<{ success: boolean; error?: string; data?: any }> {
+  try {
+    const response = await fetch('/api/usage/verify-payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        walletAddress,
+        txHash,
+        network
+      })
+    });
 
-  // 增加付费次数
-  data.paidCredits += credits;
-  data.totalPurchased += credits;
+    const result = await response.json();
 
-  // 记录支付历史
-  const payment: Payment = {
-    txHash,
-    amount: PAYMENT_CONFIG.PAYMENT_PRICE,
-    creditsAdded: credits,
-    timestamp: Date.now(),
-    network: PAYMENT_CONFIG.NETWORK
-  };
-  data.paymentHistory.push(payment);
+    if (!response.ok) {
+      return {
+        success: false,
+        error: result.error || '支付验证失败'
+      };
+    }
 
-  saveUsageData(walletAddress, data);
-  return data;
+    return {
+      success: true,
+      data: result
+    };
+  } catch (error) {
+    console.error('验证支付失败:', error);
+    return {
+      success: false,
+      error: '网络错误'
+    };
+  }
 }
 
 /**
  * 获取使用统计信息
  * Get usage statistics
  */
-export function getUsageStats(walletAddress: string) {
-  const data = getUsageData(walletAddress);
-  const check = canUseAPI(walletAddress);
+export async function getUsageStats(walletAddress: string) {
+  const data = await getUsageData(walletAddress);
+  const check = await canUseAPI(walletAddress);
 
   return {
     freeUsage: data.freeUsage,
@@ -212,19 +166,4 @@ export function getUsageStats(walletAddress: string) {
     canUse: check.canUse,
     needPayment: check.needPayment
   };
-}
-
-/**
- * 重置用户数据（仅用于测试）
- * Reset user data (for testing only)
- */
-export function resetUsageData(walletAddress: string): void {
-  if (typeof window === 'undefined') return;
-
-  try {
-    const key = getStorageKey(walletAddress);
-    localStorage.removeItem(key);
-  } catch (error) {
-    console.error('Failed to reset usage data:', error);
-  }
 }

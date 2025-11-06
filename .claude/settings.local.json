@@ -30,7 +30,10 @@
       "Bash(xargs kill:*)",
       "Bash(echo:*)",
       "Bash(lsof:*)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Bash(bun add:*)",
+      "Bash(pnpm add:*)",
+      "Bash(npx prisma init)"
     ],
     "deny": [],
     "ask": []

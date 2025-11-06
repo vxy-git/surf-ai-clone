@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户表
+model User {
+  id             String        @id @default(uuid())
+  walletAddress  String        @unique @map("wallet_address")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  // 关联关系
+  usage          UserUsage?
+  payments       Payment[]
+  chatSessions   ChatSession[]
+  watchlist      Watchlist[]
+
+  @@map("users")
+}
+
+// 使用额度表
+model UserUsage {
+  id             String   @id @default(uuid())
+  userId         String   @unique @map("user_id")
+  freeUsage      Int      @default(0) @map("free_usage")        // 已使用的免费次数 (0-5)
+  paidCredits    Int      @default(0) @map("paid_credits")      // 付费额度余额
+  lastFreeReset  DateTime @default(now()) @map("last_free_reset") // 免费额度最后重置时间
+  totalPurchased Int      @default(0) @map("total_purchased")   // 累计购买次数
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // 关联
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_usage")
+}
+
+// 支付记录表
+model Payment {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  txHash        String   @unique @map("tx_hash")               // 交易哈希 (唯一,防重放)
+  amount        String                                          // 支付金额 "$0.01"
+  creditsAdded  Int      @map("credits_added")                 // 增加的次数
+  network       String                                          // "base" | "base-sepolia"
+  verified      Boolean  @default(false)                       // 是否已验证链上交易
+  timestamp     DateTime @default(now())
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // 关联
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([verified])
+  @@map("payments")
+}
+
+// 聊天会话表
+model ChatSession {
+  id         String        @id @default(uuid())
+  userId     String        @map("user_id")
+  title      String
+  mode       String        // "ask" | "research"
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @updatedAt @map("updated_at")
+
+  // 关联
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages   ChatMessage[]
+
+  @@index([userId])
+  @@index([updatedAt])
+  @@map("chat_sessions")
+}
+
+// 聊天消息表
+model ChatMessage {
+  id            String      @id @default(uuid())
+  sessionId     String      @map("session_id")
+  role          String      // "user" | "assistant" | "system"
+  content       String      @db.Text
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  // 关联
+  session       ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([createdAt])
+  @@map("chat_messages")
+}
+
+// 关注列表表
+model Watchlist {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  projectId  Int      @map("project_id")                       // 项目ID
+  name       String                                             // 项目名称
+  logo       String                                             // Logo URL
+  ticker     String                                             // 代币符号
+  fdv        String                                             // 完全稀释估值
+  notes      String   @default("") @db.Text                    // 用户笔记
+  status     String   @default("")                             // 状态
+  addedDate  DateTime @default(now()) @map("added_date")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  // 关联
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+  @@index([userId])
+  @@map("watchlist")
+}

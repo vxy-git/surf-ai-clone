@@ -29,7 +29,7 @@ export default function ChatInterface({
   const lastSyncedLength = useRef(0);
   const currentSessionIdRef = useRef(sessionId);
   const { address } = useAccount();
-  const { recordUsage, checkCanUse } = useUsage();
+  const { refresh, checkCanUse } = useUsage();
   const { openPaymentModal } = usePaymentModal();
 
   const { messages, setMessages, isLoading, error, append } = useChat({
@@ -40,14 +40,11 @@ export default function ChatInterface({
     headers: {
       'x-wallet-address': address || ''
     },
-    onFinish: () => {
-      // AI 响应成功后，扣除一次使用次数
-      const success = recordUsage();
-      if (success) {
-        console.log('[ChatInterface] Usage recorded successfully');
-      } else {
-        console.warn('[ChatInterface] Failed to record usage - quota exceeded');
-      }
+    onFinish: async () => {
+      // AI 响应成功后，刷新额度显示
+      // 注意：额度扣除在服务端完成，这里只刷新 UI
+      await refresh();
+      console.log('[ChatInterface] Usage refreshed after AI response');
     }
   });
 

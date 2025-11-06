@@ -17,10 +17,10 @@ interface UsageContextValue {
   usage: UsageInfo | null;
   loading: boolean;
   isConnected: boolean;
-  recordUsage: () => boolean;
-  checkCanUse: () => boolean;
-  getStats: () => ReturnType<typeof getUsageStats>;
-  refresh: () => void;
+  recordUsage: () => Promise<boolean>;
+  checkCanUse: () => Promise<boolean>;
+  getStats: () => Promise<ReturnType<typeof getUsageStats> | null>;
+  refresh: () => Promise<void>;
 }
 
 const UsageContext = createContext<UsageContextValue | undefined>(undefined);
@@ -31,7 +31,7 @@ export function UsageProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   // 加载使用数据
-  const loadUsage = useCallback(() => {
+  const loadUsage = useCallback(async () => {
     if (!isConnected || !address) {
       setUsage(null);
       setLoading(false);
@@ -39,8 +39,8 @@ export function UsageProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const data = getUsageData(address);
-      const check = canUseAPI(address);
+      const data = await getUsageData(address);
+      const check = await canUseAPI(address);
 
       const freeUsed = data.freeUsage;
       const freeRemaining = Math.max(0, PAYMENT_CONFIG.FREE_TIER_LIMIT - freeUsed);
@@ -68,32 +68,32 @@ export function UsageProvider({ children }: { children: ReactNode }) {
   }, [loadUsage]);
 
   // 记录使用
-  const recordUsage = useCallback(() => {
+  const recordUsage = useCallback(async () => {
     if (!address) return false;
 
-    const success = consumeUsage(address);
+    const success = await consumeUsage(address);
     if (success) {
-      loadUsage(); // 重新加载数据
+      await loadUsage(); // 重新加载数据
     }
     return success;
   }, [address, loadUsage]);
 
   // 检查是否可以使用
-  const checkCanUse = useCallback((): boolean => {
+  const checkCanUse = useCallback(async (): Promise<boolean> => {
     if (!address) return false;
-    const result = canUseAPI(address);
+    const result = await canUseAPI(address);
     return result.canUse;
   }, [address]);
 
   // 获取详细统计
-  const getStats = useCallback(() => {
+  const getStats = useCallback(async () => {
     if (!address) return null;
-    return getUsageStats(address);
+    return await getUsageStats(address);
   }, [address]);
 
   // 刷新数据
-  const refresh = useCallback(() => {
-    loadUsage();
+  const refresh = useCallback(async () => {
+    await loadUsage();
   }, [loadUsage]);
 
   const value: UsageContextValue = {

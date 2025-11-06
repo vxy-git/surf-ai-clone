@@ -15,7 +15,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useWeb3ModalInitialized } from '@/contexts/WalletContext';
 import { PAYMENT_CONFIG } from '@/config/payment-config';
 import { USDC_ABI } from '@/lib/usdc-abi';
-import { addPaidCredits } from '@/lib/usage-tracker';
+import { verifyPaymentAndAddCredits } from '@/lib/usage-tracker';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -52,19 +52,30 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
 
   // 当交易确认成功时
   if (isConfirmed && paymentStatus === 'pending') {
-    // 增加付费次数
+    // 验证支付并增加付费次数
     if (address && hash) {
-      addPaidCredits(address, hash, PAYMENT_CONFIG.PAYMENT_CREDITS);
-      setPaymentStatus('success');
+      (async () => {
+        const result = await verifyPaymentAndAddCredits(
+          address,
+          hash,
+          PAYMENT_CONFIG.NETWORK
+        );
 
-      // 通知外部组件刷新使用数据
-      onPaymentSuccess?.();
+        if (result.success) {
+          setPaymentStatus('success');
+          // 通知外部组件刷新使用数据
+          onPaymentSuccess?.();
 
-      // 3秒后自动关闭弹窗
-      setTimeout(() => {
-        onClose();
-        setPaymentStatus('idle');
-      }, 3000);
+          // 3秒后自动关闭弹窗
+          setTimeout(() => {
+            onClose();
+            setPaymentStatus('idle');
+          }, 3000);
+        } else {
+          setPaymentStatus('error');
+          setErrorMessage(result.error || '支付验证失败');
+        }
+      })();
     }
   }
 

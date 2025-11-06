@@ -1,7 +1,7 @@
 import { openai, createOpenAI } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { allTools } from '@/lib/ai-tools';
-import { canUseAPI, consumeUsage } from '@/lib/usage-tracker';
+import { canUseAPIServer, consumeUsageServer } from '@/lib/usage-server';
 
 // 使用 Node.js runtime 以支持完整的 fetch 功能
 export const runtime = 'nodejs';
@@ -77,8 +77,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // 检查使用额度
-    const usageCheck = canUseAPI(walletAddress);
+    // 检查使用额度(从数据库)
+    const usageCheck = await canUseAPIServer(walletAddress);
     console.log('[Chat API] Usage check:', usageCheck);
 
     if (!usageCheck.canUse) {
@@ -158,8 +158,13 @@ export async function POST(req: Request) {
     const elapsedTime = Date.now() - startTime;
     console.log(`[Chat API] Stream created successfully in ${elapsedTime}ms`);
 
-    // 注意：次数扣除已移到客户端 ChatInterface 组件中处理
-    // 服务端无法访问 localStorage，不应在此扣除次数
+    // 5. AI 响应成功,消耗使用额度(写入数据库)
+    const consumed = await consumeUsageServer(walletAddress);
+    if (consumed) {
+      console.log('[Chat API] Usage consumed successfully for:', walletAddress);
+    } else {
+      console.warn('[Chat API] Failed to consume usage, but allowing response');
+    }
 
     return result.toDataStreamResponse();
   } catch (error) {
