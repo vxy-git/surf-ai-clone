@@ -266,7 +266,7 @@ export default function AboutPage() {
                   {about.partnersSubtitle}
                 </p>
                 <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
-                  <div className="w-12 h-10 relative group cursor-pointer">
+                  <div className="w-8 h-10 relative group cursor-pointer">
                     <img
                       src="/images/b1v.png"
                       alt="B1V"
