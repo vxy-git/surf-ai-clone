@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
       });
 
       // 重新获取用户数据
-      user = await prisma.user.findUnique({
+      const updatedUser = await prisma.user.findUnique({
         where: { walletAddress: normalizedAddress },
         include: {
           usage: true,
@@ -85,12 +85,20 @@ export async function GET(request: NextRequest) {
             take: 10
           }
         }
-      })!;
+      });
+      if (updatedUser) {
+        user = updatedUser;
+      }
+    }
+
+    // 确保 usage 存在
+    if (!user.usage) {
+      throw new Error('用户额度记录不存在');
     }
 
     // 检查是否需要重置免费额度 (30天周期)
     const daysSinceReset = Math.floor(
-      (Date.now() - user.usage!.lastFreeReset.getTime()) / (1000 * 60 * 60 * 24)
+      (Date.now() - user.usage.lastFreeReset.getTime()) / (1000 * 60 * 60 * 24)
     );
 
     if (daysSinceReset >= PAYMENT_CONFIG.FREE_TIER_RESET_DAYS) {

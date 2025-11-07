@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
         title,
         mode,
         messages: {
-          create: messages.map((msg: any) => ({
+          create: messages.map((msg: { role: string; content: string }) => ({
             role: msg.role,
             content: msg.content
           }))

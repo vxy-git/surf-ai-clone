@@ -309,7 +309,7 @@ export default function HubPage() {
           <span className="font-bold dark:text-white">Surf</span>
         </div>
         <button className="ml-auto px-4 py-2 border-2 border-[#A78BFA] text-[#A78BFA] rounded-full font-medium hover:bg-[#A78BFA] hover:text-white transition-colors text-sm">
-          {t("login")}
+          {String(t("login"))}
         </button>
       </header>
       {/* Header with floating icons background */}

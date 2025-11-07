@@ -108,7 +108,7 @@ export async function verifyPaymentAndAddCredits(
   walletAddress: string,
   txHash: string,
   network: 'base' | 'base-sepolia'
-): Promise<{ success: boolean; error?: string; data?: any }> {
+): Promise<{ success: boolean; error?: string; data?: unknown }> {
   try {
     const response = await fetch('/api/usage/verify-payment', {
       method: 'POST',

@@ -40,7 +40,9 @@
       "WebFetch(domain:www.coingecko.com)",
       "WebFetch(domain:docs.coincap.io)",
       "WebFetch(domain:apiguide.geckoterminal.com)",
-      "WebFetch(domain:api.geckoterminal.com)"
+      "WebFetch(domain:api.geckoterminal.com)",
+      "Bash(pnpm build:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

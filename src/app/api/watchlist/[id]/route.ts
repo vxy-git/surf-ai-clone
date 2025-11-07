@@ -15,10 +15,11 @@ export const dynamic = 'force-dynamic';
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const projectId = parseInt(params.id);
+    const { id } = await params;
+    const projectId = parseInt(id);
     const searchParams = request.nextUrl.searchParams;
     const walletAddress = searchParams.get('walletAddress');
     const body = await request.json();
@@ -80,10 +81,10 @@ export async function PATCH(
 
     return NextResponse.json(formattedItem);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('更新关注项失败:', error);
 
-    if (error.code === 'P2025') {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
       return NextResponse.json(
         { error: '关注项不存在' },
         { status: 404 }
@@ -103,10 +104,11 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const projectId = parseInt(params.id);
+    const { id } = await params;
+    const projectId = parseInt(id);
     const searchParams = request.nextUrl.searchParams;
     const walletAddress = searchParams.get('walletAddress');
 
@@ -153,10 +155,10 @@ export async function DELETE(
       { status: 200 }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('删除关注项失败:', error);
 
-    if (error.code === 'P2025') {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
       return NextResponse.json(
         { error: '关注项不存在' },
         { status: 404 }

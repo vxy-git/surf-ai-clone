@@ -177,12 +177,10 @@ export async function consumeUsageServer(walletAddress: string): Promise<boolean
       (Date.now() - user.usage.lastFreeReset.getTime()) / (1000 * 60 * 60 * 24)
     );
 
-    let currentFreeUsage = user.usage.freeUsage;
-    let currentPaidCredits = user.usage.paidCredits;
-
-    if (daysSinceReset >= PAYMENT_CONFIG.FREE_TIER_RESET_DAYS) {
-      currentFreeUsage = 0;
-    }
+    // 检查是否需要重置免费额度
+    const shouldReset = daysSinceReset >= PAYMENT_CONFIG.FREE_TIER_RESET_DAYS;
+    const currentFreeUsage = shouldReset ? 0 : user.usage.freeUsage;
+    const currentPaidCredits = user.usage.paidCredits;
 
     // 检查是否还有可用额度
     const freeRemaining = PAYMENT_CONFIG.FREE_TIER_LIMIT - currentFreeUsage;
@@ -203,7 +201,7 @@ export async function consumeUsageServer(walletAddress: string): Promise<boolean
         throw new Error('额度记录不存在');
       }
 
-      let updateData: any = {};
+      const updateData: { freeUsage?: number; lastFreeReset?: Date; paidCredits?: number } = {};
 
       // 优先使用免费额度
       if (hasFreeTier) {

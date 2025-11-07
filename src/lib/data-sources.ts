@@ -591,7 +591,7 @@ export class GeckoTerminalDataSource {
 
       const baseUrl = 'https://api.coingecko.com/api/v3';
       const apiKey = process.env.NEXT_PUBLIC_COINGECKO_API_KEY || '';
-      const headers = apiKey ? { 'x-cg-pro-api-key': apiKey } : {};
+      const headers = apiKey ? { 'x-cg-pro-api-key': apiKey } : undefined;
 
       const data = await cachedFetch<any>(
         `${baseUrl}/search/trending`,

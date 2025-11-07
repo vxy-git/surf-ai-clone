@@ -12,7 +12,7 @@ export default function AboutPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
   const { t } = useTranslation();
-  const about = (t as any)('about'); // 获取 about 对象
+  const about = t('about') as unknown as Record<string, string>; // 获取 about 对象
 
   const {
     sessions,

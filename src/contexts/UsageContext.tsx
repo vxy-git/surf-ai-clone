@@ -19,7 +19,7 @@ interface UsageContextValue {
   isConnected: boolean;
   recordUsage: () => Promise<boolean>;
   checkCanUse: () => Promise<boolean>;
-  getStats: () => Promise<ReturnType<typeof getUsageStats> | null>;
+  getStats: () => Promise<Awaited<ReturnType<typeof getUsageStats>> | null>;
   refresh: () => Promise<void>;
 }
 
