@@ -145,11 +145,18 @@ export const translations = {
       roadmap4: "智能体市场",
       roadmap5: "治理与 AI 标准 DAO",
 
+      partnersTitle: "合作伙伴与投资方",
+      partnersSubtitle: "获得领先 Web3 投资者和生态系统合作伙伴的支持",
+
       footerText: "© Flow AI. All rights reserved.",
       documentation: "文档",
       careers: "职位",
       terms: "条款",
       privacy: "隐私政策",
+      social: "关注我们",
+      twitter: "X (Twitter)",
+      discord: "Discord",
+      github: "GitHub",
     },
   },
   en: {
@@ -298,11 +305,18 @@ export const translations = {
       roadmap4: "Agent marketplace",
       roadmap5: "Governance and AI standards DAO",
 
+      partnersTitle: "Partners & Backers",
+      partnersSubtitle: "Backed by leading Web3 investors and ecosystem partners",
+
       footerText: "© Flow AI. All rights reserved.",
       documentation: "Docs",
       careers: "Careers",
       terms: "Terms & Privacy",
       privacy: "Privacy",
+      social: "Follow Us",
+      twitter: "X (Twitter)",
+      discord: "Discord",
+      github: "GitHub",
     },
   },
   ja: {

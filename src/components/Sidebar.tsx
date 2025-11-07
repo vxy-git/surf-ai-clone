@@ -124,12 +124,12 @@ export default function Sidebar({
         <div className={`p-4 border-b border-gray-200 dark:border-gray-700 flex items-center ${isOpen ? 'justify-between' : 'justify-between md:justify-center'}`}>
           <div className={`flex items-center gap-2 ${isOpen ? 'opacity-100' : 'opacity-0 md:hidden'}`}>
             <Image
-              src="https://ext.same-assets.com/501684899/3670575781.svg"
-              alt="Surf"
+              src="/images/logo.jpg"
+              alt="FlowNet AI"
               width={32}
               height={32}
             />
-            <span className="text-xl font-bold whitespace-nowrap">Surf</span>
+            <span className="text-xl font-bold whitespace-nowrap">FlowNet AI</span>
           </div>
           <button
             onClick={onToggle}
