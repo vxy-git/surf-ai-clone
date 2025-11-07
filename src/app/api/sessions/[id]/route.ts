@@ -6,6 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { Prisma } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,7 +39,7 @@ export async function PATCH(
     }
 
     // 使用事务更新会话
-    const updatedSession = await prisma.$transaction(async (tx) => {
+    const updatedSession = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 更新会话标题
       const session = await tx.chatSession.update({
         where: { id: sessionId },

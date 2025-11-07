@@ -42,7 +42,8 @@
       "WebFetch(domain:apiguide.geckoterminal.com)",
       "WebFetch(domain:api.geckoterminal.com)",
       "Bash(pnpm build:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
