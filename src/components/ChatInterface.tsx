@@ -30,7 +30,7 @@ export default function ChatInterface({
   const currentSessionIdRef = useRef(sessionId);
   const { address } = useAccount();
   const { refresh, checkCanUse } = useUsage();
-  const { openPaymentModal } = usePaymentModal();
+  const { openPaymentModal, setPendingMessage, setOnPaymentSuccessCallback } = usePaymentModal();
 
   const { messages, setMessages, isLoading, error, append } = useChat({
     api: mode === 'research' ? '/api/research' : '/api/chat',
@@ -45,6 +45,40 @@ export default function ChatInterface({
       // 注意：额度扣除在服务端完成，这里只刷新 UI
       await refresh();
       console.log('[ChatInterface] Usage refreshed after AI response');
+    },
+    onError: (err) => {
+      console.error('[ChatInterface] AI request error:', err);
+
+      // 区分错误类型，给出友好提示
+      const errorMessage = err.message || '';
+
+      if (errorMessage.includes('500') || errorMessage.includes('Internal Server Error')) {
+        console.warn('[ChatInterface] 服务器错误，已扣除的额度不会退还（AI 推理成本已产生）');
+      } else if (errorMessage.includes('timeout') || errorMessage.includes('NetworkError')) {
+        console.warn('[ChatInterface] 网络连接中断，已扣除的额度不会退还（请检查网络稳定性）');
+      } else if (errorMessage.includes('402') || errorMessage.includes('Payment required')) {
+        console.log('[ChatInterface] 额度不足，未扣除额度');
+
+        // 保存待发送的消息到 Context (从最后一条用户消息获取)
+        const lastUserMessage = messages[messages.length - 1];
+        if (lastUserMessage && lastUserMessage.role === 'user') {
+          setPendingMessage({ content: lastUserMessage.content, mode: mode });
+
+          // 设置支付成功后的自动重试回调
+          setOnPaymentSuccessCallback(() => () => {
+            console.log('[ChatInterface] Payment successful after 402 error, auto-retrying');
+            append({ role: 'user', content: lastUserMessage.content });
+          });
+        }
+
+        // 额度不足时，打开支付弹窗
+        openPaymentModal();
+      } else {
+        console.warn('[ChatInterface] 未知错误:', errorMessage);
+      }
+
+      // 刷新额度显示（可能已被扣除）
+      refresh();
     }
   });
 
@@ -90,18 +124,39 @@ export default function ChatInterface({
       // 发送前检查次数
       if (!checkCanUse()) {
         console.log('[ChatInterface] Usage quota exceeded when auto-sending, opening payment modal');
+
+        // 保存待发送的消息到 Context
+        setPendingMessage({ content: initialMessage, mode: mode });
+
+        // 设置支付成功后的自动重试回调
+        setOnPaymentSuccessCallback(() => () => {
+          console.log('[ChatInterface] Payment successful, auto-retrying initial message send');
+          append({ role: 'user', content: initialMessage });
+        });
+
         openPaymentModal();
         return;
       }
 
       append({ role: 'user', content: initialMessage });
     }
-  }, [initialMessage, messages.length, append, checkCanUse, openPaymentModal]);
+  }, [initialMessage, messages.length, append, checkCanUse, openPaymentModal, setPendingMessage, setOnPaymentSuccessCallback, mode]);
 
   const handleSendMessage = (message: string, newMode: 'ask' | 'research') => {
     // 发送前检查次数
     if (!checkCanUse()) {
       console.log('[ChatInterface] Usage quota exceeded, opening payment modal');
+
+      // 保存待发送的消息到 Context
+      setPendingMessage({ content: message, mode: newMode });
+
+      // 设置支付成功后的自动重试回调
+      // 注意: 需要包装两层箭头函数,因为 useState 会把函数参数当作函数式更新
+      setOnPaymentSuccessCallback(() => () => {
+        console.log('[ChatInterface] Payment successful, auto-retrying message send');
+        append({ role: 'user', content: message });
+      });
+
       openPaymentModal();
       return;
     }
@@ -191,9 +246,31 @@ export default function ChatInterface({
 
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-              <p className="text-red-600 dark:text-red-400 text-sm">
-                ⚠️ Error: {error.message}
-              </p>
+              <div className="flex items-start gap-3">
+                <span className="text-red-600 dark:text-red-400 text-lg">⚠️</span>
+                <div className="flex-1">
+                  <p className="text-red-600 dark:text-red-400 text-sm font-semibold mb-2">
+                    请求失败
+                  </p>
+                  <p className="text-red-600 dark:text-red-400 text-sm mb-2">
+                    {error.message}
+                  </p>
+                  {(error.message.includes('500') ||
+                    error.message.includes('timeout') ||
+                    error.message.includes('NetworkError')) && (
+                    <p className="text-xs text-red-500 dark:text-red-400 mt-2 border-t border-red-200 dark:border-red-700 pt-2">
+                      💡 说明：AI 模型已开始处理您的请求（成本已产生），因此已扣除 1 次使用额度。这符合行业标准做法（类似 OpenAI、Claude API）。
+                      <br />
+                      如需重试，请重新发送消息。
+                    </p>
+                  )}
+                  {error.message.includes('402') && (
+                    <p className="text-xs text-red-500 dark:text-red-400 mt-2 border-t border-red-200 dark:border-red-700 pt-2">
+                      💡 额度不足时不会扣除次数，请充值后重试。
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 

@@ -33,7 +33,14 @@
       "Bash(xargs cat:*)",
       "Bash(bun add:*)",
       "Bash(pnpm add:*)",
-      "Bash(npx prisma init)"
+      "Bash(npx prisma init)",
+      "WebFetch(domain:docs.coingecko.com)",
+      "WebFetch(domain:mobula.fi)",
+      "WebFetch(domain:docs.mobula.io)",
+      "WebFetch(domain:www.coingecko.com)",
+      "WebFetch(domain:docs.coincap.io)",
+      "WebFetch(domain:apiguide.geckoterminal.com)",
+      "WebFetch(domain:api.geckoterminal.com)"
     ],
     "deny": [],
     "ask": []

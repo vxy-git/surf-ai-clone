@@ -938,6 +938,132 @@ export const getMarketDataTool = tool({
   },
 });
 
+// ========== 新代币发现工具 ==========
+
+/**
+ * 新代币发现工具
+ * 获取最近上线的代币列表,帮助用户发现新机会
+ */
+export const newTokensDiscoveryTool = tool({
+  description: 'Discover recently launched tokens across 200+ blockchain networks using GeckoTerminal. Returns the latest tokens with price data, 24h changes, and network information.',
+  parameters: z.object({
+    limit: z.number().min(5).max(50).default(10).describe('Number of tokens to return (5-50, default 10)'),
+    source: z.enum(['recent', 'trending', 'both']).default('both').describe('Data source: recent (newly added on-chain), trending (popular), or both'),
+  }),
+  execute: async ({ limit, source }) => {
+    try {
+      console.log(`[NewTokens] Fetching ${limit} new tokens (source: ${source})`);
+
+      // 调用内部 API (在服务端调用,避免 CORS 和速率限制)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/tokens/new?limit=${limit}&source=${source}`,
+        {
+          next: { revalidate: 300 } // 缓存5分钟
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.success || !data.tokens) {
+        throw new Error('Invalid API response');
+      }
+
+      // 格式化返回数据
+      const formattedTokens = data.tokens.map((token: any, index: number) => ({
+        rank: index + 1,
+        symbol: token.symbol.toUpperCase(),
+        name: token.name,
+        network: token.network,
+        price: token.priceUsd ? `$${token.priceUsd.toFixed(6)}` : 'N/A',
+        priceChange24h: token.priceChange24h
+          ? `${token.priceChange24h > 0 ? '+' : ''}${token.priceChange24h.toFixed(2)}%`
+          : 'N/A',
+        volume24h: token.volume24h ? `$${token.volume24h.toLocaleString()}` : 'N/A',
+        liquidity: token.liquidity ? `$${token.liquidity.toLocaleString()}` : 'N/A',
+        source: token.source === 'recent' ? '🆕 Recently Added' : '🔥 Trending',
+        updatedAt: token.updatedAt ? new Date(token.updatedAt).toLocaleString() : 'N/A',
+      }));
+
+      console.log(`[NewTokens] ✓ Returned ${formattedTokens.length} tokens`);
+
+      return {
+        success: true,
+        count: formattedTokens.length,
+        tokens: formattedTokens,
+        dataSource: '🌐 GeckoTerminal (Free)',
+        note: source === 'both'
+          ? 'Combined: Recently added on-chain tokens + Trending tokens from CoinGecko'
+          : source === 'recent'
+          ? 'Recently added tokens from DEXs across 200+ networks'
+          : 'Top 7 trending tokens from CoinGecko in the last 24 hours',
+      };
+    } catch (error) {
+      console.error('[NewTokens] Error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        note: 'Failed to fetch new tokens. Please try again later.',
+      };
+    }
+  },
+});
+
+/**
+ * 趋势代币工具
+ * 获取当前市场热门/趋势代币
+ */
+export const trendingCoinsTool = tool({
+  description: 'Get the top 7 trending cryptocurrencies in the last 24 hours from CoinGecko. These are the most searched and talked about coins.',
+  parameters: z.object({}),
+  execute: async () => {
+    try {
+      console.log('[Trending] Fetching trending coins...');
+
+      // 使用 GeckoTerminal 的 fetchTrendingTokens 方法
+      const { geckoTerminal } = await import('./data-sources');
+      const tokens = await geckoTerminal.fetchTrendingTokens();
+
+      if (tokens.length === 0) {
+        return {
+          success: false,
+          error: 'No trending data available',
+        };
+      }
+
+      const formattedTokens = tokens.map((token, index) => ({
+        rank: index + 1,
+        symbol: token.symbol.toUpperCase(),
+        name: token.name,
+        price: token.priceUsd ? `$${token.priceUsd.toFixed(2)}` : 'N/A',
+        priceChange24h: token.priceChange24h
+          ? `${token.priceChange24h > 0 ? '+' : ''}${token.priceChange24h.toFixed(2)}%`
+          : 'N/A',
+      }));
+
+      console.log(`[Trending] ✓ Returned ${formattedTokens.length} trending coins`);
+
+      return {
+        success: true,
+        count: formattedTokens.length,
+        coins: formattedTokens,
+        dataSource: '🔥 CoinGecko Trending (Free)',
+        note: 'Top 7 most searched cryptocurrencies in the last 24 hours',
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      console.error('[Trending] Error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  },
+});
+
 // 导出所有工具
 export const allTools = {
   socialSentiment: socialSentimentTool,
@@ -945,4 +1071,6 @@ export const allTools = {
   onchainTracker: onchainTrackerTool,
   deepSearch: deepSearchTool,
   getMarketData: getMarketDataTool,
+  newTokensDiscovery: newTokensDiscoveryTool,
+  trendingCoins: trendingCoinsTool,
 };

@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useAccount } from 'wagmi';
 import type { Message } from 'ai/react';
 import { ChatSession, ChatMode } from '@/types/chat';
 
-const STORAGE_KEY = 'surf-ai-chat-sessions';
-
 export function useChatSessions() {
+  const { address, isConnected } = useAccount();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const sessionsRef = useRef<ChatSession[]>(sessions);
 
   // 保持 ref 同步
@@ -14,81 +16,150 @@ export function useChatSessions() {
     sessionsRef.current = sessions;
   }, [sessions]);
 
-  // 从 localStorage 加载会话
+  // 从数据库加载会话
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
+    if (!address || !isConnected) {
+      setSessions([]);
+      setLoading(false);
+      return;
+    }
+
+    const loadSessions = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const parsed = JSON.parse(stored);
-        // 验证数据格式
-        if (Array.isArray(parsed)) {
-          setSessions(parsed);
-        } else {
-          console.error('Invalid sessions data format');
-          localStorage.removeItem(STORAGE_KEY);
-        }
-      } catch (error) {
-        console.error('Failed to parse sessions:', error);
-        // 清除损坏的数据
-        localStorage.removeItem(STORAGE_KEY);
-        // 可选: 显示用户提示
-        if (typeof window !== 'undefined') {
-          console.warn('聊天历史数据已损坏,已清除。这不会影响新的会话。');
-        }
-      }
-    }
-  }, []);
+        const response = await fetch(`/api/sessions?walletAddress=${encodeURIComponent(address)}`);
 
-  // 保存到 localStorage
-  const saveSessions = useCallback((newSessions: ChatSession[]) => {
-    setSessions(newSessions);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newSessions));
-    } catch (error) {
-      console.error('Failed to save sessions to localStorage:', error);
-      // localStorage 可能已满或被禁用
-      if (error instanceof Error && error.name === 'QuotaExceededError') {
-        console.warn('localStorage 存储空间已满,请删除一些旧会话');
-      }
-    }
-  }, []);
+        if (!response.ok) {
+          throw new Error('Failed to load chat sessions');
+        }
 
-  // 创建新会话
-  const createSession = useCallback((title: string, mode: ChatMode, initialMessage: string): { sessionId: string; initialMessage: string } => {
-    const newSession: ChatSession = {
-      id: crypto.randomUUID(),
-      title,
-      mode,
-      messages: [], // 空消息数组,等待第一次发送
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+        const data = await response.json();
+        setSessions(data.sessions || []);
+        console.log('[useChatSessions] Loaded', data.sessions?.length || 0, 'sessions from database');
+      } catch (err) {
+        console.error('[useChatSessions] Error loading sessions:', err);
+        setError(err instanceof Error ? err.message : 'Unknown error');
+        setSessions([]);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const newSessions = [newSession, ...sessions];
-    saveSessions(newSessions);
-    setCurrentSessionId(newSession.id);
-    return { sessionId: newSession.id, initialMessage };
-  }, [sessions, saveSessions]);
+    loadSessions();
+  }, [address, isConnected]);
 
-  // 更新会话消息 - 使用 ref 避免依赖 sessions
-  const updateSessionMessages = useCallback((sessionId: string, messages: Message[]) => {
-    const currentSessions = sessionsRef.current;
-    const newSessions = currentSessions.map(session =>
-      session.id === sessionId
-        ? { ...session, messages, updatedAt: new Date().toISOString() }
-        : session
-    );
-    saveSessions(newSessions);
-  }, [saveSessions]);
+  // 创建新会话
+  const createSession = useCallback(async (title: string, mode: ChatMode, initialMessage: string): Promise<{ sessionId: string; initialMessage: string }> => {
+    if (!address) {
+      throw new Error('Wallet not connected');
+    }
+
+    try {
+      const response = await fetch('/api/sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletAddress: address,
+          title,
+          mode,
+          messages: [], // 空消息数组,等待第一次发送
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create session');
+      }
+
+      const data = await response.json();
+      const newSession: ChatSession = data.session;
+
+      // 更新本地状态
+      setSessions(prev => [newSession, ...prev]);
+      setCurrentSessionId(newSession.id);
+      console.log('[useChatSessions] Created session:', newSession.id);
+
+      return { sessionId: newSession.id, initialMessage };
+    } catch (err) {
+      console.error('[useChatSessions] Error creating session:', err);
+      throw err;
+    }
+  }, [address]);
+
+  // 更新会话消息
+  const updateSessionMessages = useCallback(async (sessionId: string, messages: Message[]) => {
+    if (!address) {
+      console.warn('[useChatSessions] Cannot update session: wallet not connected');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/sessions/${sessionId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletAddress: address,
+          messages,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update session');
+      }
+
+      const data = await response.json();
+
+      // 更新本地状态
+      setSessions(prev =>
+        prev.map(session =>
+          session.id === sessionId
+            ? { ...session, messages, updatedAt: data.session.updatedAt }
+            : session
+        )
+      );
+      console.log('[useChatSessions] Updated session:', sessionId, 'with', messages.length, 'messages');
+    } catch (err) {
+      console.error('[useChatSessions] Error updating session:', err);
+      // 不抛出错误,允许会话继续(但数据不会保存到数据库)
+    }
+  }, [address]);
 
   // 删除会话
-  const deleteSession = useCallback((sessionId: string) => {
-    const newSessions = sessions.filter(s => s.id !== sessionId);
-    saveSessions(newSessions);
-    if (currentSessionId === sessionId) {
-      setCurrentSessionId(null);
+  const deleteSession = useCallback(async (sessionId: string) => {
+    if (!address) {
+      throw new Error('Wallet not connected');
     }
-  }, [sessions, currentSessionId, saveSessions]);
+
+    try {
+      const response = await fetch(`/api/sessions/${sessionId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletAddress: address,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete session');
+      }
+
+      // 更新本地状态
+      setSessions(prev => prev.filter(s => s.id !== sessionId));
+      if (currentSessionId === sessionId) {
+        setCurrentSessionId(null);
+      }
+      console.log('[useChatSessions] Deleted session:', sessionId);
+    } catch (err) {
+      console.error('[useChatSessions] Error deleting session:', err);
+      throw err;
+    }
+  }, [address, currentSessionId]);
 
   // 选择会话
   const selectSession = useCallback((sessionId: string) => {
@@ -112,5 +183,8 @@ export function useChatSessions() {
     deleteSession,
     selectSession,
     startNewChat,
+    loading,
+    error,
+    isConnected,
   };
 }

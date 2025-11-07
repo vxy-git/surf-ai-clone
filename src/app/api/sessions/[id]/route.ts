@@ -18,10 +18,10 @@ export const dynamic = 'force-dynamic';
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const sessionId = params.id;
+    const { id: sessionId } = await params;
     const body = await request.json();
     const { title, messages } = body;
 
@@ -55,7 +55,7 @@ export async function PATCH(
         });
 
         await tx.chatMessage.createMany({
-          data: messages.map((msg: any) => ({
+          data: messages.map((msg: { role: string; content: string }) => ({
             sessionId,
             role: msg.role,
             content: msg.content
@@ -93,7 +93,7 @@ export async function PATCH(
       updatedAt: updatedSession.updatedAt.toISOString()
     };
 
-    return NextResponse.json(formattedSession);
+    return NextResponse.json({ session: formattedSession });
 
   } catch (error) {
     console.error('更新会话失败:', error);
@@ -110,10 +110,10 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const sessionId = params.id;
+    const { id: sessionId } = await params;
 
     // 检查会话是否存在
     const existingSession = await prisma.chatSession.findUnique({

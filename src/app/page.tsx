@@ -23,6 +23,8 @@ export default function Home() {
     deleteSession,
     selectSession,
     startNewChat,
+    loading,
+    error,
   } = useChatSessions();
 
   useEffect(() => {
@@ -32,7 +34,7 @@ export default function Home() {
     setSidebarOpen(!isMobile);
   }, []);
 
-  const handleStartChat = (message: string, mode: 'ask' | 'research') => {
+  const handleStartChat = async (message: string, mode: 'ask' | 'research') => {
     // 生成智能会话标题
     let title = message.trim();
 
@@ -50,7 +52,7 @@ export default function Home() {
     }
 
     // 创建新会话并保存初始消息
-    const { sessionId, initialMessage: msg } = createSession(title, mode, message);
+    const { sessionId, initialMessage: msg } = await createSession(title, mode, message);
     setInitialMessage(msg);
   };
 
@@ -78,6 +80,8 @@ export default function Home() {
         onSelectSession={selectSession}
         onNewChat={startNewChat}
         onDeleteSession={deleteSession}
+        loading={loading}
+        error={error}
       />
 
       {/* 显示欢迎页或聊天界面 */}

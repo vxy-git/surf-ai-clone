@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
       updatedAt: session.updatedAt.toISOString()
     }));
 
-    return NextResponse.json(formattedSessions);
+    return NextResponse.json({ sessions: formattedSessions });
 
   } catch (error) {
     console.error('获取会话列表失败:', error);
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
       updatedAt: session.updatedAt.toISOString()
     };
 
-    return NextResponse.json(formattedSession, { status: 201 });
+    return NextResponse.json({ session: formattedSession }, { status: 201 });
 
   } catch (error) {
     console.error('创建会话失败:', error);

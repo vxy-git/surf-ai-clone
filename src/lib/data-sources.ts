@@ -465,3 +465,175 @@ export async function fetchProjectInfoWithFallback(symbol: string): Promise<Proj
   console.error(`[DataSource] All sources failed for project info of ${symbol}`);
   return null;
 }
+
+// ============= GeckoTerminal 数据源 (链上新币) =============
+
+export interface NewTokenInfo {
+  address: string;
+  symbol: string;
+  name: string;
+  network: string;
+  priceUsd?: number;
+  priceChange24h?: number;
+  volume24h?: number;
+  liquidity?: number;
+  updatedAt?: string;
+  imageUrl?: string;
+}
+
+/**
+ * GeckoTerminal API - CoinGecko 旗下的链上数据平台
+ * 专注于 DEX 数据和新上线代币
+ * 完全免费,30次/分钟
+ */
+export class GeckoTerminalDataSource {
+  name = 'GeckoTerminal';
+  private baseUrl = 'https://api.geckoterminal.com/api/v2';
+
+  /**
+   * 获取最近更新的代币列表
+   * @param limit 返回数量 (最多100)
+   */
+  async fetchRecentlyUpdatedTokens(limit: number = 20): Promise<NewTokenInfo[]> {
+    try {
+      console.log(`[GeckoTerminal] Fetching ${limit} recently updated tokens...`);
+
+      const data = await cachedFetch<any>(
+        `${this.baseUrl}/tokens/info_recently_updated`,
+        {
+          // GeckoTerminal 免费版无需 API Key
+          // 缓存5分钟 (链上数据更新较快)
+          next: { revalidate: 300 }
+        }
+      );
+
+      if (!data?.data || !Array.isArray(data.data)) {
+        console.warn('[GeckoTerminal] Invalid response format');
+        return [];
+      }
+
+      const tokens: NewTokenInfo[] = data.data.slice(0, limit).map((item: any) => ({
+        address: item.id || item.attributes?.address || '',
+        symbol: item.attributes?.symbol || '',
+        name: item.attributes?.name || '',
+        network: this.extractNetwork(item.id),
+        priceUsd: item.attributes?.price_usd ? parseFloat(item.attributes.price_usd) : undefined,
+        priceChange24h: item.attributes?.price_change_percentage_24h,
+        volume24h: item.attributes?.volume_usd?.h24 ? parseFloat(item.attributes.volume_usd.h24) : undefined,
+        imageUrl: item.attributes?.image_url,
+        updatedAt: item.attributes?.updated_at,
+      }));
+
+      console.log(`[GeckoTerminal] ✓ Fetched ${tokens.length} tokens`);
+      return tokens.filter(t => t.symbol && t.name); // 过滤无效数据
+    } catch (error) {
+      console.error('[GeckoTerminal] Error fetching recently updated tokens:', error);
+      return [];
+    }
+  }
+
+  /**
+   * 获取新流动性池 (代表新上线的代币)
+   * @param network 区块链网络 (如 'eth', 'bsc', 'base')
+   */
+  async fetchNewPools(network?: string): Promise<NewTokenInfo[]> {
+    try {
+      const endpoint = network
+        ? `/networks/${network}/new_pools`
+        : '/networks/new_pools';
+
+      console.log(`[GeckoTerminal] Fetching new pools${network ? ` on ${network}` : ' (all networks)'}...`);
+
+      const data = await cachedFetch<any>(
+        `${this.baseUrl}${endpoint}`,
+        { next: { revalidate: 300 } }
+      );
+
+      if (!data?.data || !Array.isArray(data.data)) {
+        console.warn('[GeckoTerminal] Invalid response format for new pools');
+        return [];
+      }
+
+      // 从流动性池中提取代币信息
+      const tokens: NewTokenInfo[] = [];
+      for (const pool of data.data.slice(0, 20)) {
+        const baseToken = pool.relationships?.base_token?.data;
+        const quoteToken = pool.relationships?.quote_token?.data;
+
+        // 优先使用 base token (通常是新币)
+        if (baseToken && pool.attributes?.base_token_price_usd) {
+          tokens.push({
+            address: baseToken.id,
+            symbol: pool.attributes.base_token_symbol || '',
+            name: pool.attributes.name || '',
+            network: this.extractNetwork(pool.id),
+            priceUsd: parseFloat(pool.attributes.base_token_price_usd),
+            volume24h: pool.attributes.volume_usd?.h24 ? parseFloat(pool.attributes.volume_usd.h24) : undefined,
+            liquidity: pool.attributes.reserve_in_usd ? parseFloat(pool.attributes.reserve_in_usd) : undefined,
+          });
+        }
+      }
+
+      console.log(`[GeckoTerminal] ✓ Fetched ${tokens.length} tokens from new pools`);
+      return tokens.filter(t => t.symbol && t.name);
+    } catch (error) {
+      console.error('[GeckoTerminal] Error fetching new pools:', error);
+      return [];
+    }
+  }
+
+  /**
+   * 获取热门/趋势代币 (CoinGecko免费API)
+   */
+  async fetchTrendingTokens(): Promise<NewTokenInfo[]> {
+    try {
+      console.log('[GeckoTerminal] Fetching trending tokens from CoinGecko...');
+
+      const baseUrl = 'https://api.coingecko.com/api/v3';
+      const apiKey = process.env.NEXT_PUBLIC_COINGECKO_API_KEY || '';
+      const headers = apiKey ? { 'x-cg-pro-api-key': apiKey } : {};
+
+      const data = await cachedFetch<any>(
+        `${baseUrl}/search/trending`,
+        {
+          headers,
+          next: { revalidate: 3600 } // 缓存1小时
+        }
+      );
+
+      if (!data?.coins || !Array.isArray(data.coins)) {
+        console.warn('[GeckoTerminal] Invalid trending response format');
+        return [];
+      }
+
+      const tokens: NewTokenInfo[] = data.coins.map((item: any) => ({
+        address: item.item.id || '',
+        symbol: item.item.symbol || '',
+        name: item.item.name || '',
+        network: 'multi-chain',
+        priceUsd: item.item.data?.price,
+        priceChange24h: item.item.data?.price_change_percentage_24h?.usd,
+        imageUrl: item.item.thumb || item.item.small || item.item.large,
+      }));
+
+      console.log(`[GeckoTerminal] ✓ Fetched ${tokens.length} trending tokens`);
+      return tokens.filter(t => t.symbol && t.name);
+    } catch (error) {
+      console.error('[GeckoTerminal] Error fetching trending tokens:', error);
+      return [];
+    }
+  }
+
+  /**
+   * 从 ID 中提取网络名称
+   * 例如: "eth_0x..." -> "eth"
+   */
+  private extractNetwork(id: string): string {
+    if (!id) return 'unknown';
+    const parts = id.split('_');
+    return parts[0] || 'unknown';
+  }
+}
+
+// 导出单例
+export const geckoTerminal = new GeckoTerminalDataSource();

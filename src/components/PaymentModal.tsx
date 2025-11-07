@@ -13,6 +13,7 @@ import { parseUnits } from 'viem';
 import { baseSepolia } from 'wagmi/chains';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useWeb3ModalInitialized } from '@/contexts/WalletContext';
+import { usePaymentModal } from '@/contexts/PaymentModalContext';
 import { PAYMENT_CONFIG } from '@/config/payment-config';
 import { USDC_ABI } from '@/lib/usdc-abi';
 import { verifyPaymentAndAddCredits } from '@/lib/usage-tracker';
@@ -20,10 +21,10 @@ import { verifyPaymentAndAddCredits } from '@/lib/usage-tracker';
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onPaymentSuccess?: () => void;
+  onPaymentSuccess?: () => void | Promise<void>;
 }
 
-type PaymentStatus = 'idle' | 'pending' | 'success' | 'error';
+type PaymentStatus = 'idle' | 'pending' | 'verifying' | 'success' | 'error';
 
 export function PaymentModal({ isOpen, onClose, onPaymentSuccess }: PaymentModalProps) {
   const { initialized } = useWeb3ModalInitialized();
@@ -38,6 +39,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
   const { t } = useTranslation();
   const { address, chain } = useAccount();
   const { switchChain } = useSwitchChain();
+  const { onPaymentSuccessCallback, setPendingMessage, setOnPaymentSuccessCallback } = usePaymentModal();
 
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -55,25 +57,45 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
     // 验证支付并增加付费次数
     if (address && hash) {
       (async () => {
-        const result = await verifyPaymentAndAddCredits(
-          address,
-          hash,
-          PAYMENT_CONFIG.NETWORK
-        );
+        try {
+          // 设置为验证中状态
+          setPaymentStatus('verifying');
 
-        if (result.success) {
-          setPaymentStatus('success');
-          // 通知外部组件刷新使用数据
-          onPaymentSuccess?.();
+          const result = await verifyPaymentAndAddCredits(
+            address,
+            hash,
+            PAYMENT_CONFIG.NETWORK
+          );
 
-          // 3秒后自动关闭弹窗
-          setTimeout(() => {
-            onClose();
-            setPaymentStatus('idle');
-          }, 3000);
-        } else {
+          if (result.success) {
+            // 等待外部组件刷新使用数据
+            // 这确保了在显示成功状态前,额度已经更新
+            await onPaymentSuccess?.();
+
+            // 触发自动重试回调(如果有待发送的消息)
+            if (onPaymentSuccessCallback) {
+              console.log('[PaymentModal] Triggering auto-retry callback');
+              onPaymentSuccessCallback();
+              // 清除回调和待发送消息
+              setOnPaymentSuccessCallback(null);
+              setPendingMessage(null);
+            }
+
+            setPaymentStatus('success');
+
+            // 3秒后自动关闭弹窗
+            setTimeout(() => {
+              onClose();
+              setPaymentStatus('idle');
+            }, 3000);
+          } else {
+            setPaymentStatus('error');
+            setErrorMessage(result.error || '支付验证失败');
+          }
+        } catch (error) {
+          console.error('Payment verification error:', error);
           setPaymentStatus('error');
-          setErrorMessage(result.error || '支付验证失败');
+          setErrorMessage('支付验证过程出错，请刷新页面查看额度');
         }
       })();
     }
@@ -132,12 +154,21 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
     }
   };
 
+  // 禁止在验证过程中关闭弹窗
+  const handleClose = () => {
+    if (paymentStatus === 'verifying' || paymentStatus === 'pending' || isConfirming) {
+      // 验证中不允许关闭
+      return;
+    }
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* 背景遮罩 */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={handleClose}
       />
 
       {/* 弹窗内容 */}
@@ -148,8 +179,13 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
             {t('purchaseCredits')}
           </h2>
           <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            onClick={handleClose}
+            disabled={paymentStatus === 'verifying' || paymentStatus === 'pending' || isConfirming}
+            className={`p-2 rounded-lg transition-colors ${
+              paymentStatus === 'verifying' || paymentStatus === 'pending' || isConfirming
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+            }`}
           >
             <svg
               width="24"
@@ -218,9 +254,9 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
 
                 <button
                   onClick={handlePayment}
-                  disabled={paymentStatus === 'pending' || isConfirming}
+                  disabled={paymentStatus === 'pending' || isConfirming || paymentStatus === 'verifying'}
                   className={`w-full font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 ${
-                    paymentStatus === 'pending' || isConfirming
+                    paymentStatus === 'pending' || isConfirming || paymentStatus === 'verifying'
                       ? 'bg-gray-400 cursor-not-allowed'
                       : paymentStatus === 'success'
                       ? 'bg-green-500 hover:bg-green-600'
@@ -233,6 +269,11 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       <span>{isConfirming ? '确认中...' : '支付中...'}</span>
+                    </>
+                  ) : paymentStatus === 'verifying' ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>验证支付中，请稍候...</span>
                     </>
                   ) : paymentStatus === 'success' ? (
                     <>
@@ -260,6 +301,19 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
                   )}
                 </button>
               </div>
+
+            {/* 验证中提示 */}
+            {paymentStatus === 'verifying' && (
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 border-2 border-yellow-600 border-t-transparent rounded-full animate-spin shrink-0 mt-0.5" />
+                  <div className="text-sm text-yellow-700 dark:text-yellow-300">
+                    <div className="font-medium mb-1">正在验证支付...</div>
+                    <div>交易已确认,正在验证并更新您的额度,预计需要 1-3 秒。请勿关闭此窗口。</div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* 错误消息 */}
             {paymentStatus === 'error' && errorMessage && (

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useTranslation } from "@/hooks/useTranslation";
 import WalletButton from "@/components/WalletButton";
@@ -38,8 +39,46 @@ const hotQuestions = [
   }
 ];
 
+interface NewToken {
+  symbol: string;
+  name: string;
+  priceChange24h?: number;
+  network: string;
+  imageUrl?: string;
+}
+
 export default function MainContent({ onToggleSidebar, onStartChat }: MainContentProps) {
   const { t } = useTranslation();
+  const [newTokens, setNewTokens] = useState<NewToken[]>([]);
+  const [loadingTokens, setLoadingTokens] = useState(false);
+
+  // 加载新代币列表
+  useEffect(() => {
+    const loadNewTokens = async () => {
+      setLoadingTokens(true);
+      try {
+        const response = await fetch('/api/tokens/new?limit=10&source=both');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.tokens) {
+            setNewTokens(data.tokens.slice(0, 8)); // 只显示前8个
+          }
+        }
+      } catch (error) {
+        console.error('[MainContent] Failed to load new tokens:', error);
+      } finally {
+        setLoadingTokens(false);
+      }
+    };
+
+    loadNewTokens();
+  }, []);
+
+  // 点击代币卡片,开始 AI 对话
+  const handleTokenClick = (token: NewToken) => {
+    const message = `请详细分析 ${token.name} (${token.symbol}) 的市场表现、技术指标、链上数据和投资价值。`;
+    onStartChat(message, 'research');
+  };
 
   const agentTools = [
     {
@@ -93,7 +132,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
       </header>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-12">
+      <div className="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-12 md:mt-20">
         {/* Title */}
         <h1 className="text-3xl md:text-5xl font-bold text-center mb-6 md:mb-8">
           {t("mainTitle")}
@@ -126,80 +165,108 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
           currentMode="ask"
         />
 
-        {/* Hot Questions */}
-        <div className="mb-8 md:mb-12">
-          <div className="space-y-3">
-            {hotQuestions.map((question, index) => (
-              <div
-                key={index}
-                onClick={() => onStartChat(question.title, 'ask')}
-                className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 md:p-4 hover:shadow-lg transition-all cursor-pointer group"
-              >
-                <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-3">
-                  <span className="text-[#A78BFA] text-xs font-semibold whitespace-nowrap bg-purple-50 dark:bg-purple-900/30 px-2.5 py-1 rounded-md self-start">
-                    🔥 Hottest Question
-                  </span>
-                  <p className="flex-1 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{question.title}</p>
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={question.logo}
-                      alt={question.tag}
-                      width={24}
-                      height={24}
-                      className="rounded-full ring-2 ring-gray-100"
-                    />
-                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{question.tag}</span>
+        {/* New Tokens Section */}
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <span>🔥</span>
+              <span>最近上线代币</span>
+            </h2>
+            {!loadingTokens && newTokens.length > 0 && (
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                实时数据 · GeckoTerminal
+              </span>
+            )}
+          </div>
+
+          {/* Loading State */}
+          {loadingTokens && (
+            <div className="flex items-center justify-center py-8">
+              <div className="inline-flex h-2 w-2 rounded-full bg-[#A78BFA] animate-pulse" />
+              <p className="text-sm text-gray-500 dark:text-gray-400 ml-3">加载中...</p>
+            </div>
+          )}
+
+          {/* Tokens Grid */}
+          {!loadingTokens && newTokens.length > 0 && (
+            <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 lg:grid-cols-3">
+              {newTokens.map((token, index) => (
+                <button
+                  key={`${token.symbol}-${index}`}
+                  onClick={() => handleTokenClick(token)}
+                  className="group relative bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:border-[#A78BFA] dark:hover:border-[#A78BFA] transition-all hover:shadow-md"
+                >
+                  {/* Token Icon/Network Badge */}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      {token.imageUrl ? (
+                        <img
+                          src={token.imageUrl}
+                          alt={token.symbol}
+                          className="w-6 h-6 rounded-full"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] flex items-center justify-center text-white text-xs font-bold">
+                          {token.symbol.charAt(0)}
+                        </div>
+                      )}
+                      <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300">
+                        {token.network}
+                      </span>
+                    </div>
+                    {token.priceChange24h !== undefined && (
+                      <span
+                        className={`text-xs font-semibold ${
+                          token.priceChange24h >= 0
+                            ? 'text-green-600 dark:text-green-400'
+                            : 'text-red-600 dark:text-red-400'
+                        }`}
+                      >
+                        {token.priceChange24h >= 0 ? '+' : ''}
+                        {token.priceChange24h.toFixed(1)}%
+                      </span>
+                    )}
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Agent Tools */}
-        <div className="mb-12">
-          <h2 className="text-xl md:text-2xl font-bold text-center mb-6 md:mb-8">
-            Check out Surf&apos;s tailored agent tools for smarter crypto insights
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            {agentTools.map((tool, index) => (
-              <div
-                key={index}
-                className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
-              >
-                <div className="text-3xl mb-3">{tool.icon}</div>
-                <h3 className="text-lg font-bold mb-2 text-gray-800 dark:text-gray-200">{tool.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{tool.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+                  {/* Token Info */}
+                  <div className="text-left">
+                    <div className="font-bold text-sm text-gray-900 dark:text-white mb-1 truncate">
+                      {token.symbol}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {token.name}
+                    </div>
+                  </div>
 
-        {/* Report Features */}
-        <div className="mb-12">
-          <h2 className="text-xl md:text-2xl font-bold text-center mb-6 md:mb-8">
-            Top-tier crypto project reports generated by Surf AI
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center hover:shadow-md transition-shadow">
-              <h3 className="font-bold mb-2 dark:text-gray-200">Professional layout</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                A sleek, publication-ready format designed for maximum clarity and impact.
-              </p>
+                  {/* Hover Effect Arrow */}
+                  <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="text-[#A78BFA]"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </div>
+                </button>
+              ))}
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center hover:shadow-md transition-shadow">
-              <h3 className="font-bold mb-2 dark:text-gray-200">NER highlighting</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Automatically highlight key entities using advanced Named Entity Recognition (NER).
-              </p>
+          )}
+
+          {/* Empty State */}
+          {!loadingTokens && newTokens.length === 0 && (
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+              暂无新代币数据
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center hover:shadow-md transition-shadow">
-              <h3 className="font-bold mb-2 dark:text-gray-200">Interactive charts</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Dynamic, clickable charts that can make you explore data insights in real-time.
-              </p>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </main>

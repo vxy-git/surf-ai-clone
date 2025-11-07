@@ -26,6 +26,8 @@ interface SidebarProps {
   onSelectSession: (sessionId: string) => void;
   onNewChat: () => void;
   onDeleteSession: (sessionId: string) => void;
+  loading?: boolean;
+  error?: string | null;
 }
 
 export default function Sidebar({
@@ -35,7 +37,9 @@ export default function Sidebar({
   currentSessionId,
   onSelectSession,
   onNewChat,
-  onDeleteSession
+  onDeleteSession,
+  loading = false,
+  error = null
 }: SidebarProps) {
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
@@ -187,10 +191,25 @@ export default function Sidebar({
             {isOpen && <div className="my-3 border-t border-gray-200 dark:border-gray-700" />}
 
             {/* Chat History */}
-            {isOpen && sessions.length > 0 && (
+            {isOpen && (
               <div className="mb-2">
-                {/* <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-3 mb-2">今天</p> */}
-                {sessions.map((session) => (
+                {/* Loading State */}
+                {loading && (
+                  <div className="px-3 py-4 text-center">
+                    <div className="inline-flex h-2 w-2 rounded-full bg-[#A78BFA] animate-pulse" />
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">加载聊天记录...</p>
+                  </div>
+                )}
+
+                {/* Error State */}
+                {error && !loading && (
+                  <div className="px-3 py-2 mx-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                    <p className="text-xs text-red-600 dark:text-red-400">⚠️ {error}</p>
+                  </div>
+                )}
+
+                {/* Sessions List */}
+                {!loading && !error && sessions.length > 0 && sessions.map((session) => (
                   <div
                     key={session.id}
                     className={`group relative w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
@@ -241,6 +260,13 @@ export default function Sidebar({
                     </button>
                   </div>
                 ))}
+
+                {/* Empty State */}
+                {!loading && !error && sessions.length === 0 && (
+                  <div className="px-3 py-4 text-center">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">暂无聊天记录</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
