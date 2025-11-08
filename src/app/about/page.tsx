@@ -1,84 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
-import { useChatSessions } from "@/hooks/useChatSessions";
-import { PaymentModalProvider } from "@/contexts/PaymentModalContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import Link from "next/link";
 
 export default function AboutPage() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const router = useRouter();
   const { t } = useTranslation();
   const about = t('about') as unknown as Record<string, string>; // 获取 about 对象
 
-  const {
-    sessions,
-    currentSessionId,
-    deleteSession,
-    selectSession,
-    startNewChat,
-  } = useChatSessions();
-
-  useEffect(() => {
-    const isMobile = window.innerWidth < 768;
-    setSidebarOpen(!isMobile);
-  }, []);
-
-  // 包装回调函数，在导航到主页后再执行操作
-  const handleNewChat = () => {
-    router.push('/');
-    startNewChat();
-  };
-
-  const handleSelectSession = (sessionId: string) => {
-    router.push('/');
-    selectSession(sessionId);
-  };
-
   return (
-    <PaymentModalProvider>
-      <div className="flex h-screen bg-[#f7f7f7] dark:bg-gray-900">
-        <Sidebar
-          isOpen={sidebarOpen}
-          onToggle={() => setSidebarOpen(!sidebarOpen)}
-          sessions={sessions}
-          currentSessionId={currentSessionId}
-          onSelectSession={handleSelectSession}
-          onNewChat={handleNewChat}
-          onDeleteSession={deleteSession}
-        />
+    <div className="min-h-screen bg-[#f7f7f7] dark:bg-gray-900">
+      {/* 顶部导航栏 */}
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] bg-clip-text text-transparent">
+          {about.title}
+        </h1>
+        <Link
+          href="/"
+          className="px-6 py-2 bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white rounded-full font-medium hover:shadow-lg hover:scale-105 transition-all"
+        >
+          {about.launchApp} →
+        </Link>
+      </header>
 
-        {/* 主内容区 */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* 顶部导航栏 */}
-          <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* 移动端菜单按钮 */}
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] bg-clip-text text-transparent">
-                {about.title}
-              </h1>
-            </div>
-            <Link
-              href="/"
-              className="px-6 py-2 bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white rounded-full font-medium hover:shadow-lg hover:scale-105 transition-all"
-            >
-              {about.launchApp} →
-            </Link>
-          </header>
-
-          {/* 内容区域 */}
-          <main className="flex-1 overflow-y-auto">
+      {/* 内容区域 */}
+      <main className="w-full overflow-y-auto">
             <div className="max-w-4xl mx-auto px-6 py-12">
               {/* Hero Section */}
               <section className="mb-16">
@@ -375,8 +320,6 @@ export default function AboutPage() {
               </footer>
             </div>
           </main>
-        </div>
-      </div>
-    </PaymentModalProvider>
+    </div>
   );
 }

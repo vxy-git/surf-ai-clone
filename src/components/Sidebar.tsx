@@ -161,8 +161,10 @@ export default function Sidebar({
             </button>
 
             {/* About Project */}
-            <Link
+            <a
               href="/about"
+              target="_blank"
+              rel="noopener noreferrer"
               className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg mt-1 transition-colors ${isOpen ? 'gap-3 px-3 py-2.5' : 'justify-center px-3 py-2.5 md:justify-center md:px-0'}`}
             >
               <svg className="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -171,7 +173,7 @@ export default function Sidebar({
                 <path d="M12 8h.01" />
               </svg>
               <span className={`font-medium whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>{t("aboutProject")}</span>
-            </Link>
+            </a>
 
             {/* Crypto Data Hub */}
             {/* <Link href="/hub" className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg mt-1 transition-all ${isOpen ? 'gap-3 px-3 py-2.5' : 'justify-center px-3 py-2.5 md:justify-center md:px-0'}`}>
