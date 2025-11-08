@@ -194,8 +194,23 @@ export async function POST(req: Request) {
       system: researchSystemPrompt,
       messages: sanitizedMessages,
       tools: allTools,
-      maxSteps: 10, // 研究模式允许更多步骤
+      maxSteps: 5, // 研究模式允许更多步骤
       temperature: 0.5, // 降低温度以提高准确性
+      onError: (error) => {
+        console.error('[Research API] Stream error:', error);
+        console.error('[Research API] Error stack:', error.error?.stack);
+        console.error('[Research API] Error details:', JSON.stringify(error, null, 2));
+      },
+      onFinish: ({ usage, finishReason, error }) => {
+        console.log('[Research API] Stream finished:', {
+          usage,
+          finishReason,
+          hasError: !!error
+        });
+        if (error) {
+          console.error('[Research API] Finish error:', error);
+        }
+      }
     } as Parameters<typeof streamText>[0]);
 
     const elapsedTime = Date.now() - startTime;
@@ -209,7 +224,31 @@ export async function POST(req: Request) {
       console.warn('[Research API] Failed to consume usage, but allowing response');
     }
 
-    return result.toDataStreamResponse();
+    return result.toDataStreamResponse({
+      getErrorMessage: (error) => {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error('[Research API] Client error:', errorMessage);
+
+        // 返回对用户友好的错误消息
+        if (errorMessage.includes('user quota') || errorMessage.includes('quota is not enough')) {
+          return 'Token 配额不足，请联系人工客服';
+        }
+        if (errorMessage.includes('rate limit') || errorMessage.includes('429')) {
+          return '请求过于频繁,请稍后再试';
+        }
+        if (errorMessage.includes('API')) {
+          return 'API 服务暂时不可用,请稍后重试';
+        }
+        if (errorMessage.includes('timeout')) {
+          return '请求超时,请尝试简化您的问题';
+        }
+
+        // 开发环境返回详细错误,生产环境返回通用消息
+        return process.env.NODE_ENV === 'development'
+          ? errorMessage
+          : '处理请求时出现错误,请重试';
+      }
+    });
   } catch (error) {
     const elapsedTime = Date.now() - startTime;
     console.error(`[Research API] Error after ${elapsedTime}ms:`, error);

@@ -77,6 +77,11 @@ export const translations = {
     faqQuestion2: "使用次数会过期吗？",
     faqAnswer2: "不会！购买的次数永久有效，您可以随时使用。",
 
+    // 错误消息
+    errorQuotaInsufficient: "Token 配额不足，请联系人工客服",
+    errorQuotaDescription: "这是 AI Token 配额不足错误（非项目内部额度）",
+    errorContactSupport: "联系客服",
+
     // 产品展示
     productIntro: "Surf AI 是专为加密货币投资者和研究者打造的智能分析助手，提供实时市场洞察、社交情绪分析、技术指标和链上数据追踪。",
     aiToolsTitle: "核心 AI 工具",
@@ -236,6 +241,11 @@ export const translations = {
     faqAnswer1: "Your credits will be added to your account immediately after successful payment.",
     faqQuestion2: "Do credits expire?",
     faqAnswer2: "No! Purchased credits are valid forever and can be used anytime.",
+
+    // Error Messages
+    errorQuotaInsufficient: "Token quota insufficient, please contact customer service",
+    errorQuotaDescription: "This is an AI token quota error (not internal credits)",
+    errorContactSupport: "Contact Support",
 
     // Product Showcase
     productIntro: "Surf AI is an intelligent analysis assistant built for cryptocurrency investors and researchers, providing real-time market insights, social sentiment analysis, technical indicators, and on-chain data tracking.",

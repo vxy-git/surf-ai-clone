@@ -45,7 +45,9 @@
       "Bash(git checkout:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(npx prisma:*)",
+      "WebFetch(domain:www.cometapi.com)"
     ],
     "deny": [],
     "ask": []

@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import ChatInput from '@/components/ChatInput';
 import { useUsage } from '@/hooks/useUsage';
 import { usePaymentModal } from '@/contexts/PaymentModalContext';
+import { useTranslation } from '@/hooks/useTranslation';
 import type { Message } from 'ai/react';
 
 interface ChatInterfaceProps {
@@ -31,6 +32,7 @@ export default function ChatInterface({
   const { address } = useAccount();
   const { refresh, checkCanUse } = useUsage();
   const { openPaymentModal, setPendingMessage, setOnPaymentSuccessCallback } = usePaymentModal();
+  const { t } = useTranslation();
 
   const { messages, setMessages, isLoading, error, append } = useChat({
     api: mode === 'research' ? '/api/research' : '/api/chat',
@@ -52,7 +54,9 @@ export default function ChatInterface({
       // 区分错误类型，给出友好提示
       const errorMessage = err.message || '';
 
-      if (errorMessage.includes('500') || errorMessage.includes('Internal Server Error')) {
+      if (errorMessage.includes('user quota') || errorMessage.includes('quota is not enough')) {
+        console.warn('[ChatInterface] CometAPI 配额不足，请前往充值');
+      } else if (errorMessage.includes('500') || errorMessage.includes('Internal Server Error')) {
         console.warn('[ChatInterface] 服务器错误，已扣除的额度不会退还（AI 推理成本已产生）');
       } else if (errorMessage.includes('timeout') || errorMessage.includes('NetworkError')) {
         console.warn('[ChatInterface] 网络连接中断，已扣除的额度不会退还（请检查网络稳定性）');
@@ -255,6 +259,22 @@ export default function ChatInterface({
                   <p className="text-red-600 dark:text-red-400 text-sm mb-2">
                     {error.message}
                   </p>
+                  {(error.message.includes('user quota') || error.message.includes('quota is not enough') || error.message.includes('Token 配额')) && (
+                    <div className="mt-2 border-t border-red-200 dark:border-red-700 pt-2">
+                      <p className="text-xs text-red-500 dark:text-red-400 mb-2">
+                        💡 {t('errorQuotaDescription')}
+                      </p>
+                      <button
+                        onClick={() => {
+                          // 可以在这里添加联系客服的逻辑,比如打开在线客服窗口
+                          console.log('[ChatInterface] User clicked contact support for quota error');
+                        }}
+                        className="inline-block px-3 py-1 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 rounded text-xs hover:bg-red-200 dark:hover:bg-red-900/60 transition-colors cursor-pointer"
+                      >
+                        💬 {t('errorContactSupport')}
+                      </button>
+                    </div>
+                  )}
                   {(error.message.includes('500') ||
                     error.message.includes('timeout') ||
                     error.message.includes('NetworkError')) && (
