@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     if (!walletAddress) {
       return NextResponse.json(
-        { error: '缺少钱包地址参数' },
+        { error: 'Missing wallet address parameter' },
         { status: 400 }
       );
     }
@@ -66,9 +66,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ sessions: formattedSessions });
 
   } catch (error) {
-    console.error('获取会话列表失败:', error);
+    console.error('Failed to fetch sessions:', error);
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
 
     if (!walletAddress || !title || !mode) {
       return NextResponse.json(
-        { error: '缺少必要参数' },
+        { error: 'Missing required parameters' },
         { status: 400 }
       );
     }
@@ -156,9 +156,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ session: formattedSession }, { status: 201 });
 
   } catch (error) {
-    console.error('创建会话失败:', error);
+    console.error('Failed to create session:', error);
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }

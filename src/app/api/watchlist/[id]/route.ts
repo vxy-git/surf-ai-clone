@@ -27,14 +27,14 @@ export async function PATCH(
 
     if (!walletAddress) {
       return NextResponse.json(
-        { error: '缺少钱包地址参数' },
+        { error: 'Missing wallet address parameter' },
         { status: 400 }
       );
     }
 
     if (isNaN(projectId)) {
       return NextResponse.json(
-        { error: '无效的项目ID' },
+        { error: 'Invalid project ID' },
         { status: 400 }
       );
     }
@@ -48,7 +48,7 @@ export async function PATCH(
 
     if (!user) {
       return NextResponse.json(
-        { error: '用户不存在' },
+        { error: 'User does not exist' },
         { status: 404 }
       );
     }
@@ -82,17 +82,17 @@ export async function PATCH(
     return NextResponse.json(formattedItem);
 
   } catch (error: unknown) {
-    console.error('更新关注项失败:', error);
+    console.error('Failed to update watchlist item:', error);
 
     if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
       return NextResponse.json(
-        { error: '关注项不存在' },
+        { error: 'Watchlist item does not exist' },
         { status: 404 }
       );
     }
 
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }
@@ -114,14 +114,14 @@ export async function DELETE(
 
     if (!walletAddress) {
       return NextResponse.json(
-        { error: '缺少钱包地址参数' },
+        { error: 'Missing wallet address parameter' },
         { status: 400 }
       );
     }
 
     if (isNaN(projectId)) {
       return NextResponse.json(
-        { error: '无效的项目ID' },
+        { error: 'Invalid project ID' },
         { status: 400 }
       );
     }
@@ -135,7 +135,7 @@ export async function DELETE(
 
     if (!user) {
       return NextResponse.json(
-        { error: '用户不存在' },
+        { error: 'User does not exist' },
         { status: 404 }
       );
     }
@@ -151,22 +151,22 @@ export async function DELETE(
     });
 
     return NextResponse.json(
-      { success: true, message: '已从关注列表中移除' },
+      { success: true, message: 'Removed from watchlist' },
       { status: 200 }
     );
 
   } catch (error: unknown) {
-    console.error('删除关注项失败:', error);
+    console.error('Failed to delete watchlist item:', error);
 
     if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
       return NextResponse.json(
-        { error: '关注项不存在' },
+        { error: 'Watchlist item does not exist' },
         { status: 404 }
       );
     }
 
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }

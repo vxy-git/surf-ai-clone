@@ -33,7 +33,7 @@ export async function PATCH(
 
     if (!existingSession) {
       return NextResponse.json(
-        { error: '会话不存在' },
+        { error: 'Session does not exist' },
         { status: 404 }
       );
     }
@@ -76,7 +76,7 @@ export async function PATCH(
     });
 
     if (!updatedSession) {
-      throw new Error('更新失败');
+      throw new Error('Failed to update session');
     }
 
     // 转换为前端格式
@@ -97,9 +97,9 @@ export async function PATCH(
     return NextResponse.json({ session: formattedSession });
 
   } catch (error) {
-    console.error('更新会话失败:', error);
+    console.error('Failed to update session:', error);
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }
@@ -123,7 +123,7 @@ export async function DELETE(
 
     if (!existingSession) {
       return NextResponse.json(
-        { error: '会话不存在' },
+        { error: 'Session does not exist' },
         { status: 404 }
       );
     }
@@ -134,14 +134,14 @@ export async function DELETE(
     });
 
     return NextResponse.json(
-      { success: true, message: '会话已删除' },
+      { success: true, message: 'Session has been deleted' },
       { status: 200 }
     );
 
   } catch (error) {
-    console.error('删除会话失败:', error);
+    console.error('Failed to delete session:', error);
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     // 验证参数
     if (!walletAddress || !txHash || !network) {
       return NextResponse.json(
-        { error: '缺少必要参数' },
+        { error: 'Missing required parameters' },
         { status: 400 }
       );
     }
@@ -35,21 +35,21 @@ export async function POST(request: NextRequest) {
     // 验证格式
     if (!isValidAddress(walletAddress)) {
       return NextResponse.json(
-        { error: '无效的钱包地址格式' },
+        { error: 'Invalid wallet address format' },
         { status: 400 }
       );
     }
 
     if (!isValidTxHash(txHash)) {
       return NextResponse.json(
-        { error: '无效的交易哈希格式' },
+        { error: 'Invalid transaction hash format' },
         { status: 400 }
       );
     }
 
     if (network !== 'base' && network !== 'base-sepolia') {
       return NextResponse.json(
-        { error: '不支持的网络' },
+        { error: 'Unsupported network' },
         { status: 400 }
       );
     }
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: '该交易已被使用,请勿重复提交'
+          error: 'This transaction has already been used, do not resubmit'
         },
         { status: 409 }
       );
@@ -81,11 +81,11 @@ export async function POST(request: NextRequest) {
     );
 
     if (!verification.valid) {
-      console.error('交易验证失败:', verification.error);
+      console.error('Transaction verification failed:', verification.error);
       return NextResponse.json(
         {
           success: false,
-          error: verification.error || '交易验证失败'
+          error: verification.error || 'Transaction verification failed'
         },
         { status: 400 }
       );
@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: '支付验证成功',
+      message: 'Payment verification successful',
       creditsAdded: PAYMENT_CONFIG.PAYMENT_CREDITS,
       paidCredits: result.usage.paidCredits,
       totalPurchased: result.usage.totalPurchased,
@@ -175,20 +175,20 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('支付验证失败:', error);
+    console.error('Payment verification failed:', error);
 
     if (error instanceof Error && error.message === 'DUPLICATE_TX') {
       return NextResponse.json(
         {
           success: false,
-          error: '该交易已被使用'
+          error: 'This transaction has already been used'
         },
         { status: 409 }
       );
     }
 
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }

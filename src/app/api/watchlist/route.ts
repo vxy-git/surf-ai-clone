@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     if (!walletAddress) {
       return NextResponse.json(
-        { error: '缺少钱包地址参数' },
+        { error: 'Missing wallet address parameter' },
         { status: 400 }
       );
     }
@@ -58,9 +58,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(formattedWatchlist);
 
   } catch (error) {
-    console.error('获取关注列表失败:', error);
+    console.error('Failed to fetch watchlist:', error);
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     if (!walletAddress || !projectId || !name) {
       return NextResponse.json(
-        { error: '缺少必要参数' },
+        { error: 'Missing required parameters' },
         { status: 400 }
       );
     }
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
 
     if (existing) {
       return NextResponse.json(
-        { error: '该项目已在关注列表中' },
+        { error: 'This project is already in watchlist' },
         { status: 409 }
       );
     }
@@ -169,9 +169,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(formattedItem, { status: 201 });
 
   } catch (error) {
-    console.error('添加关注失败:', error);
+    console.error('Failed to add to watchlist:', error);
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }

@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     if (!walletAddress) {
       return NextResponse.json(
-        { error: '缺少钱包地址参数' },
+        { error: 'Missing wallet address parameter' },
         { status: 400 }
       );
     }
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
 
     // 确保 usage 存在
     if (!user.usage) {
-      throw new Error('用户额度记录不存在');
+      throw new Error('User usage record does not exist');
     }
 
     // 检查是否需要重置免费额度 (30天周期)
@@ -135,9 +135,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(responseData);
 
   } catch (error) {
-    console.error('获取使用额度失败:', error);
+    console.error('Failed to fetch usage:', error);
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }

@@ -102,7 +102,7 @@ export async function POST(req: Request) {
       return new Response(
         JSON.stringify({
           error: 'Wallet required',
-          message: '请先连接钱包以使用深度研究功能',
+          message: 'Please connect your wallet to use deep research features',
         }),
         {
           status: 401,
@@ -231,22 +231,22 @@ export async function POST(req: Request) {
 
         // 返回对用户友好的错误消息
         if (errorMessage.includes('user quota') || errorMessage.includes('quota is not enough')) {
-          return 'Token 配额不足，请联系人工客服';
+          return 'Token quota exceeded, please contact support';
         }
         if (errorMessage.includes('rate limit') || errorMessage.includes('429')) {
-          return '请求过于频繁,请稍后再试';
+          return 'Too many requests, please try again later';
         }
         if (errorMessage.includes('API')) {
-          return 'API 服务暂时不可用,请稍后重试';
+          return 'API service temporarily unavailable, please try again later';
         }
         if (errorMessage.includes('timeout')) {
-          return '请求超时,请尝试简化您的问题';
+          return 'Request timeout, please try simplifying your question';
         }
 
         // 开发环境返回详细错误,生产环境返回通用消息
         return process.env.NODE_ENV === 'development'
           ? errorMessage
-          : '处理请求时出现错误,请重试';
+          : 'An error occurred processing your request, please try again';
       }
     });
   } catch (error) {

@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
     if (!walletAddress) {
       return NextResponse.json(
-        { error: '缺少钱包地址' },
+        { error: 'Missing wallet address' },
         { status: 400 }
       );
     }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: '用户不存在,请先获取额度信息'
+          error: 'User does not exist, please fetch usage info first'
         },
         { status: 404 }
       );
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: '额度已用完,请购买额度',
+          error: 'Quota exhausted, please purchase credits',
           needPayment: true
         },
         { status: 403 }
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (!latestUsage) {
-        throw new Error('额度记录不存在');
+        throw new Error('Usage record does not exist');
       }
 
       const updateData: { freeUsage?: number; lastFreeReset?: Date; paidCredits?: number } = {};
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       } else {
         // 使用付费额度
         if (latestUsage.paidCredits <= 0) {
-          throw new Error('付费额度不足');
+          throw new Error('Insufficient paid credits');
         }
         updateData.paidCredits = latestUsage.paidCredits - 1;
       }
@@ -115,17 +115,17 @@ export async function POST(request: NextRequest) {
       success: true,
       freeUsage: result.freeUsage,
       paidCredits: result.paidCredits,
-      message: hasFreeTier ? '使用免费额度' : '使用付费额度'
+      message: hasFreeTier ? 'Using free tier' : 'Using paid credits'
     });
 
   } catch (error) {
-    console.error('消耗额度失败:', error);
+    console.error('Failed to consume usage:', error);
 
-    if (error instanceof Error && error.message === '付费额度不足') {
+    if (error instanceof Error && error.message === 'Insufficient paid credits') {
       return NextResponse.json(
         {
           success: false,
-          error: '额度不足',
+          error: 'Insufficient credits',
           needPayment: true
         },
         { status: 403 }
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { error: '服务器错误' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }
