@@ -13,7 +13,14 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { CopyButton } from '@/components/ui/copy-button';
 import { useTheme } from '@/contexts/ThemeContext';
-import type { Components } from 'react-markdown';
+import type {
+  HTMLAttributes,
+  AnchorHTMLAttributes,
+  TableHTMLAttributes,
+  ImgHTMLAttributes,
+  ReactNode,
+} from 'react';
+// 移除严格的 Components 类型以避免自定义渲染返回类型与原生元素的冲突
 
 interface MarkdownRendererProps {
   children: string;
@@ -23,14 +30,15 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
-  const components: Components = {
+  const components = {
     // Code block with syntax highlighting
-    code({ node, inline, className, children, ...props }) {
+    code({ node, className, children, ...props }: HTMLAttributes<HTMLElement> & { node?: unknown; className?: string; children?: React.ReactNode }) {
       const match = /language-(\w+)/.exec(className || '');
       const language = match ? match[1] : '';
       const codeString = String(children).replace(/\n$/, '');
 
-      if (!inline && language) {
+      // 仅当存在语言并且内容包含换行时，按代码块渲染
+      if (language && codeString.includes('\n')) {
         return (
           <div className="relative group my-4">
             {/* Language label */}
@@ -43,7 +51,6 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
             {/* Code content */}
             <div className="rounded-b-lg overflow-x-auto scrollbar-custom">
               <SyntaxHighlighter
-                style={isDark ? oneDark : oneLight}
                 language={language}
                 PreTag="div"
                 customStyle={{
@@ -57,7 +64,6 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
                     fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                   },
                 }}
-                {...props}
               >
                 {codeString}
               </SyntaxHighlighter>
@@ -75,7 +81,7 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
     },
 
     // Links with external icon
-    a({ href, children, ...props }) {
+    a({ href, children, ...props }: AnchorHTMLAttributes<HTMLAnchorElement> & { href?: string; children?: ReactNode }) {
       const isExternal = href?.startsWith('http');
       return (
         <a
@@ -106,7 +112,7 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
     },
 
     // Tables with responsive wrapper
-    table({ children, ...props }) {
+    table({ children, ...props }: TableHTMLAttributes<HTMLTableElement> & { children?: ReactNode }) {
       return (
         <div className="overflow-x-auto -mx-4 px-4 my-4 scrollbar-custom">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700" {...props}>
@@ -117,7 +123,7 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
     },
 
     // Blockquotes with enhanced styling
-    blockquote({ children, ...props }) {
+    blockquote({ children, ...props }: HTMLAttributes<HTMLElement> & { children?: ReactNode }) {
       return (
         <blockquote
           className="border-l-4 border-purple-500 bg-purple-50 dark:bg-purple-900/20 pl-4 pr-4 py-3 my-4 rounded-r-lg"
@@ -129,21 +135,21 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
     },
 
     // Headings with anchor links
-    h1({ children, ...props }) {
+    h1({ children, ...props }: HTMLAttributes<HTMLHeadingElement> & { children?: ReactNode }) {
       return (
         <h1 className="text-3xl font-bold mt-6 mb-4 text-gray-900 dark:text-gray-100" {...props}>
           {children}
         </h1>
       );
     },
-    h2({ children, ...props }) {
+    h2({ children, ...props }: HTMLAttributes<HTMLHeadingElement> & { children?: ReactNode }) {
       return (
         <h2 className="text-2xl font-bold mt-5 mb-3 text-gray-900 dark:text-gray-100" {...props}>
           {children}
         </h2>
       );
     },
-    h3({ children, ...props }) {
+    h3({ children, ...props }: HTMLAttributes<HTMLHeadingElement> & { children?: ReactNode }) {
       return (
         <h3 className="text-xl font-semibold mt-4 mb-2 text-gray-900 dark:text-gray-100" {...props}>
           {children}
@@ -152,14 +158,14 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
     },
 
     // Lists with custom markers
-    ul({ children, ...props }) {
+    ul({ children, ...props }: HTMLAttributes<HTMLUListElement> & { children?: ReactNode }) {
       return (
         <ul className="list-disc list-outside ml-6 my-4 space-y-2" {...props}>
           {children}
         </ul>
       );
     },
-    ol({ children, ...props }) {
+    ol({ children, ...props }: HTMLAttributes<HTMLOListElement> & { children?: ReactNode }) {
       return (
         <ol className="list-decimal list-outside ml-6 my-4 space-y-2" {...props}>
           {children}
@@ -168,7 +174,7 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
     },
 
     // Paragraphs
-    p({ children, ...props }) {
+    p({ children, ...props }: HTMLAttributes<HTMLParagraphElement> & { children?: ReactNode }) {
       return (
         <p className="my-4 leading-7 text-gray-700 dark:text-gray-300" {...props}>
           {children}
@@ -177,7 +183,7 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
     },
 
     // Images with lazy loading
-    img({ src, alt, ...props }) {
+    img({ src, alt, ...props }: ImgHTMLAttributes<HTMLImageElement>) {
       return (
         <img
           src={src}
