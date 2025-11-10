@@ -123,35 +123,35 @@ export async function canUseAPIServer(walletAddress: string): Promise<UsageCheck
   const freeRemaining = Math.max(0, PAYMENT_CONFIG.FREE_TIER_LIMIT - data.freeUsage);
   const paidRemaining = data.paidCredits;
 
-  // 还有免费次数
+  // Still have free usage
   if (freeRemaining > 0) {
     return {
       canUse: true,
       needPayment: false,
       freeRemaining,
       paidRemaining,
-      message: `还有 ${freeRemaining} 次免费使用`
+      message: `You have ${freeRemaining} free uses remaining`
     };
   }
 
-  // 还有付费次数
+  // Still have paid credits
   if (paidRemaining > 0) {
     return {
       canUse: true,
       needPayment: false,
       freeRemaining: 0,
       paidRemaining,
-      message: `还有 ${paidRemaining} 次付费使用`
+      message: `You have ${paidRemaining} paid credits remaining`
     };
   }
 
-  // 需要付费
+  // Payment required
   return {
     canUse: false,
     needPayment: true,
     freeRemaining: 0,
     paidRemaining: 0,
-    message: `支付 ${PAYMENT_CONFIG.PAYMENT_PRICE} USDC 获得 ${PAYMENT_CONFIG.PAYMENT_CREDITS} 次使用`
+    message: `Pay ${PAYMENT_CONFIG.PAYMENT_PRICE} USDC to get ${PAYMENT_CONFIG.PAYMENT_CREDITS} uses`
   };
 }
 
@@ -198,12 +198,12 @@ export async function consumeUsageServer(walletAddress: string): Promise<boolean
       });
 
       if (!latestUsage) {
-        throw new Error('额度记录不存在');
+        throw new Error('Usage record does not exist');
       }
 
       const updateData: { freeUsage?: number; lastFreeReset?: Date; paidCredits?: number } = {};
 
-      // 优先使用免费额度
+      // Prioritize using free tier
       if (hasFreeTier) {
         updateData.freeUsage = latestUsage.freeUsage + 1;
         if (daysSinceReset >= PAYMENT_CONFIG.FREE_TIER_RESET_DAYS) {
@@ -211,9 +211,9 @@ export async function consumeUsageServer(walletAddress: string): Promise<boolean
           updateData.lastFreeReset = new Date();
         }
       } else {
-        // 使用付费额度
+        // Use paid credits
         if (latestUsage.paidCredits <= 0) {
-          throw new Error('付费额度不足');
+          throw new Error('Insufficient paid credits');
         }
         updateData.paidCredits = latestUsage.paidCredits - 1;
       }
@@ -226,7 +226,7 @@ export async function consumeUsageServer(walletAddress: string): Promise<boolean
 
     return true;
   } catch (error) {
-    console.error('服务端消耗额度失败:', error);
+    console.error('Server-side consumption failed:', error);
     return false;
   }
 }

@@ -153,20 +153,18 @@ export async function POST(req: Request) {
       tools: allTools,
       maxSteps: 5,
       temperature: 0.7,
-      onError: (error) => {
+      onError: (error: unknown) => {
         console.error('[Chat API] Stream error:', error);
-        console.error('[Chat API] Error stack:', error.error?.stack);
+        if (typeof error === 'object' && error !== null && 'error' in error) {
+          console.error('[Chat API] Error stack:', (error as { error?: { stack?: string } }).error?.stack);
+        }
         console.error('[Chat API] Error details:', JSON.stringify(error, null, 2));
       },
-      onFinish: ({ usage, finishReason, error }) => {
+      onFinish: ({ usage, finishReason }) => {
         console.log('[Chat API] Stream finished:', {
           usage,
-          finishReason,
-          hasError: !!error
+          finishReason
         });
-        if (error) {
-          console.error('[Chat API] Finish error:', error);
-        }
       }
     } as Parameters<typeof streamText>[0]);
 

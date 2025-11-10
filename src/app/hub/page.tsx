@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useWatchlist } from "@/contexts/WatchlistContext";
+import { Flame, TrendingUp, Star, Rocket } from "@/components/icons";
 
 const preTgeProjects = [
   {
@@ -356,7 +357,8 @@ export default function HubPage() {
               }`}
             >
               <span className="flex items-center gap-2">
-                🚀 Pre-tge Report
+                <Rocket className="w-4 h-4" />
+                Pre-tge Report
               </span>
             </button>
             <button
@@ -368,7 +370,8 @@ export default function HubPage() {
               }`}
             >
               <span className="flex items-center gap-2">
-                📈 Trending
+                <TrendingUp className="w-4 h-4" />
+                Trending
               </span>
             </button>
             <button
@@ -380,7 +383,8 @@ export default function HubPage() {
               }`}
             >
               <span className="flex items-center gap-2">
-                ⭐ Watchlist
+                <Star className="w-4 h-4" />
+                Watchlist
               </span>
             </button>
           </div>
@@ -604,8 +608,9 @@ export default function HubPage() {
                           <div className="flex items-center gap-2">
                             <span className="font-semibold dark:text-white">{project.name}</span>
                             {project.trending && (
-                              <span className="text-xs bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full">
-                                🔥 Hot
+                              <span className="text-xs bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <Flame className="w-3 h-3" />
+                                Hot
                               </span>
                             )}
                           </div>
@@ -654,8 +659,9 @@ export default function HubPage() {
                           <div className="flex items-center gap-2">
                             <span className="font-semibold dark:text-white">{project.name}</span>
                             {project.trending && (
-                              <span className="text-xs bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full">
-                                🔥 Hot
+                              <span className="text-xs bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <Flame className="w-3 h-3" />
+                                Hot
                               </span>
                             )}
                           </div>

@@ -12,15 +12,15 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("zh-CN");
+  const [language, setLanguage] = useState<Language>("en");
 
   useEffect(() => {
-    // 从 localStorage 读取语言设置
+    // Read language setting from localStorage
     const savedLanguage = localStorage.getItem("language") as Language | null;
     if (savedLanguage) {
       setLanguage(savedLanguage);
     } else {
-      // 检测浏览器语言
+      // Detect browser language
       const browserLang = navigator.language;
       if (browserLang.startsWith("zh")) {
         setLanguage("zh-CN");
@@ -35,10 +35,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // 保存到 localStorage
+    // Save to localStorage
     localStorage.setItem("language", language);
 
-    // 同步更新 HTML 标签的 lang 属性,避免 hydration 错误
+    // Sync HTML lang attribute to avoid hydration errors
     document.documentElement.lang = language;
   }, [language]);
 

@@ -47,7 +47,10 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(npx prisma:*)",
-      "WebFetch(domain:www.cometapi.com)"
+      "WebFetch(domain:www.cometapi.com)",
+      "Bash(npx tsc:*)",
+      "Bash(npx next lint --max-warnings=999)",
+      "WebFetch(domain:www.shadcn.io)"
     ],
     "deny": [],
     "ask": []

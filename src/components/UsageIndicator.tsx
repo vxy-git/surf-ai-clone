@@ -10,6 +10,7 @@
 import { useUsage } from '@/hooks/useUsage';
 import { useTranslation } from '@/hooks/useTranslation';
 import { PAYMENT_CONFIG } from '@/config/payment-config';
+import { Clock, AlertCircle, AlertTriangle, Info, Loader2 } from '@/components/icons';
 
 interface UsageIndicatorProps {
   onClick?: () => void;
@@ -23,11 +24,8 @@ export function UsageIndicator({ onClick }: UsageIndicatorProps) {
     return (
       <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20z" />
-            <path d="M12 6v6l4 2" />
-          </svg>
-          <span>连接钱包以获得 {PAYMENT_CONFIG.FREE_TIER_LIMIT} 次免费使用</span>
+          <Clock size={16} />
+          <span>{t("connectWalletForFree", { count: PAYMENT_CONFIG.FREE_TIER_LIMIT })}</span>
         </div>
       </div>
     );
@@ -37,8 +35,8 @@ export function UsageIndicator({ onClick }: UsageIndicatorProps) {
     return (
       <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2">
-          <div className="h-4 w-4 border-2 border-[#A78BFA] border-t-transparent rounded-full animate-spin" />
-          <span className="text-sm text-gray-600 dark:text-gray-400">加载中...</span>
+          <Loader2 size={16} className="text-[#A78BFA] animate-spin" />
+          <span className="text-sm text-gray-600 dark:text-gray-400">{t("loading")}</span>
         </div>
       </div>
     );
@@ -68,7 +66,7 @@ export function UsageIndicator({ onClick }: UsageIndicatorProps) {
         {/* 免费额度 */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">免费额度</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("freeTier")}</span>
             <span className={`text-sm font-semibold ${color}`}>
               {usage.currentUsage}/{usage.freeLimit}
             </span>
@@ -86,9 +84,9 @@ export function UsageIndicator({ onClick }: UsageIndicatorProps) {
         {usage.paidCredits > 0 && (
           <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600 dark:text-gray-400">已购买次数</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">{t("purchasedCredits")}</span>
               <span className="text-sm font-semibold text-[#A78BFA]">
-                {usage.paidCredits} 次
+                {usage.paidCredits}
               </span>
             </div>
           </div>
@@ -98,15 +96,11 @@ export function UsageIndicator({ onClick }: UsageIndicatorProps) {
         {usage.exceeded && usage.paidCredits === 0 && (
           <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded text-xs text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
             <div className="flex items-start gap-2">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 mt-0.5">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
+              <AlertCircle size={14} className="shrink-0 mt-0.5" />
               <div>
-                <div className="font-medium mb-1">已达到免费额度限制</div>
+                <div className="font-medium mb-1">{t("limitReached")}</div>
                 <div className="text-purple-600 dark:text-purple-300">
-                  下次使用时将支付 <span className="font-semibold">{PAYMENT_CONFIG.PAYMENT_PRICE} USDC</span> 获得 <span className="font-semibold">{PAYMENT_CONFIG.PAYMENT_CREDITS} 次</span>使用
+                  {t("nextUsageWillCost", { price: PAYMENT_CONFIG.PAYMENT_PRICE, symbol: "USDC" })}
                 </div>
               </div>
             </div>
@@ -117,12 +111,8 @@ export function UsageIndicator({ onClick }: UsageIndicatorProps) {
         {!usage.exceeded && usage.currentUsage >= usage.freeLimit - 1 && usage.paidCredits === 0 && (
           <div className="p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
             <div className="flex items-center gap-2">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-              <span>还剩 {usage.freeLimit - usage.currentUsage} 次免费使用</span>
+              <AlertTriangle size={14} />
+              <span>{t("remainingFreeUses", { count: usage.freeLimit - usage.currentUsage })}</span>
             </div>
           </div>
         )}
@@ -131,12 +121,8 @@ export function UsageIndicator({ onClick }: UsageIndicatorProps) {
         {onClick && (
           <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="16" x2="12" y2="12" />
-                <line x1="12" y1="8" x2="12.01" y2="8" />
-              </svg>
-              <span>点击查看详情和充值</span>
+              <Info size={12} />
+              <span>{t("clickForDetails")}</span>
             </div>
           </div>
         )}

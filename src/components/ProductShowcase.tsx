@@ -9,6 +9,7 @@
 
 import Image from 'next/image';
 import { useTranslation } from '@/hooks/useTranslation';
+import { MessageCircle, TrendingUp, Activity, Search } from '@/components/icons';
 
 export function ProductShowcase() {
   const { t } = useTranslation();
@@ -17,25 +18,25 @@ export function ProductShowcase() {
     {
       title: t('socialSentiment'),
       description: t('socialSentimentDesc'),
-      icon: '💭',
+      icon: <MessageCircle className="w-8 h-8" />,
       color: 'from-blue-500 to-cyan-500'
     },
     {
       title: t('technicalAnalysis'),
       description: t('technicalAnalysisDesc'),
-      icon: '📊',
+      icon: <TrendingUp className="w-8 h-8" />,
       color: 'from-purple-500 to-pink-500'
     },
     {
       title: t('onchainTracker'),
       description: t('onchainTrackerDesc'),
-      icon: '🔗',
+      icon: <Activity className="w-8 h-8" />,
       color: 'from-green-500 to-emerald-500'
     },
     {
       title: t('deepSearch'),
       description: t('deepSearchDesc'),
-      icon: '🔍',
+      icon: <Search className="w-8 h-8" />,
       color: 'from-orange-500 to-red-500'
     }
   ];
@@ -109,7 +110,7 @@ export function ProductShowcase() {
               {/* 渐变装饰条 */}
               <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${tool.color} rounded-t-xl`} />
 
-              <div className="text-3xl mb-3">{tool.icon}</div>
+              <div className="mb-3 text-gray-700 dark:text-gray-300">{tool.icon}</div>
               <h5 className="text-lg font-bold mb-2 text-gray-800 dark:text-gray-200">
                 {tool.title}
               </h5>

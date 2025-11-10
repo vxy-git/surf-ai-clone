@@ -196,20 +196,18 @@ export async function POST(req: Request) {
       tools: allTools,
       maxSteps: 5, // 研究模式允许更多步骤
       temperature: 0.5, // 降低温度以提高准确性
-      onError: (error) => {
+      onError: (error: unknown) => {
         console.error('[Research API] Stream error:', error);
-        console.error('[Research API] Error stack:', error.error?.stack);
+        if (typeof error === 'object' && error !== null && 'error' in error) {
+          console.error('[Research API] Error stack:', (error as { error?: { stack?: string } }).error?.stack);
+        }
         console.error('[Research API] Error details:', JSON.stringify(error, null, 2));
       },
-      onFinish: ({ usage, finishReason, error }) => {
+      onFinish: ({ usage, finishReason }) => {
         console.log('[Research API] Stream finished:', {
           usage,
-          finishReason,
-          hasError: !!error
+          finishReason
         });
-        if (error) {
-          console.error('[Research API] Finish error:', error);
-        }
       }
     } as Parameters<typeof streamText>[0]);
 

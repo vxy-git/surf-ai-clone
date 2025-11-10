@@ -1,13 +1,13 @@
 /**
- * 多数据源适配器系统
- * 实现 CoinGecko -> Mobula -> CoinCap 三层降级策略
+ * Multi-source Adapter System
+ * Implements CoinGecko -> Mobula -> CoinCap three-tier fallback strategy
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { cachedFetch } from './api-cache';
 import { resolveCoinId } from './coin-resolver';
 
-// ============= 数据类型定义 =============
+// ============= Data Type Definitions =============
 
 export interface PriceData {
   symbol: string;
@@ -44,7 +44,7 @@ export interface ProjectInfo {
   source: string;
 }
 
-// ============= 数据源接口 =============
+// ============= Data Source Interface =============
 
 export interface DataSource {
   name: string;
@@ -53,7 +53,7 @@ export interface DataSource {
   fetchProjectInfo(symbol: string): Promise<ProjectInfo | null>;
 }
 
-// ============= CoinGecko 适配器 =============
+// ============= CoinGecko Adapter =============
 
 class CoinGeckoDataSource implements DataSource {
   name = 'CoinGecko';
@@ -66,18 +66,18 @@ class CoinGeckoDataSource implements DataSource {
 
   private async getCoinId(symbol: string): Promise<string | null> {
     try {
-      // 使用智能解析器 (自动处理模糊匹配、多源搜索)
+      // Use smart resolver (auto handles fuzzy matching, multi-source search)
       console.log(`[CoinGecko] Resolving coin ID for: ${symbol}`);
       const resolved = await resolveCoinId(symbol);
 
       if (resolved) {
         console.log(
-          `[CoinGecko] ✓ Resolved ${symbol} -> ${resolved.id} (score: ${resolved.score.toFixed(2)}, source: ${resolved.source})`
+          `[CoinGecko] Success: Resolved ${symbol} -> ${resolved.id} (score: ${resolved.score.toFixed(2)}, source: ${resolved.source})`
         );
         return resolved.id;
       }
 
-      console.warn(`[CoinGecko] ⚠️ Could not resolve coin ID for: ${symbol}`);
+      console.warn(`[CoinGecko] Warning: Could not resolve coin ID for: ${symbol}`);
       return null;
     } catch (error) {
       console.error(`[CoinGecko] Error getting coin ID for ${symbol}:`, error);
@@ -174,7 +174,7 @@ class CoinGeckoDataSource implements DataSource {
   }
 }
 
-// ============= Mobula 适配器 =============
+// ============= Mobula Adapter =============
 
 class MobulaDataSource implements DataSource {
   name = 'Mobula';
@@ -183,7 +183,7 @@ class MobulaDataSource implements DataSource {
 
   async fetchPrice(symbol: string): Promise<PriceData | null> {
     try {
-      // Mobula API 需要大写 symbol
+      // Mobula API requires uppercase symbol
       const normalizedSymbol = symbol.toUpperCase();
       const url = `${this.baseUrl}/market/data?symbol=${normalizedSymbol}${this.apiKey ? `&apiKey=${this.apiKey}` : ''}`;
       const data = await cachedFetch<any>(url);
@@ -206,7 +206,7 @@ class MobulaDataSource implements DataSource {
 
   async fetchMarketData(symbol: string): Promise<MarketData | null> {
     try {
-      // Mobula API 需要大写 symbol
+      // Mobula API requires uppercase symbol
       const normalizedSymbol = symbol.toUpperCase();
       const url = `${this.baseUrl}/market/data?symbol=${normalizedSymbol}${this.apiKey ? `&apiKey=${this.apiKey}` : ''}`;
       const data = await cachedFetch<any>(url);
@@ -234,7 +234,7 @@ class MobulaDataSource implements DataSource {
 
   async fetchProjectInfo(symbol: string): Promise<ProjectInfo | null> {
     try {
-      // Mobula API 需要大写 symbol
+      // Mobula API requires uppercase symbol
       const normalizedSymbol = symbol.toUpperCase();
       const url = `${this.baseUrl}/metadata?symbol=${normalizedSymbol}${this.apiKey ? `&apiKey=${this.apiKey}` : ''}`;
       const data = await cachedFetch<any>(url);
@@ -258,27 +258,27 @@ class MobulaDataSource implements DataSource {
   }
 }
 
-// ============= CoinCap 适配器 =============
+// ============= CoinCap Adapter =============
 
 class CoinCapDataSource implements DataSource {
   name = 'CoinCap';
   private baseUrl = 'https://api.coincap.io/v2';
-  // CoinCap 无需 API Key,完全免费使用
+  // CoinCap does not require API key, completely free to use
 
   private async getAssetId(symbol: string): Promise<string | null> {
     try {
-      // CoinCap 使用资产 ID (通常是小写的symbol)
-      // 但为了准确性,我们搜索完整的资产列表
+      // CoinCap uses asset ID (usually lowercase symbol)
+      // But for accuracy, we search the complete asset list
       const url = `${this.baseUrl}/assets?search=${encodeURIComponent(symbol)}&limit=5`;
-      const response = await cachedFetch<any>(url, {}, 5 * 60 * 1000); // 5分钟缓存
+      const response = await cachedFetch<any>(url, {}, 5 * 60 * 1000); // 5 minute cache
 
       if (!response.data || response.data.length === 0) {
-        // 如果搜索失败,尝试直接使用小写 symbol 作为降级
+        // If search fails, try using lowercase symbol as fallback
         console.warn(`[CoinCap] No search results for ${symbol}, using lowercase as fallback`);
         return symbol.toLowerCase();
       }
 
-      // 找到完全匹配的 symbol
+      // Find exact match for symbol
       const exactMatch = response.data.find(
         (asset: any) => asset.symbol?.toLowerCase() === symbol.toLowerCase()
       );
@@ -288,18 +288,18 @@ class CoinCapDataSource implements DataSource {
         return exactMatch.id;
       }
 
-      // 使用第一个搜索结果
+      // Use first search result
       console.log(`[CoinCap] Using first result for ${symbol} -> ${response.data[0].id}`);
       return response.data[0].id;
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-      // 区分网络错误和其他错误
+      // Distinguish between network errors and other errors
       if (errorMsg.includes('ECONNRESET') || errorMsg.includes('fetch failed')) {
         console.warn(`[CoinCap] Network error for ${symbol}, skipping CoinCap source`);
-        return null; // 网络错误时返回 null,让降级系统尝试下一个数据源
+        return null; // Return null on network error, let fallback system try next source
       }
       console.error(`[CoinCap] Error getting asset ID for ${symbol}:`, errorMsg);
-      // 对于其他错误,尝试使用小写 symbol 作为最后降级
+      // For other errors, try using lowercase symbol as last fallback
       return symbol.toLowerCase();
     }
   }
@@ -388,9 +388,9 @@ class CoinCapDataSource implements DataSource {
   }
 }
 
-// ============= 智能降级函数 =============
+// ============= Smart Fallback Functions =============
 
-// 数据源实例（按优先级排序）
+// Data source instances (ordered by priority)
 const dataSources: DataSource[] = [
   new CoinGeckoDataSource(),
   new MobulaDataSource(),
@@ -398,8 +398,8 @@ const dataSources: DataSource[] = [
 ];
 
 /**
- * 智能降级获取价格数据
- * 按 CoinGecko -> Mobula -> CoinCap 顺序尝试
+ * Smart fallback to get price data
+ * Try in order: CoinGecko -> Mobula -> CoinCap
  */
 export async function fetchPriceWithFallback(symbol: string): Promise<PriceData | null> {
   for (const source of dataSources) {
@@ -421,8 +421,8 @@ export async function fetchPriceWithFallback(symbol: string): Promise<PriceData 
 }
 
 /**
- * 智能降级获取市场数据
- * 按 CoinGecko -> Mobula -> CoinCap 顺序尝试
+ * Smart fallback to get market data
+ * Try in order: CoinGecko -> Mobula -> CoinCap
  */
 export async function fetchMarketDataWithFallback(symbol: string): Promise<MarketData | null> {
   for (const source of dataSources) {
@@ -444,8 +444,8 @@ export async function fetchMarketDataWithFallback(symbol: string): Promise<Marke
 }
 
 /**
- * 智能降级获取项目信息
- * 按 CoinGecko -> Mobula -> CoinCap 顺序尝试
+ * Smart fallback to get project info
+ * Try in order: CoinGecko -> Mobula -> CoinCap
  */
 export async function fetchProjectInfoWithFallback(symbol: string): Promise<ProjectInfo | null> {
   for (const source of dataSources) {
@@ -466,7 +466,7 @@ export async function fetchProjectInfoWithFallback(symbol: string): Promise<Proj
   return null;
 }
 
-// ============= GeckoTerminal 数据源 (链上新币) =============
+// ============= GeckoTerminal Data Source (On-chain New Coins) =============
 
 export interface NewTokenInfo {
   address: string;
@@ -482,17 +482,17 @@ export interface NewTokenInfo {
 }
 
 /**
- * GeckoTerminal API - CoinGecko 旗下的链上数据平台
- * 专注于 DEX 数据和新上线代币
- * 完全免费,30次/分钟
+ * GeckoTerminal API - On-chain data platform under CoinGecko
+ * Focused on DEX data and newly launched tokens
+ * Completely free, 30 requests/minute
  */
 export class GeckoTerminalDataSource {
   name = 'GeckoTerminal';
   private baseUrl = 'https://api.geckoterminal.com/api/v2';
 
   /**
-   * 获取最近更新的代币列表
-   * @param limit 返回数量 (最多100)
+   * Get list of recently updated tokens
+   * @param limit Number to return (max 100)
    */
   async fetchRecentlyUpdatedTokens(limit: number = 20): Promise<NewTokenInfo[]> {
     try {
@@ -501,8 +501,8 @@ export class GeckoTerminalDataSource {
       const data = await cachedFetch<any>(
         `${this.baseUrl}/tokens/info_recently_updated`,
         {
-          // GeckoTerminal 免费版无需 API Key
-          // 缓存5分钟 (链上数据更新较快)
+          // GeckoTerminal free version does not require API key
+          // Cache for 5 minutes (on-chain data updates quickly)
           next: { revalidate: 300 }
         }
       );
@@ -524,8 +524,8 @@ export class GeckoTerminalDataSource {
         updatedAt: item.attributes?.updated_at,
       }));
 
-      console.log(`[GeckoTerminal] ✓ Fetched ${tokens.length} tokens`);
-      return tokens.filter(t => t.symbol && t.name); // 过滤无效数据
+      console.log(`[GeckoTerminal] Successfully fetched ${tokens.length} tokens`);
+      return tokens.filter(t => t.symbol && t.name); // Filter invalid data
     } catch (error) {
       console.error('[GeckoTerminal] Error fetching recently updated tokens:', error);
       return [];
@@ -533,8 +533,8 @@ export class GeckoTerminalDataSource {
   }
 
   /**
-   * 获取新流动性池 (代表新上线的代币)
-   * @param network 区块链网络 (如 'eth', 'bsc', 'base')
+   * Get new liquidity pools (representing newly launched tokens)
+   * @param network Blockchain network (e.g., 'eth', 'bsc', 'base')
    */
   async fetchNewPools(network?: string): Promise<NewTokenInfo[]> {
     try {
@@ -554,13 +554,13 @@ export class GeckoTerminalDataSource {
         return [];
       }
 
-      // 从流动性池中提取代币信息
+      // Extract token info from liquidity pools
       const tokens: NewTokenInfo[] = [];
       for (const pool of data.data.slice(0, 20)) {
         const baseToken = pool.relationships?.base_token?.data;
         const quoteToken = pool.relationships?.quote_token?.data;
 
-        // 优先使用 base token (通常是新币)
+        // Prioritize base token (usually new coins)
         if (baseToken && pool.attributes?.base_token_price_usd) {
           tokens.push({
             address: baseToken.id,
@@ -574,7 +574,7 @@ export class GeckoTerminalDataSource {
         }
       }
 
-      console.log(`[GeckoTerminal] ✓ Fetched ${tokens.length} tokens from new pools`);
+      console.log(`[GeckoTerminal] Successfully fetched ${tokens.length} tokens from new pools`);
       return tokens.filter(t => t.symbol && t.name);
     } catch (error) {
       console.error('[GeckoTerminal] Error fetching new pools:', error);
@@ -583,7 +583,7 @@ export class GeckoTerminalDataSource {
   }
 
   /**
-   * 获取热门/趋势代币 (CoinGecko免费API)
+   * Get trending/hot tokens (CoinGecko free API)
    */
   async fetchTrendingTokens(): Promise<NewTokenInfo[]> {
     try {
@@ -597,7 +597,7 @@ export class GeckoTerminalDataSource {
         `${baseUrl}/search/trending`,
         {
           headers,
-          next: { revalidate: 3600 } // 缓存1小时
+          next: { revalidate: 3600 } // Cache for 1 hour
         }
       );
 
@@ -616,7 +616,7 @@ export class GeckoTerminalDataSource {
         imageUrl: item.item.thumb || item.item.small || item.item.large,
       }));
 
-      console.log(`[GeckoTerminal] ✓ Fetched ${tokens.length} trending tokens`);
+      console.log(`[GeckoTerminal] Successfully fetched ${tokens.length} trending tokens`);
       return tokens.filter(t => t.symbol && t.name);
     } catch (error) {
       console.error('[GeckoTerminal] Error fetching trending tokens:', error);
@@ -625,8 +625,8 @@ export class GeckoTerminalDataSource {
   }
 
   /**
-   * 从 ID 中提取网络名称
-   * 例如: "eth_0x..." -> "eth"
+   * Extract network name from ID
+   * Example: "eth_0x..." -> "eth"
    */
   private extractNetwork(id: string): string {
     if (!id) return 'unknown';
@@ -635,5 +635,5 @@ export class GeckoTerminalDataSource {
   }
 }
 
-// 导出单例
+// Export singleton
 export const geckoTerminal = new GeckoTerminalDataSource();

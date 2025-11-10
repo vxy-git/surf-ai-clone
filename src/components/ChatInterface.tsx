@@ -3,12 +3,13 @@
 import { useChat } from 'ai/react';
 import { useRef, useEffect } from 'react';
 import { useAccount } from 'wagmi';
-import ReactMarkdown from 'react-markdown';
 import ChatInput from '@/components/ChatInput';
 import { useUsage } from '@/hooks/useUsage';
 import { usePaymentModal } from '@/contexts/PaymentModalContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import type { Message } from 'ai/react';
+import { Bot, AlertTriangle, Loader2 } from '@/components/icons';
 
 interface ChatInterfaceProps {
   mode: 'ask' | 'research';
@@ -55,13 +56,13 @@ export default function ChatInterface({
       const errorMessage = err.message || '';
 
       if (errorMessage.includes('user quota') || errorMessage.includes('quota is not enough')) {
-        console.warn('[ChatInterface] CometAPI 配额不足，请前往充值');
+        console.warn('[ChatInterface] CometAPI quota insufficient, please top up');
       } else if (errorMessage.includes('500') || errorMessage.includes('Internal Server Error')) {
-        console.warn('[ChatInterface] 服务器错误，已扣除的额度不会退还（AI 推理成本已产生）');
+        console.warn('[ChatInterface] Server error, deducted credits will not be refunded (AI inference cost incurred)');
       } else if (errorMessage.includes('timeout') || errorMessage.includes('NetworkError')) {
-        console.warn('[ChatInterface] 网络连接中断，已扣除的额度不会退还（请检查网络稳定性）');
+        console.warn('[ChatInterface] Network connection interrupted, deducted credits will not be refunded (please check network stability)');
       } else if (errorMessage.includes('402') || errorMessage.includes('Payment required')) {
-        console.log('[ChatInterface] 额度不足，未扣除额度');
+        console.log('[ChatInterface] Insufficient credits, no credits deducted');
 
         // 保存待发送的消息到 Context (从最后一条用户消息获取)
         const lastUserMessage = messages[messages.length - 1];
@@ -175,7 +176,9 @@ export default function ChatInterface({
           {messages.length === 0 && (
             <div className="h-full flex items-center justify-center">
               <div className="text-center max-w-md">
-                <div className="text-4xl mb-4">🤖</div>
+                <div className="mb-4 flex justify-center">
+                  <Bot size={48} className="text-[#A78BFA]" />
+                </div>
                 <h3 className="text-xl font-bold mb-2 dark:text-white">
                   {mode === 'research' ? 'Ready to Research' : 'How can I help you?'}
                 </h3>
@@ -215,20 +218,20 @@ export default function ChatInterface({
           {messages.map((message, index) => (
             <div
               key={message.id || `${sessionId}-${index}-${message.role}`}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}
             >
               <div
-                className={`max-w-[80%] rounded-2xl p-3 text-sm leading-relaxed ${
+                className={`max-w-[80%] md:max-w-[75%] rounded-2xl p-4 text-sm leading-relaxed ${
                   message.role === 'user'
                     ? 'bg-[#A78BFA] text-white rounded-br-none'
                     : 'bg-white dark:bg-gray-800 dark:text-white rounded-bl-none shadow-sm border border-gray-100 dark:border-gray-700'
                 }`}
               >
-                <div className="prose dark:prose-invert prose-sm">
+                <div className="prose dark:prose-invert prose-sm max-w-none">
                   {message.role === 'assistant' ? (
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                    <MarkdownRenderer>{message.content}</MarkdownRenderer>
                   ) : (
-                    <p>{message.content}</p>
+                    <p className="whitespace-pre-wrap my-0">{message.content}</p>
                   )}
                 </div>
               </div>
@@ -239,7 +242,7 @@ export default function ChatInterface({
             <div className="flex justify-start">
               <div className="bg-white dark:bg-gray-800 dark:text-white rounded-2xl rounded-bl-none p-3 text-sm shadow-sm border border-gray-100 dark:border-gray-700">
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-[#A78BFA] animate-pulse" />
+                  <Loader2 size={16} className="text-[#A78BFA] animate-spin" />
                   <span className="text-gray-500 dark:text-gray-400 text-xs">
                     {mode === 'research' ? 'Researching...' : 'Thinking...'}
                   </span>
@@ -251,7 +254,7 @@ export default function ChatInterface({
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
               <div className="flex items-start gap-3">
-                <span className="text-red-600 dark:text-red-400 text-lg">⚠️</span>
+                <AlertTriangle size={20} className="text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <p className="text-red-600 dark:text-red-400 text-sm font-semibold mb-2">
                     请求失败

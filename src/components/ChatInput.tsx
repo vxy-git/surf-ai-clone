@@ -47,7 +47,7 @@ export default function ChatInput({
 
   return (
     <div className={containerClass}>
-      <div className={`bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 ${shadowClass} transition-shadow`}>
+      <div className={`backdrop-blur-3xl backdrop-saturate-200 bg-white/90 dark:bg-gray-900/90 rounded-2xl border-2 border-white/40 dark:border-gray-700/60 ${shadowClass} shadow-[0_16px_48px_rgba(0,0,0,0.15)] dark:shadow-[0_16px_48px_rgba(0,0,0,0.5)] ring-2 ring-white/50 dark:ring-gray-700/50 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(167,139,250,0.3)] hover:border-[#A78BFA]/70 hover:ring-[#A78BFA]/30`}>
         <div className={inputPaddingClass}>
           <div className="flex items-center gap-3">
             <input

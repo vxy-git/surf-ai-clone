@@ -17,6 +17,7 @@ import { usePaymentModal } from '@/contexts/PaymentModalContext';
 import { PAYMENT_CONFIG } from '@/config/payment-config';
 import { USDC_ABI } from '@/lib/usdc-abi';
 import { verifyPaymentAndAddCredits } from '@/lib/usage-tracker';
+import { X, CheckCircle, Loader2, Clock, AlertCircle, Info, Check } from '@/components/icons';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -90,12 +91,12 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
             }, 3000);
           } else {
             setPaymentStatus('error');
-            setErrorMessage(result.error || '支付验证失败');
+            setErrorMessage(result.error || t('paymentVerifyFailed'));
           }
         } catch (error) {
           console.error('Payment verification error:', error);
           setPaymentStatus('error');
-          setErrorMessage('支付验证过程出错，请刷新页面查看额度');
+          setErrorMessage(t('paymentVerifyError'));
         }
       })();
     }
@@ -167,14 +168,14 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* 背景遮罩 */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-xl backdrop-saturate-150"
         onClick={handleClose}
       />
 
       {/* 弹窗内容 */}
-      <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="relative backdrop-blur-2xl bg-white/90 dark:bg-gray-900/90 rounded-2xl border border-white/30 dark:border-gray-700/50 shadow-[0_24px_64px_rgba(0,0,0,0.2)] dark:shadow-[0_24px_64px_rgba(0,0,0,0.6)] ring-1 ring-white/20 max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
         {/* 头部 */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between p-6 border-b border-white/20 dark:border-gray-700/50">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             {t('purchaseCredits')}
           </h2>
@@ -187,17 +188,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
                 : 'hover:bg-gray-100 dark:hover:bg-gray-700'
             }`}
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            <X size={24} />
           </button>
         </div>
 
@@ -205,7 +196,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
         <div className="flex-1 overflow-y-auto p-6">
           <div className="space-y-6">
               {/* 购买卡片 */}
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-6 border-2 border-[#A78BFA]">
+              <div className="backdrop-blur-lg bg-gradient-to-br from-purple-100/60 to-pink-100/60 dark:from-purple-900/40 dark:to-pink-900/40 rounded-xl p-6 border-2 border-[#A78BFA]/50 shadow-[0_8px_32px_rgba(167,139,250,0.2)]">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
@@ -236,7 +227,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center">
-                      ✓
+                      <Check className="w-5 h-5" />
                     </div>
                     <span className="text-gray-700 dark:text-gray-300">
                       {t('fullAccess')}
@@ -244,7 +235,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center">
-                      ✓
+                      <Check className="w-5 h-5" />
                     </div>
                     <span className="text-gray-700 dark:text-gray-300">
                       {t('noExpiration')}
@@ -267,35 +258,22 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
                 >
                   {paymentStatus === 'pending' || isConfirming ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <Loader2 size={20} className="animate-spin" />
                       <span>{isConfirming ? '确认中...' : '支付中...'}</span>
                     </>
                   ) : paymentStatus === 'verifying' ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <Loader2 size={20} className="animate-spin" />
                       <span>验证支付中，请稍候...</span>
                     </>
                   ) : paymentStatus === 'success' ? (
                     <>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                        <polyline points="22 4 12 14.01 9 11.01" />
-                      </svg>
+                      <CheckCircle size={20} />
                       <span>支付成功！</span>
                     </>
                   ) : (
                     <>
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 6v6l4 2" />
-                      </svg>
+                      <Clock size={20} />
                       {t('buyNow')}
                     </>
                   )}
@@ -306,7 +284,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
             {paymentStatus === 'verifying' && (
               <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800">
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 border-2 border-yellow-600 border-t-transparent rounded-full animate-spin shrink-0 mt-0.5" />
+                  <Loader2 size={20} className="text-yellow-600 animate-spin shrink-0 mt-0.5" />
                   <div className="text-sm text-yellow-700 dark:text-yellow-300">
                     <div className="font-medium mb-1">正在验证支付...</div>
                     <div>交易已确认,正在验证并更新您的额度,预计需要 1-3 秒。请勿关闭此窗口。</div>
@@ -319,19 +297,10 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
             {paymentStatus === 'error' && errorMessage && (
               <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 border border-red-200 dark:border-red-800">
                 <div className="flex items-start gap-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
+                  <AlertCircle
+                    size={20}
                     className="shrink-0 mt-0.5 text-red-600 dark:text-red-400"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="8" x2="12" y2="12" />
-                    <line x1="12" y1="16" x2="12.01" y2="16" />
-                  </svg>
+                  />
                   <div className="text-sm text-red-700 dark:text-red-300">
                     <div className="font-medium mb-1">支付失败</div>
                     <div>{errorMessage}</div>
@@ -343,19 +312,10 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
             {/* 网络信息 */}
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
               <div className="flex items-start gap-3">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+                <Info
+                  size={20}
                   className="shrink-0 mt-0.5 text-blue-600 dark:text-blue-400"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="16" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12.01" y2="8" />
-                </svg>
+                />
                 <div className="text-sm text-blue-700 dark:text-blue-300">
                   <div className="font-medium mb-1">{t('paymentNetwork')}</div>
                   <div>

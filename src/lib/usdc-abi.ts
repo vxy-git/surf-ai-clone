@@ -1,7 +1,7 @@
 /**
  * USDC ERC20 ABI
  *
- * 只包含 transfer 和 balanceOf 方法
+ * Contains only transfer and balanceOf methods
  */
 
 export const USDC_ABI = [

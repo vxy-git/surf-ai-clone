@@ -67,3 +67,91 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* 🎨 macOS 风格精致滚动条 - 玻璃紫色 */
+@layer utilities {
+  /* 全局滚动条样式 - 紫色玻璃质感 */
+  .scrollbar-custom {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(167, 139, 250, 0.25) transparent;
+  }
+
+  .dark .scrollbar-custom {
+    scrollbar-color: rgba(167, 139, 250, 0.3) transparent;
+  }
+
+  /* Webkit 浏览器（Chrome, Safari, Edge）滚动条 */
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* 玻璃质感紫色滚动条拇指 */
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      rgba(167, 139, 250, 0.3) 0%,
+      rgba(124, 58, 237, 0.35) 100%
+    );
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 8px rgba(167, 139, 250, 0.2);
+  }
+
+  .dark .scrollbar-custom::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      rgba(167, 139, 250, 0.4) 0%,
+      rgba(124, 58, 237, 0.45) 100%
+    );
+    box-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+  }
+
+  /* Hover 效果 - 增强玻璃发光感 */
+  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg,
+      rgba(167, 139, 250, 0.5) 0%,
+      rgba(124, 58, 237, 0.55) 100%
+    );
+    width: 3px;
+    box-shadow: 0 0 12px rgba(167, 139, 250, 0.4);
+  }
+
+  .dark .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg,
+      rgba(167, 139, 250, 0.6) 0%,
+      rgba(124, 58, 237, 0.65) 100%
+    );
+    box-shadow: 0 0 16px rgba(167, 139, 250, 0.5);
+  }
+
+  /* 滚动条拇指激活状态 - 最强玻璃发光 */
+  .scrollbar-custom::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(
+      180deg,
+      rgba(167, 139, 250, 0.7) 0%,
+      rgba(124, 58, 237, 0.75) 100%
+    );
+    box-shadow: 0 0 16px rgba(167, 139, 250, 0.6);
+  }
+
+  .dark .scrollbar-custom::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(
+      180deg,
+      rgba(167, 139, 250, 0.8) 0%,
+      rgba(124, 58, 237, 0.85) 100%
+    );
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.7);
+  }
+
+  /* 平滑滚动 */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+}

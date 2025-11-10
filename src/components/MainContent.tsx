@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTranslation } from "@/hooks/useTranslation";
 import WalletButton from "@/components/WalletButton";
 import ChatInput from "@/components/ChatInput";
+import { MessageCircle, TrendingUp, Activity, Search, Flame, ArrowRight, Menu } from "@/components/icons";
 
 interface MainContentProps {
   onToggleSidebar: () => void;
@@ -74,9 +75,9 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
     loadNewTokens();
   }, []);
 
-  // 点击代币卡片,开始 AI 对话
+  // Click token card to start AI conversation
   const handleTokenClick = (token: NewToken) => {
-    const message = `请详细分析 ${token.name} (${token.symbol}) 的市场表现、技术指标、链上数据和投资价值。`;
+    const message = `Please provide a detailed analysis of ${token.name} (${token.symbol}), including market performance, technical indicators, on-chain data, and investment value.`;
     onStartChat(message, 'research');
   };
 
@@ -84,38 +85,34 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
     {
       title: t("socialSentiment"),
       description: t("socialSentimentDesc"),
-      icon: "💭"
+      icon: MessageCircle
     },
     {
       title: t("technicalAnalysis"),
       description: t("technicalAnalysisDesc"),
-      icon: "📊"
+      icon: TrendingUp
     },
     {
       title: t("onchainTracker"),
       description: t("onchainTrackerDesc"),
-      icon: "🔗"
+      icon: Activity
     },
     {
       title: t("deepSearch"),
       description: t("deepSearchDesc"),
-      icon: "🔍"
+      icon: Search
     }
   ];
 
   return (
     <main className="flex-1 overflow-y-auto">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 md:px-8 py-4 flex items-center">
+      <header className="sticky top-0 z-40 backdrop-blur-2xl backdrop-saturate-150 bg-white/90 dark:bg-gray-900/90 border-b-2 border-white/30 dark:border-gray-700/60 shadow-lg shadow-black/10 dark:shadow-black/30 px-4 md:px-8 py-4 flex items-center transition-all duration-300">
         <button
           onClick={onToggleSidebar}
           className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors mr-auto"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
+          <Menu size={24} />
         </button>
         <div className="md:hidden flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
           <Image
@@ -169,12 +166,12 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
         <div className="mt-12">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-              <span>🔥</span>
-              <span>最近上线代币</span>
+              <Flame size={20} className="text-orange-500" />
+              <span>{t("newTokensTitle")}</span>
             </h2>
             {!loadingTokens && newTokens.length > 0 && (
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                实时数据 · GeckoTerminal
+                {t("realtimeData")} · GeckoTerminal
               </span>
             )}
           </div>
@@ -183,7 +180,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
           {loadingTokens && (
             <div className="flex items-center justify-center py-8">
               <div className="inline-flex h-2 w-2 rounded-full bg-[#A78BFA] animate-pulse" />
-              <p className="text-sm text-gray-500 dark:text-gray-400 ml-3">加载中...</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 ml-3">{t("loading")}</p>
             </div>
           )}
 
@@ -194,7 +191,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
                 <button
                   key={`${token.symbol}-${index}`}
                   onClick={() => handleTokenClick(token)}
-                  className="group relative bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:border-[#A78BFA] dark:hover:border-[#A78BFA] transition-all hover:shadow-md"
+                  className="group relative backdrop-blur-lg backdrop-saturate-150 bg-white/75 dark:bg-gray-900/75 rounded-xl p-4 border-2 border-white/30 dark:border-gray-700/40 shadow-lg transition-all duration-300 hover:backdrop-blur-2xl hover:bg-white/90 dark:hover:bg-gray-900/90 hover:border-[#A78BFA]/80 hover:shadow-[0_12px_32px_rgba(167,139,250,0.4)] hover:scale-[1.05] hover:ring-2 hover:ring-[#A78BFA]/40"
                 >
                   {/* Token Icon/Network Badge */}
                   <div className="flex items-center justify-between mb-2">
@@ -243,18 +240,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
 
                   {/* Hover Effect Arrow */}
                   <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      className="text-[#A78BFA]"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 12 19" />
-                    </svg>
+                    <ArrowRight size={14} className="text-[#A78BFA]" />
                   </div>
                 </button>
               ))}
@@ -264,7 +250,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
           {/* Empty State */}
           {!loadingTokens && newTokens.length === 0 && (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
-              暂无新代币数据
+              {t("noTokenData")}
             </div>
           )}
         </div>

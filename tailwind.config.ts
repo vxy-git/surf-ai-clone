@@ -73,7 +73,146 @@ export default {
         '2xl': '1536px',
       },
       },
+      typography: ({ theme }: { theme: (path: string) => string }) => ({
+        DEFAULT: {
+          css: {
+            '--tw-prose-body': theme('colors.gray.700'),
+            '--tw-prose-headings': theme('colors.gray.900'),
+            '--tw-prose-links': theme('colors.purple.600'),
+            '--tw-prose-code': theme('colors.purple.600'),
+            '--tw-prose-pre-bg': theme('colors.gray.50'),
+            '--tw-prose-pre-code': theme('colors.gray.800'),
+            '--tw-prose-invert-body': theme('colors.gray.300'),
+            '--tw-prose-invert-headings': theme('colors.gray.100'),
+            '--tw-prose-invert-links': theme('colors.purple.400'),
+            '--tw-prose-invert-code': theme('colors.purple.400'),
+            '--tw-prose-invert-pre-bg': theme('colors.gray.800'),
+            '--tw-prose-invert-pre-code': theme('colors.gray.200'),
+            maxWidth: 'none',
+            color: 'var(--tw-prose-body)',
+            a: {
+              color: 'var(--tw-prose-links)',
+              textDecoration: 'none',
+              fontWeight: '500',
+              '&:hover': {
+                textDecoration: 'underline',
+              },
+            },
+            code: {
+              color: 'var(--tw-prose-code)',
+              backgroundColor: theme('colors.gray.100'),
+              padding: '0.2em 0.4em',
+              borderRadius: '0.25rem',
+              fontWeight: '500',
+              fontSize: '0.875em',
+            },
+            'code::before': {
+              content: '""',
+            },
+            'code::after': {
+              content: '""',
+            },
+            pre: {
+              backgroundColor: 'transparent',
+              padding: 0,
+              margin: 0,
+              fontSize: '0.875em',
+              lineHeight: '1.7142857',
+            },
+            'pre code': {
+              backgroundColor: 'transparent',
+              padding: 0,
+              fontWeight: '400',
+              color: 'var(--tw-prose-pre-code)',
+            },
+            h1: {
+              color: 'var(--tw-prose-headings)',
+              fontWeight: '800',
+              fontSize: '2.25em',
+            },
+            h2: {
+              color: 'var(--tw-prose-headings)',
+              fontWeight: '700',
+              fontSize: '1.5em',
+            },
+            h3: {
+              color: 'var(--tw-prose-headings)',
+              fontWeight: '600',
+              fontSize: '1.25em',
+            },
+            blockquote: {
+              fontWeight: '500',
+              fontStyle: 'normal',
+              color: 'var(--tw-prose-body)',
+              borderLeftWidth: '4px',
+              borderLeftColor: theme('colors.purple.500'),
+              quotes: '"\\201C""\\201D""\\2018""\\2019"',
+              backgroundColor: theme('colors.purple.50'),
+              padding: '1rem',
+              borderRadius: '0.5rem',
+            },
+            ul: {
+              listStyleType: 'disc',
+            },
+            ol: {
+              listStyleType: 'decimal',
+            },
+            'ul > li::marker': {
+              color: theme('colors.purple.500'),
+            },
+            'ol > li::marker': {
+              color: theme('colors.purple.500'),
+            },
+            table: {
+              width: '100%',
+              tableLayout: 'auto',
+              textAlign: 'left',
+              fontSize: '0.875em',
+            },
+            thead: {
+              borderBottomWidth: '2px',
+              borderBottomColor: theme('colors.gray.300'),
+            },
+            'thead th': {
+              color: 'var(--tw-prose-headings)',
+              fontWeight: '600',
+              verticalAlign: 'bottom',
+              paddingRight: '0.5714286em',
+              paddingBottom: '0.5714286em',
+              paddingLeft: '0.5714286em',
+            },
+            'tbody tr': {
+              borderBottomWidth: '1px',
+              borderBottomColor: theme('colors.gray.200'),
+            },
+            'tbody td': {
+              verticalAlign: 'baseline',
+              padding: '0.5714286em',
+            },
+          },
+        },
+        invert: {
+          css: {
+            code: {
+              backgroundColor: theme('colors.gray.800'),
+            },
+            blockquote: {
+              backgroundColor: theme('colors.purple.900/20'),
+              borderLeftColor: theme('colors.purple.400'),
+            },
+            'thead th': {
+              borderBottomColor: theme('colors.gray.700'),
+            },
+            'tbody tr': {
+              borderBottomColor: theme('colors.gray.800'),
+            },
+          },
+        },
+      }),
     }
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+  ],
 } satisfies Config;

@@ -1,51 +1,51 @@
 /**
- * 代币索引系统 - 本地模糊搜索
- * 自动同步 CoinGecko 完整列表,支持模糊匹配
+ * Token Index System - Local Fuzzy Search
+ * Auto-syncs complete CoinGecko list, supports fuzzy matching
  */
 
 import Fuse, { IFuseOptions } from 'fuse.js';
 import NodeCache from 'node-cache';
 
-// ============= 类型定义 =============
+// ============= Type Definitions =============
 
 export interface CoinData {
-  id: string;          // CoinGecko ID (如 "bitcoin")
-  symbol: string;      // 代币符号 (如 "BTC")
-  name: string;        // 全称 (如 "Bitcoin")
+  id: string;          // CoinGecko ID (e.g., "bitcoin")
+  symbol: string;      // Token symbol (e.g., "BTC")
+  name: string;        // Full name (e.g., "Bitcoin")
 }
 
 export interface CoinMatch {
   coin: CoinData;
-  score: number;       // 相似度得分 0-1 (1为完全匹配)
+  score: number;       // Similarity score 0-1 (1 is perfect match)
 }
 
-// ============= 缓存配置 =============
+// ============= Cache Configuration =============
 
-// 币种列表缓存 (24小时)
+// Coins list cache (24 hours)
 const coinsCache = new NodeCache({ stdTTL: 24 * 60 * 60 });
 
-// 搜索结果缓存 (10分钟)
+// Search result cache (10 minutes)
 const searchCache = new NodeCache({ stdTTL: 10 * 60 });
 
 const CACHE_KEY_COINS = 'all_coins';
 const CACHE_KEY_LAST_SYNC = 'last_sync';
 
-// ============= Fuse.js 配置 =============
+// ============= Fuse.js Configuration =============
 
 const fuseOptions: IFuseOptions<CoinData> = {
   keys: [
-    { name: 'symbol', weight: 0.5 },     // symbol 权重最高
-    { name: 'name', weight: 0.3 },       // name 次之
-    { name: 'id', weight: 0.2 },         // id 最低
+    { name: 'symbol', weight: 0.5 },     // symbol has highest weight
+    { name: 'name', weight: 0.3 },       // name is secondary
+    { name: 'id', weight: 0.2 },         // id has lowest weight
   ],
-  threshold: 0.4,                        // 相似度阈值 (0-1,越小越严格)
-  distance: 100,                         // 匹配距离
-  minMatchCharLength: 2,                 // 最小匹配长度
-  includeScore: true,                    // 包含得分
-  ignoreLocation: true,                  // 忽略位置
+  threshold: 0.4,                        // Similarity threshold (0-1, smaller is stricter)
+  distance: 100,                         // Match distance
+  minMatchCharLength: 2,                 // Minimum match length
+  includeScore: true,                    // Include score
+  ignoreLocation: true,                  // Ignore location
 };
 
-// ============= 代币索引类 =============
+// ============= Token Index Class =============
 
 class CoinIndex {
   private fuse: Fuse<CoinData> | null = null;
@@ -54,14 +54,14 @@ class CoinIndex {
   private initPromise: Promise<void> | null = null;
 
   /**
-   * 从 CoinGecko 同步完整币种列表
+   * Sync complete coin list from CoinGecko
    */
   async syncFromCoinGecko(): Promise<void> {
     try {
       console.log('[CoinIndex] Starting sync from CoinGecko...');
       const startTime = Date.now();
 
-      // 使用免费 API (无需 key)
+      // Use free API (no key required)
       const response = await fetch('https://api.coingecko.com/api/v3/coins/list');
 
       if (!response.ok) {
@@ -70,21 +70,21 @@ class CoinIndex {
 
       const data: CoinData[] = await response.json();
 
-      // 数据验证
+      // Data validation
       if (!Array.isArray(data) || data.length === 0) {
         throw new Error('Invalid coins list data');
       }
 
-      // 更新缓存
+      // Update cache
       this.coins = data;
       coinsCache.set(CACHE_KEY_COINS, data);
       coinsCache.set(CACHE_KEY_LAST_SYNC, new Date().toISOString());
 
-      // 重建 Fuse 索引
+      // Rebuild Fuse index
       this.fuse = new Fuse(data, fuseOptions);
 
       const duration = Date.now() - startTime;
-      console.log(`[CoinIndex] ✓ Synced ${data.length} coins in ${duration}ms`);
+      console.log(`[CoinIndex] Successfully synced ${data.length} coins in ${duration}ms`);
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       console.error(`[CoinIndex] Sync failed: ${errorMsg}`);
@@ -93,7 +93,7 @@ class CoinIndex {
   }
 
   /**
-   * 从缓存加载币种列表
+   * Load coins list from cache
    */
   private async loadFromCache(): Promise<boolean> {
     const cachedCoins = coinsCache.get<CoinData[]>(CACHE_KEY_COINS);
@@ -109,7 +109,7 @@ class CoinIndex {
   }
 
   /**
-   * 确保索引已初始化
+   * Ensure index is initialized
    */
   async ensureInitialized(): Promise<void> {
     if (this.fuse) return;
@@ -135,7 +135,7 @@ class CoinIndex {
   }
 
   /**
-   * 检查是否需要同步
+   * Check if sync is needed
    */
   needsSync(): boolean {
     const lastSync = coinsCache.get<string>(CACHE_KEY_LAST_SYNC);
@@ -145,17 +145,17 @@ class CoinIndex {
     const now = Date.now();
     const hoursSinceSync = (now - lastSyncTime) / (1000 * 60 * 60);
 
-    return hoursSinceSync > 24; // 超过24小时需要同步
+    return hoursSinceSync > 24; // Sync needed if over 24 hours
   }
 
   /**
-   * 模糊搜索代币
-   * @param query 用户输入 (如 "HYPE", "Hyperliquid", "btc")
-   * @param limit 返回结果数量
-   * @returns 匹配结果数组 (按相似度排序)
+   * Fuzzy search for tokens
+   * @param query User input (e.g., "HYPE", "Hyperliquid", "btc")
+   * @param limit Number of results to return
+   * @returns Array of matching results (sorted by similarity)
    */
   async search(query: string, limit = 5): Promise<CoinMatch[]> {
-    // 确保索引已初始化
+    // Ensure index is initialized
     await this.ensureInitialized();
 
     if (!this.fuse) {
@@ -163,13 +163,13 @@ class CoinIndex {
       return [];
     }
 
-    // 标准化查询
+    // Normalize query
     const normalizedQuery = query.trim();
     if (normalizedQuery.length < 2) {
-      return []; // 查询太短,不搜索
+      return []; // Query too short, don't search
     }
 
-    // 检查搜索缓存
+    // Check search cache
     const cacheKey = `search:${normalizedQuery.toLowerCase()}`;
     const cached = searchCache.get<CoinMatch[]>(cacheKey);
     if (cached) {
@@ -177,16 +177,16 @@ class CoinIndex {
       return cached;
     }
 
-    // 执行模糊搜索
+    // Execute fuzzy search
     const results = this.fuse.search(normalizedQuery, { limit });
 
-    // 转换结果格式
+    // Convert result format
     const matches: CoinMatch[] = results.map(result => ({
       coin: result.item,
-      score: 1 - (result.score || 0), // Fuse.js 的 score 越小越好,我们反转一下
+      score: 1 - (result.score || 0), // Fuse.js score is better when smaller, so we invert it
     }));
 
-    // 缓存结果
+    // Cache results
     if (matches.length > 0) {
       searchCache.set(cacheKey, matches);
     }
@@ -195,14 +195,14 @@ class CoinIndex {
   }
 
   /**
-   * 精确匹配 (symbol 或 id)
+   * Exact match (symbol or id)
    */
   async exactMatch(query: string): Promise<CoinData | null> {
     await this.ensureInitialized();
 
     const normalizedQuery = query.toLowerCase();
 
-    // 在本地列表中查找
+    // Find in local list
     const coin = this.coins.find(
       c =>
         c.symbol.toLowerCase() === normalizedQuery ||
@@ -213,7 +213,7 @@ class CoinIndex {
   }
 
   /**
-   * 获取统计信息
+   * Get statistics
    */
   getStats() {
     const lastSync = coinsCache.get<string>(CACHE_KEY_LAST_SYNC);
@@ -229,7 +229,7 @@ class CoinIndex {
   }
 
   /**
-   * 清除所有缓存
+   * Clear all cache
    */
   clearCache() {
     coinsCache.flushAll();
@@ -238,35 +238,35 @@ class CoinIndex {
   }
 }
 
-// ============= 导出单例实例 =============
+// ============= Export Singleton Instance =============
 
 export const coinIndex = new CoinIndex();
 
-// ============= 便捷函数 =============
+// ============= Convenience Functions =============
 
 /**
- * 搜索代币 (便捷函数)
+ * Search for token (convenience function)
  */
 export async function searchCoin(query: string, limit = 5): Promise<CoinMatch[]> {
   return coinIndex.search(query, limit);
 }
 
 /**
- * 精确匹配代币 (便捷函数)
+ * Exact match for token (convenience function)
  */
 export async function findCoin(query: string): Promise<CoinData | null> {
   return coinIndex.exactMatch(query);
 }
 
 /**
- * 手动触发同步
+ * Manually trigger sync
  */
 export async function syncCoins(): Promise<void> {
   return coinIndex.syncFromCoinGecko();
 }
 
 /**
- * 获取索引统计信息
+ * Get index statistics
  */
 export function getIndexStats() {
   return coinIndex.getStats();

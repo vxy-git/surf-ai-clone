@@ -1,6 +1,6 @@
 /**
- * Prisma Client 单例
- * 确保在开发环境中不会创建多个数据库连接实例
+ * Prisma Client Singleton
+ * Ensures multiple database connection instances are not created in development
  */
 
 import { PrismaClient } from '@prisma/client';
@@ -20,7 +20,7 @@ export const prisma =
     },
   });
 
-// 测试数据库连接并处理错误
+// Test database connection and handle errors
 prisma.$connect()
   .then(() => {
     console.log('[Database] Successfully connected to PostgreSQL');

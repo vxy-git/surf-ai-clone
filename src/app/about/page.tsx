@@ -2,6 +2,7 @@
 
 import { useTranslation } from "@/hooks/useTranslation";
 import Link from "next/link";
+import { Check } from "@/components/icons";
 
 export default function AboutPage() {
   const { t } = useTranslation();
@@ -180,23 +181,23 @@ export default function AboutPage() {
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                    <span className="text-[#A78BFA]">✓</span>
+                    <Check className="w-5 h-5 text-[#A78BFA]" />
                     <span>{about.roadmap1}</span>
                   </div>
                   <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                    <span className="text-[#A78BFA]">✓</span>
+                    <Check className="w-5 h-5 text-[#A78BFA]" />
                     <span>{about.roadmap2}</span>
                   </div>
                   <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                    <span className="text-[#A78BFA]">✓</span>
+                    <Check className="w-5 h-5 text-[#A78BFA]" />
                     <span>{about.roadmap3}</span>
                   </div>
                   <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                    <span className="text-[#A78BFA]">✓</span>
+                    <Check className="w-5 h-5 text-[#A78BFA]" />
                     <span>{about.roadmap4}</span>
                   </div>
                   <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                    <span className="text-[#A78BFA]">✓</span>
+                    <Check className="w-5 h-5 text-[#A78BFA]" />
                     <span>{about.roadmap5}</span>
                   </div>
                 </div>

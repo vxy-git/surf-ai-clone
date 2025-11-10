@@ -23,8 +23,8 @@ export async function getUsageData(walletAddress: string): Promise<UsageData> {
 
     return await response.json();
   } catch (error) {
-    console.error('获取使用数据失败:', error);
-    // 返回默认数据
+    console.error('Failed to get usage data:', error);
+    // Return default data
     return {
       walletAddress: walletAddress.toLowerCase(),
       freeUsage: 0,
@@ -46,35 +46,35 @@ export async function canUseAPI(walletAddress: string): Promise<UsageCheckResult
   const freeRemaining = Math.max(0, PAYMENT_CONFIG.FREE_TIER_LIMIT - data.freeUsage);
   const paidRemaining = data.paidCredits;
 
-  // 还有免费次数
+  // Still have free usage
   if (freeRemaining > 0) {
     return {
       canUse: true,
       needPayment: false,
       freeRemaining,
       paidRemaining,
-      message: `还有 ${freeRemaining} 次免费使用`
+      message: `You have ${freeRemaining} free uses remaining`
     };
   }
 
-  // 还有付费次数
+  // Still have paid credits
   if (paidRemaining > 0) {
     return {
       canUse: true,
       needPayment: false,
       freeRemaining: 0,
       paidRemaining,
-      message: `还有 ${paidRemaining} 次付费使用`
+      message: `You have ${paidRemaining} paid credits remaining`
     };
   }
 
-  // 需要付费
+  // Payment required
   return {
     canUse: false,
     needPayment: true,
     freeRemaining: 0,
     paidRemaining: 0,
-    message: `支付 ${PAYMENT_CONFIG.PAYMENT_PRICE} USDC 获得 ${PAYMENT_CONFIG.PAYMENT_CREDITS} 次使用`
+    message: `Pay ${PAYMENT_CONFIG.PAYMENT_PRICE} USDC to get ${PAYMENT_CONFIG.PAYMENT_CREDITS} uses`
   };
 }
 
@@ -95,7 +95,7 @@ export async function consumeUsage(walletAddress: string): Promise<boolean> {
     const result = await response.json();
     return result.success === true;
   } catch (error) {
-    console.error('消耗额度失败:', error);
+    console.error('Failed to consume usage:', error);
     return false;
   }
 }
@@ -127,7 +127,7 @@ export async function verifyPaymentAndAddCredits(
     if (!response.ok) {
       return {
         success: false,
-        error: result.error || '支付验证失败'
+        error: result.error || 'Payment verification failed'
       };
     }
 
@@ -136,10 +136,10 @@ export async function verifyPaymentAndAddCredits(
       data: result
     };
   } catch (error) {
-    console.error('验证支付失败:', error);
+    console.error('Failed to verify payment:', error);
     return {
       success: false,
-      error: '网络错误'
+      error: 'Network error'
     };
   }
 }

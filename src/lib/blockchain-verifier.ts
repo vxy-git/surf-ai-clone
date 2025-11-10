@@ -74,11 +74,11 @@ export async function verifyUSDCPayment(
       hash: txHash
     });
 
-    // 检查交易是否成功
+    // Check if transaction is successful
     if (receipt.status !== 'success') {
       return {
         valid: false,
-        error: '交易失败或被回滚'
+        error: 'Transaction failed or was reverted'
       };
     }
 
@@ -93,7 +93,7 @@ export async function verifyUSDCPayment(
     if (!transferLog) {
       return {
         valid: false,
-        error: '未找到 USDC 转账事件'
+        error: 'USDC transfer event not found'
       };
     }
 
@@ -106,27 +106,27 @@ export async function verifyUSDCPayment(
     const to = `0x${transferLog.topics[2]?.slice(26)}`.toLowerCase();
     const value = BigInt(transferLog.data);
 
-    // 验证发送者
+    // Verify sender
     if (from !== expectedSender.toLowerCase()) {
       return {
         valid: false,
-        error: `发送者地址不匹配: 预期 ${expectedSender}, 实际 ${from}`
+        error: `Sender address mismatch: expected ${expectedSender}, got ${from}`
       };
     }
 
-    // 验证接收者
+    // Verify receiver
     const receiverAddress = PAYMENT_CONFIG.RECEIVER_ADDRESS?.toLowerCase();
     if (!receiverAddress) {
       return {
         valid: false,
-        error: '未配置接收地址 (NEXT_PUBLIC_RECEIVER_ADDRESS)'
+        error: 'Receiver address not configured (NEXT_PUBLIC_RECEIVER_ADDRESS)'
       };
     }
 
     if (to !== receiverAddress) {
       return {
         valid: false,
-        error: `接收者地址不匹配: 预期 ${receiverAddress}, 实际 ${to}`
+        error: `Receiver address mismatch: expected ${receiverAddress}, got ${to}`
       };
     }
 
@@ -136,7 +136,7 @@ export async function verifyUSDCPayment(
     if (value < expectedAmount) {
       return {
         valid: false,
-        error: `金额不足: 需要 $0.01 USDC, 实际 ${formatUSDC(value)} USDC`
+        error: `Insufficient amount: required $0.01 USDC, got ${formatUSDC(value)} USDC`
       };
     }
 
@@ -158,10 +158,10 @@ export async function verifyUSDCPayment(
     };
 
   } catch (error) {
-    console.error('区块链验证错误:', error);
+    console.error('Blockchain verification error:', error);
     return {
       valid: false,
-      error: error instanceof Error ? error.message : '验证过程发生未知错误'
+      error: error instanceof Error ? error.message : 'Unknown error occurred during verification'
     };
   }
 }

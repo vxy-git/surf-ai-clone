@@ -1,6 +1,6 @@
 /**
- * API 缓存和请求去重系统
- * 用于优化 CoinGecko API 调用，避免速率限制
+ * API Cache and Request Deduplication System
+ * Used to optimize CoinGecko API calls and avoid rate limiting
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -10,18 +10,18 @@ interface CacheEntry<T> {
   expiresAt: number;
 }
 
-// 内存缓存存储
+// In-memory cache store
 const cache = new Map<string, CacheEntry<any>>();
 
-// 正在进行的请求（用于去重）
+// Pending requests (for deduplication)
 const pendingRequests = new Map<string, Promise<any>>();
 
-// 缓存配置
-const CACHE_TTL = 5 * 60 * 1000; // 5 分钟
-const COINS_LIST_TTL = 60 * 60 * 1000; // 1 小时（币种列表更新频率低）
+// Cache configuration
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const COINS_LIST_TTL = 60 * 60 * 1000; // 1 hour (coins list updates less frequently)
 
 /**
- * 生成缓存键
+ * Generate cache key
  */
 function getCacheKey(url: string, options?: RequestInit): string {
   const headers = options?.headers as Record<string, string> | undefined;
@@ -30,7 +30,7 @@ function getCacheKey(url: string, options?: RequestInit): string {
 }
 
 /**
- * 从缓存获取数据
+ * Get data from cache
  */
 function getFromCache<T>(key: string): T | null {
   const entry = cache.get(key);
@@ -39,7 +39,7 @@ function getFromCache<T>(key: string): T | null {
     return null;
   }
 
-  // 检查是否过期
+  // Check if expired
   if (Date.now() > entry.expiresAt) {
     cache.delete(key);
     return null;
@@ -50,7 +50,7 @@ function getFromCache<T>(key: string): T | null {
 }
 
 /**
- * 存储数据到缓存
+ * Store data to cache
  */
 function setCache<T>(key: string, data: T, ttl: number = CACHE_TTL): void {
   const entry: CacheEntry<T> = {
@@ -64,10 +64,10 @@ function setCache<T>(key: string, data: T, ttl: number = CACHE_TTL): void {
 }
 
 /**
- * 缓存的 fetch 包装器
- * - 自动缓存响应
- * - 请求去重（同时只发起一次相同请求）
- * - 速率限制处理
+ * Cached fetch wrapper
+ * - Auto cache responses
+ * - Request deduplication (only make one request at a time for same URL)
+ * - Rate limit handling
  */
 export async function cachedFetch<T = any>(
   url: string,
@@ -76,30 +76,30 @@ export async function cachedFetch<T = any>(
 ): Promise<T> {
   const cacheKey = getCacheKey(url, options);
 
-  // 1. 检查缓存
+  // 1. Check cache
   const cached = getFromCache<T>(cacheKey);
   if (cached !== null) {
     return cached;
   }
 
-  // 2. 检查是否有相同请求正在进行（去重）
+  // 2. Check if same request is in progress (deduplication)
   const pending = pendingRequests.get(cacheKey);
   if (pending) {
     console.log(`[Cache] Dedup: ${url.substring(0, 60)}...`);
     return pending;
   }
 
-  // 3. 发起新请求
+  // 3. Make new request
   const requestPromise = (async () => {
     try {
       console.log(`[API] Request: ${url.substring(0, 80)}...`);
 
       const response = await fetch(url, {
         ...options,
-        next: { revalidate: ttl / 1000 }, // Next.js 缓存
+        next: { revalidate: ttl / 1000 }, // Next.js cache
       });
 
-      // 处理速率限制
+      // Handle rate limit
       if (response.status === 429) {
         console.warn('[API] Rate limit (429) - using cache or fallback');
         throw new Error('RATE_LIMIT');
@@ -112,24 +112,24 @@ export async function cachedFetch<T = any>(
 
       const data = await response.json();
 
-      // 存储到缓存
+      // Store to cache
       setCache(cacheKey, data, ttl);
 
       return data;
     } finally {
-      // 清除pending状态
+      // Clear pending status
       pendingRequests.delete(cacheKey);
     }
   })();
 
-  // 记录正在进行的请求
+  // Record in-progress request
   pendingRequests.set(cacheKey, requestPromise);
 
   return requestPromise;
 }
 
 /**
- * 清除所有缓存
+ * Clear all cache
  */
 export function clearCache(): void {
   cache.clear();
@@ -137,7 +137,7 @@ export function clearCache(): void {
 }
 
 /**
- * 清除过期缓存（定期清理）
+ * Clean up expired cache (periodic cleanup)
  */
 export function cleanupExpiredCache(): void {
   const now = Date.now();
@@ -156,7 +156,7 @@ export function cleanupExpiredCache(): void {
 }
 
 /**
- * 获取缓存统计信息
+ * Get cache statistics
  */
 export function getCacheStats(): {
   totalEntries: number;
@@ -180,7 +180,7 @@ export function getCacheStats(): {
   };
 }
 
-// 定期清理过期缓存（每 10 分钟）
+// Periodic cleanup of expired cache (every 10 minutes)
 if (typeof window === 'undefined') {
   setInterval(cleanupExpiredCache, 10 * 60 * 1000);
 }

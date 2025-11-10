@@ -4,6 +4,7 @@ import { use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useWatchlist } from "@/contexts/WatchlistContext";
+import { Star } from "@/components/icons";
 
 // Trending 项目数据
 const trendingProjects = [
@@ -218,7 +219,7 @@ export default function TrendingDetailPage({ params }: TrendingDetailPageProps) 
           className="text-[#A78BFA] hover:text-[#6D28D9] flex items-center gap-1 transition-colors"
         >
           <span className="hidden md:inline">Add to watchlist</span>
-          <span>⭐</span>
+          <Star className="w-5 h-5" />
         </button>
         <Link
           href={`https://twitter.com/${project.socialAccounts.twitter.handle.replace('@', '')}`}

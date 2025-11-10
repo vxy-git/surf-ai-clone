@@ -8,6 +8,9 @@ export const translations = {
     appearance: "外观",
     language: "语言",
     learnAboutSurf: "了解 Surf",
+    loadingHistory: "加载聊天记录...",
+    noHistory: "暂无聊天记录",
+    deleteSession: "删除会话",
 
     // 主题
     themeSystem: "跟随系统",
@@ -19,6 +22,10 @@ export const translations = {
     productHunt: "Product Hunt",
     productOfDay: "#1 每日产品",
     searchPlaceholder: "用你的加密好奇心挑战 Surf AI",
+    loading: "加载中...",
+    newTokensTitle: "最近上线代币",
+    realtimeData: "实时数据",
+    noTokenData: "暂无新代币数据",
 
     // 搜索按钮
     ask: "提问",
@@ -59,6 +66,15 @@ export const translations = {
     changeNetwork: "切换网络",
     disconnect: "断开连接",
 
+    // 使用额度
+    connectWalletForFree: "连接钱包以获得 {count} 次免费使用",
+    freeTier: "免费额度",
+    purchasedCredits: "已购买次数",
+    limitReached: "已达到免费额度限制",
+    nextUsageWillCost: "下次使用时将支付 {price} {symbol}",
+    remainingFreeUses: "还剩 {count} 次免费使用",
+    clickForDetails: "点击查看详情和充值",
+
     // 支付弹窗
     paymentModalTitle: "Surf AI 产品与充值",
     aboutProduct: "关于产品",
@@ -81,6 +97,12 @@ export const translations = {
     errorQuotaInsufficient: "Token 配额不足，请联系人工客服",
     errorQuotaDescription: "这是 AI Token 配额不足错误（非项目内部额度）",
     errorContactSupport: "联系客服",
+    paymentVerifyFailed: "支付验证失败",
+    paymentVerifyError: "支付验证过程出错，请刷新页面查看额度",
+    cometApiQuotaInsufficient: "CometAPI 配额不足，请前往充值",
+    serverError: "服务器错误，已扣除的额度不会退还",
+    networkError: "网络连接中断，已扣除的额度不会退还",
+    insufficientCredits: "额度不足，未扣除额度",
 
     // 产品展示
     productIntro: "Surf AI 是专为加密货币投资者和研究者打造的智能分析助手，提供实时市场洞察、社交情绪分析、技术指标和链上数据追踪。",
@@ -173,6 +195,9 @@ export const translations = {
     appearance: "Appearance",
     language: "Language",
     learnAboutSurf: "Learn About Surf",
+    loadingHistory: "Loading chat history...",
+    noHistory: "No chat history",
+    deleteSession: "Delete session",
 
     // Theme
     themeSystem: "System",
@@ -184,6 +209,10 @@ export const translations = {
     productHunt: "Product Hunt",
     productOfDay: "#1 Product of the Day",
     searchPlaceholder: "Challenge Surf AI with your crypto curiosity",
+    loading: "Loading...",
+    newTokensTitle: "Recently Listed Tokens",
+    realtimeData: "Real-time Data",
+    noTokenData: "No new token data available",
 
     // Search buttons
     ask: "Ask",
@@ -224,6 +253,15 @@ export const translations = {
     changeNetwork: "Change Network",
     disconnect: "Disconnect",
 
+    // Usage Credits
+    connectWalletForFree: "Connect wallet to get {count} free uses",
+    freeTier: "Free Tier",
+    purchasedCredits: "Purchased Credits",
+    limitReached: "Free tier limit reached",
+    nextUsageWillCost: "Next use will cost {price} {symbol}",
+    remainingFreeUses: "{count} free uses remaining",
+    clickForDetails: "Click for details and top-up",
+
     // Payment Modal
     paymentModalTitle: "Surf AI Product & Top-up",
     aboutProduct: "About Product",
@@ -246,6 +284,12 @@ export const translations = {
     errorQuotaInsufficient: "Token quota insufficient, please contact customer service",
     errorQuotaDescription: "This is an AI token quota error (not internal credits)",
     errorContactSupport: "Contact Support",
+    paymentVerifyFailed: "Payment verification failed",
+    paymentVerifyError: "Payment verification error, please refresh to check credits",
+    cometApiQuotaInsufficient: "CometAPI quota insufficient, please top up",
+    serverError: "Server error, deducted credits will not be refunded",
+    networkError: "Network connection interrupted, deducted credits will not be refunded",
+    insufficientCredits: "Insufficient credits, no credits deducted",
 
     // Product Showcase
     productIntro: "Surf AI is an intelligent analysis assistant built for cryptocurrency investors and researchers, providing real-time market insights, social sentiment analysis, technical indicators, and on-chain data tracking.",

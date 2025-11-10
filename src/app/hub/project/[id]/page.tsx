@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useWatchlist } from "@/contexts/WatchlistContext";
 import { useTranslation } from "@/hooks/useTranslation";
+import { Globe, Twitter, Send, Star } from "@/components/icons";
 
 // 模拟项目数据
 const allProjects = [
@@ -139,9 +140,10 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                     href={project.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#A78BFA] hover:underline"
+                    className="text-sm text-[#A78BFA] hover:underline flex items-center gap-1"
                   >
-                    🌐 Website
+                    <Globe className="w-4 h-4" />
+                    Website
                   </a>
                 )}
                 {project.twitter && (
@@ -149,9 +151,10 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                     href={project.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#A78BFA] hover:underline"
+                    className="text-sm text-[#A78BFA] hover:underline flex items-center gap-1"
                   >
-                    🐦 Twitter
+                    <Twitter className="w-4 h-4" />
+                    Twitter
                   </a>
                 )}
                 {project.telegram && (
@@ -159,9 +162,10 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                     href={project.telegram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#A78BFA] hover:underline"
+                    className="text-sm text-[#A78BFA] hover:underline flex items-center gap-1"
                   >
-                    ✈️ Telegram
+                    <Send className="w-4 h-4" />
+                    Telegram
                   </a>
                 )}
               </div>
@@ -170,13 +174,20 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
             {/* Watchlist Button */}
             <button
               onClick={handleWatchlistToggle}
-              className={`px-6 py-3 rounded-full font-medium transition-all ${
+              className={`px-6 py-3 rounded-full font-medium transition-all flex items-center gap-2 ${
                 inWatchlist
                   ? "bg-[#A78BFA] text-white hover:bg-[#6D28D9]"
                   : "border-2 border-[#A78BFA] text-[#A78BFA] hover:bg-[#A78BFA] hover:text-white"
               }`}
             >
-              {inWatchlist ? "⭐ In Watchlist" : "Add to Watchlist"}
+              {inWatchlist ? (
+                <>
+                  <Star className="w-4 h-4" />
+                  In Watchlist
+                </>
+              ) : (
+                "Add to Watchlist"
+              )}
             </button>
           </div>
         </div>

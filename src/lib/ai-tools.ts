@@ -12,45 +12,45 @@ import {
 } from './data-sources';
 
 /**
- * AI Agent 工具集
- * 为不同的分析任务提供专业化的工具函数
+ * AI Agent Tools Set
+ * Provides specialized tool functions for different analysis tasks
  */
 
-// ========== 动态币种 ID 查找系统 ==========
+// ========== Dynamic Coin ID Lookup System ==========
 
-// 运行时缓存：符号 -> CoinGecko ID 映射
+// Runtime cache: symbol -> CoinGecko ID mapping
 const symbolToIdCache = new Map<string, string>();
 
-// 完整币种列表缓存（应用启动时或首次需要时加载）
+// Complete coins list cache (loaded at app startup or first needed)
 let coinsListCache: Array<{ id: string; symbol: string; name: string }> | null = null;
-let coinsListLoading = false; // 防止重复加载
+let coinsListLoading = false; // Prevent duplicate loading
 
 /**
- * 动态获取 CoinGecko ID - 三层缓存架构
- * 层级 1: 静态映射 (0ms) - 主流币种
- * 层级 2: 运行时缓存 (1ms) - 已查询过的币种
- * 层级 3: 完整列表缓存 (50-100ms 首次) - 所有 CoinGecko 币种
- * 层级 4: 降级猜测 - 使用小写符号作为 ID
+ * Dynamically get CoinGecko ID - Three-tier caching architecture
+ * Tier 1: Static mapping (0ms) - Major coins
+ * Tier 2: Runtime cache (1ms) - Previously queried coins
+ * Tier 3: Complete list cache (50-100ms first time) - All CoinGecko coins
+ * Tier 4: Fallback guess - Use lowercase symbol as ID
  */
 async function getCoinGeckoId(symbol: string): Promise<string> {
   const upperSymbol = symbol.toUpperCase();
 
-  // 层级 1: 静态映射（最快，0ms）
+  // Tier 1: Static mapping (fastest, 0ms)
   if (SYMBOL_TO_COINGECKO_ID[upperSymbol]) {
     return SYMBOL_TO_COINGECKO_ID[upperSymbol];
   }
 
-  // 层级 2: 运行时缓存（快，1ms）
+  // Tier 2: Runtime cache (fast, 1ms)
   if (symbolToIdCache.has(upperSymbol)) {
     return symbolToIdCache.get(upperSymbol)!;
   }
 
-  // 层级 3: 完整列表缓存（中等，10-50ms 首次加载）
+  // Tier 3: Complete list cache (medium, 10-50ms first load)
   if (!coinsListCache && !coinsListLoading) {
     coinsListLoading = true;
     try {
       console.log('[CoinGecko] Loading complete coins list...');
-      // 使用缓存 fetch，1 小时 TTL
+      // Use cached fetch with 1 hour TTL
       coinsListCache = await cachedFetch(
         'https://api.coingecko.com/api/v3/coins/list',
         {},
@@ -59,20 +59,20 @@ async function getCoinGeckoId(symbol: string): Promise<string> {
       console.log(`[CoinGecko] Loaded ${coinsListCache?.length || 0} coins`);
     } catch (error) {
       console.warn('[CoinGecko] Error loading coins list:', error);
-      // 即使失败也不影响功能，会降级到猜测
+      // Failure doesn't affect functionality, will fallback to guessing
     } finally {
       coinsListLoading = false;
     }
   }
 
-  // 等待加载完成（如果正在加载中）
+  // Wait for loading to complete (if in progress)
   let waitCount = 0;
   while (coinsListLoading && waitCount < 50) {
     await new Promise(resolve => setTimeout(resolve, 100));
     waitCount++;
   }
 
-  // 在完整列表中搜索
+  // Search in complete list
   if (coinsListCache) {
     const coin = coinsListCache.find(c =>
       c.symbol.toLowerCase() === symbol.toLowerCase()
@@ -84,7 +84,7 @@ async function getCoinGeckoId(symbol: string): Promise<string> {
     }
   }
 
-  // 层级 4: 降级猜测
+  // Tier 4: Fallback guess
   const guessedId = symbol.toLowerCase().replace(/\s+/g, '-');
   console.log(`[CoinGecko] Guessing ID for ${upperSymbol} -> ${guessedId}`);
   symbolToIdCache.set(upperSymbol, guessedId);
@@ -93,7 +93,7 @@ async function getCoinGeckoId(symbol: string): Promise<string> {
 
 // ========================================
 
-// 社交情绪分析工具 (基于 CoinGecko 免费数据)
+// Social Sentiment Analysis Tool (Based on free CoinGecko data)
 export const socialSentimentTool = tool({
   description: 'Analyze social media sentiment for a cryptocurrency project using community data, price momentum, and social metrics.',
   parameters: z.object({
@@ -102,7 +102,7 @@ export const socialSentimentTool = tool({
   }),
   execute: async ({ symbol, timeframe }) => {
     try {
-      // 使用动态 ID 查找支持所有币种
+      // Use dynamic ID lookup to support all coins
       const id = await getCoinGeckoId(symbol);
       const apiKey = process.env.COINGECKO_API_KEY;
       const baseUrl = apiKey
@@ -110,22 +110,22 @@ export const socialSentimentTool = tool({
         : 'https://api.coingecko.com/api/v3';
       const headers: HeadersInit = apiKey ? { 'x-cg-pro-api-key': apiKey } : {};
 
-      // 获取详细的币种信息 (包含社区数据) - 使用缓存
+      // Get detailed coin info (including community data) - use cache
       const url = `${baseUrl}/coins/${id}?localization=false&tickers=false&community_data=true&developer_data=true&sparkline=false`;
       const data = await cachedFetch(url, { headers }) as any;
 
-      // 🔍 调试日志 - 查看完整 API 响应
+      // Debug logs - view complete API response
       if (process.env.DEBUG_API) {
-        console.log('\n========== CoinGecko API 调试信息 ==========');
-        console.log('币种:', symbol.toUpperCase());
-        console.log('\n--- Community Data 对象 ---');
+        console.log('\n========== CoinGecko API Debug Info ==========');
+        console.log('Coin:', symbol.toUpperCase());
+        console.log('\n--- Community Data Object ---');
         console.log(JSON.stringify(data.community_data, null, 2));
-        console.log('\n--- Developer Data 对象 ---');
+        console.log('\n--- Developer Data Object ---');
         console.log(JSON.stringify(data.developer_data, null, 2));
-        console.log('\n--- Market Data 片段 ---');
+        console.log('\n--- Market Data Snippet ---');
         console.log('Price 24h:', data.market_data?.price_change_percentage_24h);
         console.log('Price 7d:', data.market_data?.price_change_percentage_7d);
-        console.log('\n--- 顶级字段检查 ---');
+        console.log('\n--- Top-level Fields Check ---');
         console.log('sentiment_votes_up_percentage:', data.sentiment_votes_up_percentage);
         console.log('sentiment_votes_down_percentage:', data.sentiment_votes_down_percentage);
         console.log('community_score:', data.community_score);
@@ -133,58 +133,58 @@ export const socialSentimentTool = tool({
         console.log('==========================================\n');
       }
 
-      // 提取关键数据
+      // Extract key data
       const priceChange24h = data.market_data?.price_change_percentage_24h || 0;
       const priceChange7d = data.market_data?.price_change_percentage_7d || 0;
       const volumeChange24h = data.market_data?.total_volume?.usd || 0;
 
-      // 社区数据 - 注意: sentiment_votes 在顶级字段,不在 community_data 中
+      // Community data - Note: sentiment_votes in top-level fields, not in community_data
       const communityData = data.community_data || {};
-      const sentimentUpVotes = data.sentiment_votes_up_percentage || 50; // 顶级字段!
-      const sentimentDownVotes = data.sentiment_votes_down_percentage || 50; // 顶级字段!
+      const sentimentUpVotes = data.sentiment_votes_up_percentage || 50; // Top-level field!
+      const sentimentDownVotes = data.sentiment_votes_down_percentage || 50; // Top-level field!
 
-      // CoinGecko 免费 API 的 community_data 不包含 twitter_followers
-      // 这些字段要么为 null,要么为 0
+      // CoinGecko free API community_data does not include twitter_followers
+      // These fields are either null or 0
       const redditSubscribers = communityData.reddit_subscribers || 0;
       const redditActive48h = communityData.reddit_accounts_active_48h || 0;
       const redditPosts48h = communityData.reddit_average_posts_48h || 0;
       const telegramUsers = communityData.telegram_channel_user_count || 0;
 
-      // 开发者活跃度
+      // Developer activity
       const developerData = data.developer_data || {};
       const commits4weeks = developerData.commit_count_4_weeks || 0;
 
-      // 计算综合情绪得分 (0-100)
-      // 基于实际可用的数据: 社区投票(60%) + 价格动能(25%) + 开发活动(15%)
+      // Calculate composite sentiment score (0-100)
+      // Based on available data: community votes (60%) + price momentum (25%) + dev activity (15%)
       let sentimentScore = 50;
 
-      // 1. 社区投票权重 60% (主要指标,因为这是最可靠的情绪数据)
+      // 1. Community vote weight 60% (main indicator as it's most reliable sentiment data)
       sentimentScore += (sentimentUpVotes - 50) * 0.6;
 
-      // 2. 价格动量权重 25%
+      // 2. Price momentum weight 25%
       if (priceChange24h > 5) sentimentScore += 12.5;
       else if (priceChange24h > 0) sentimentScore += 6.25;
       else if (priceChange24h < -5) sentimentScore -= 12.5;
       else if (priceChange24h < 0) sentimentScore -= 6.25;
 
-      // 3. 开发活跃度权重 15%
+      // 3. Dev activity weight 15%
       if (commits4weeks > 100) sentimentScore += 7.5;
       else if (commits4weeks > 50) sentimentScore += 3.75;
       else if (commits4weeks < 10) sentimentScore -= 3.75;
 
-      // 额外因素: Reddit 活跃度 (如果可用)
+      // Extra factor: Reddit activity (if available)
       if (redditActive48h > 100) sentimentScore += 2.5;
       else if (redditActive48h > 50) sentimentScore += 1.25;
 
-      // 限制在 0-100 范围
+      // Constrain to 0-100 range
       sentimentScore = Math.max(0, Math.min(100, sentimentScore));
 
-      // 确定总体情绪
+      // Determine overall sentiment
       let overallSentiment = 'Neutral';
       if (sentimentScore > 65) overallSentiment = 'Bullish';
       else if (sentimentScore < 40) overallSentiment = 'Bearish';
 
-      // 看涨/看跌比例 (基于社区投票和情绪得分)
+      // Bull/bear ratio (based on community votes and sentiment score)
       const bullishPercentage = sentimentUpVotes || ((sentimentScore / 100) * 100);
       const bearishPercentage = 100 - bullishPercentage;
 
@@ -236,8 +236,8 @@ export const socialSentimentTool = tool({
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       console.error(`[SocialSentiment] Error for ${symbol}:`, errorMsg);
 
-      // 友好降级到模拟数据（不抛出错误）
-      const sentimentScore = 50 + (Math.random() - 0.5) * 40; // 30-70 范围
+      // Graceful fallback to simulated data (no error thrown)
+      const sentimentScore = 50 + (Math.random() - 0.5) * 40; // 30-70 range
       const bullishPercentage = 45 + Math.random() * 30;
       const bearishPercentage = 100 - bullishPercentage;
 
@@ -283,9 +283,9 @@ export const socialSentimentTool = tool({
   },
 });
 
-// 简单的技术指标计算函数
+// Simple technical indicator calculation functions
 function calculateRSI(prices: number[], period = 14): number {
-  if (prices.length < period + 1) return 50; // 默认值
+  if (prices.length < period + 1) return 50; // Default value
 
   let gains = 0;
   let losses = 0;
@@ -310,7 +310,7 @@ function calculateSMA(prices: number[], period: number): number {
   return slice.reduce((a, b) => a + b, 0) / period;
 }
 
-// 技术分析工具
+// Technical Analysis Tool
 export const technicalAnalysisTool = tool({
   description: 'Perform technical analysis on a cryptocurrency including price trends, indicators, and trading signals.',
   parameters: z.object({
@@ -319,7 +319,7 @@ export const technicalAnalysisTool = tool({
   }),
   execute: async ({ symbol, interval }) => {
     try {
-      // 获取历史价格数据用于计算指标
+      // Get historical price data for calculating indicators
       const id = await getCoinGeckoId(symbol);
       const apiKey = process.env.COINGECKO_API_KEY;
       const baseUrl = apiKey
@@ -327,7 +327,7 @@ export const technicalAnalysisTool = tool({
         : 'https://api.coingecko.com/api/v3';
       const headers: HeadersInit = apiKey ? { 'x-cg-pro-api-key': apiKey } : {};
 
-      // 获取当前价格和24小时数据 - 使用缓存
+      // Get current price and 24h data - use cache
       const priceData = await cachedFetch(
         `${baseUrl}/simple/price?ids=${id}&vs_currencies=usd&include_24hr_change=true`,
         { headers }
@@ -335,25 +335,25 @@ export const technicalAnalysisTool = tool({
       const currentPrice = priceData[id]?.usd || 0;
       const change24h = priceData[id]?.usd_24h_change || 0;
 
-      // 获取历史价格 (30天) - 使用缓存
+      // Get historical price (30 days) - use cache
       const historyData = await cachedFetch(
         `${baseUrl}/coins/${id}/market_chart?vs_currency=usd&days=30&interval=daily`,
         { headers }
       ) as any;
       const prices = historyData.prices?.map((p: number[]) => p[1]) || [];
 
-      // 计算技术指标
+      // Calculate technical indicators
       const rsi = calculateRSI(prices);
       const ma50 = prices.length >= 50 ? calculateSMA(prices, 50) : calculateSMA(prices, Math.min(prices.length, 20));
       const ma200 = prices.length >= 200 ? calculateSMA(prices, 200) : calculateSMA(prices, Math.min(prices.length, 30));
 
-      // MACD 简化计算
+      // MACD simplified calculation
       const ema12 = calculateSMA(prices, Math.min(12, prices.length));
       const ema26 = calculateSMA(prices, Math.min(26, prices.length));
       const macdValue = ema12 - ema26;
       const macdSignal = macdValue > 0 ? 'Bullish' : 'Bearish';
 
-      // 布林带
+      // Bollinger Bands
       const sma20 = calculateSMA(prices, Math.min(20, prices.length));
       const stdDev = Math.sqrt(
         prices.slice(-20).reduce((sum: number, price: number) => sum + Math.pow(price - sma20, 2), 0) / 20
@@ -361,12 +361,12 @@ export const technicalAnalysisTool = tool({
       const bollingerUpper = sma20 + (2 * stdDev);
       const bollingerLower = sma20 - (2 * stdDev);
 
-      // 生成交易信号
+      // Generate trading signals
       let signalCount = 0;
-      if (rsi < 30) signalCount += 2; // 超卖 - 强买入信号
-      else if (rsi < 50) signalCount += 1; // 买入信号
-      else if (rsi > 70) signalCount -= 2; // 超买 - 强卖出信号
-      else if (rsi > 50) signalCount -= 1; // 卖出信号
+      if (rsi < 30) signalCount += 2; // Oversold - strong buy signal
+      else if (rsi < 50) signalCount += 1; // Buy signal
+      else if (rsi > 70) signalCount -= 2; // Overbought - strong sell signal
+      else if (rsi > 50) signalCount -= 1; // Sell signal
 
       if (macdValue > 0) signalCount += 1;
       if (currentPrice > ma50) signalCount += 1;
@@ -412,7 +412,7 @@ export const technicalAnalysisTool = tool({
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       console.error(`[TechnicalAnalysis] Error for ${symbol}:`, errorMsg);
 
-      // 友好降级到基础模拟数据
+      // Graceful fallback to basic simulated data
       const price = 1000 + Math.random() * 10000;
       const change24h = -5 + Math.random() * 10;
 
@@ -453,7 +453,7 @@ export const technicalAnalysisTool = tool({
   },
 });
 
-// 链上数据追踪工具
+// On-chain Data Tracking Tool
 export const onchainTrackerTool = tool({
   description: 'Track on-chain data including wallet activities, transaction volumes, and network metrics for a cryptocurrency.',
   parameters: z.object({
@@ -462,7 +462,7 @@ export const onchainTrackerTool = tool({
   }),
   execute: async ({ symbol, metric }) => {
     try {
-      // 目前仅支持以太坊链上数据 - 返回友好提示而非抛出错误
+      // Currently only supports Ethereum on-chain data - return friendly message instead of throwing error
       if (symbol.toUpperCase() !== 'ETH') {
         return {
           symbol: symbol.toUpperCase(),
@@ -501,7 +501,7 @@ export const onchainTrackerTool = tool({
         throw new Error('No API key');
       }
 
-      // 获取以太坊网络统计
+      // Get Ethereum network statistics
       const ethSupplyResponse = await fetch(
         `https://api.etherscan.io/api?module=stats&action=ethsupply&apikey=${apiKey}`
       );
@@ -518,14 +518,14 @@ export const onchainTrackerTool = tool({
         gasOracleResponse.json(),
       ]);
 
-      // 解析数据
+      // Parse data
       const totalSupply = supplyData.result ? (Number.parseInt(supplyData.result) / 1e18).toFixed(0) : 'N/A';
       const ethPrice = priceData.result?.ethusd || 'N/A';
       const gasPrice = gasData.result?.ProposeGasPrice || 'N/A';
       const safeGasPrice = gasData.result?.SafeGasPrice || 'N/A';
       const fastGasPrice = gasData.result?.FastGasPrice || 'N/A';
 
-      // 计算市值
+      // Calculate market cap
       const marketCap = priceData.result?.ethusd
         ? `$${(Number.parseFloat(totalSupply) * Number.parseFloat(priceData.result.ethusd)).toLocaleString()}`
         : 'N/A';
@@ -568,7 +568,7 @@ export const onchainTrackerTool = tool({
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       console.error(`[OnchainTracker] Error for ${symbol}:`, errorMsg);
 
-      // 友好降级
+      // Graceful fallback
       return {
         symbol: symbol.toUpperCase(),
         metric,
@@ -596,7 +596,7 @@ export const onchainTrackerTool = tool({
   },
 });
 
-// 深度搜索工具
+// Deep Search Tool
 export const deepSearchTool = tool({
   description: 'Perform deep research on a cryptocurrency project including fundamentals, team, technology, and market position using multiple data sources.',
   parameters: z.object({
@@ -605,10 +605,10 @@ export const deepSearchTool = tool({
   }),
   execute: async ({ projectName, aspects }) => {
     try {
-      // 首先尝试使用多数据源获取基础项目信息
+      // First try using multiple data sources to get basic project info
       const projectInfo = await fetchProjectInfoWithFallback(projectName);
 
-      // 如果成功获得项目信息，构建基础研究结果并返回
+      // If project info is successfully obtained, build and return basic research result
       if (projectInfo) {
         return {
           projectName: projectInfo.name || projectName,
@@ -676,7 +676,7 @@ export const deepSearchTool = tool({
         };
       }
 
-      // 如果多数据源都失败，尝试使用 CoinGecko 详细 API
+      // If multiple data sources fail, try using CoinGecko detailed API
       if (!projectInfo) {
         const id = await getCoinGeckoId(projectName);
         const apiKey = process.env.COINGECKO_API_KEY;
@@ -685,11 +685,11 @@ export const deepSearchTool = tool({
           : 'https://api.coingecko.com/api/v3';
         const headers: HeadersInit = apiKey ? { 'x-cg-pro-api-key': apiKey } : {};
 
-        // 获取详细的币种信息 - 使用缓存
+        // Get detailed coin info - use cache
         const url = `${baseUrl}/coins/${id}?localization=false&tickers=false&community_data=true&developer_data=true`;
         const data = await cachedFetch(url, { headers }) as any;
 
-        // 构建综合研究报告
+        // Build comprehensive research report
         return {
           projectName: data.name || projectName,
           symbol: data.symbol?.toUpperCase(),
@@ -770,7 +770,7 @@ export const deepSearchTool = tool({
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       console.error(`[DeepSearch] Error for ${projectName}:`, errorMsg);
 
-      // 友好降级到基础信息
+      // Graceful fallback to basic information
       return {
         projectName,
         symbol: projectName.toUpperCase(),
@@ -807,9 +807,9 @@ export const deepSearchTool = tool({
   },
 });
 
-// 加密货币符号到 CoinGecko ID 的静态映射表（主流币种 + 热门新项目）
+// Static mapping table for cryptocurrency symbols to CoinGecko IDs (major coins + popular new projects)
 const SYMBOL_TO_COINGECKO_ID: Record<string, string> = {
-  // Top 15 主流币种
+  // Top 15 major coins
   BTC: 'bitcoin',
   ETH: 'ethereum',
   SOL: 'solana',
@@ -818,7 +818,7 @@ const SYMBOL_TO_COINGECKO_ID: Record<string, string> = {
   ADA: 'cardano',
   DOGE: 'dogecoin',
   MATIC: 'matic-network',
-  POL: 'matic-network', // Polygon 重命名后
+  POL: 'matic-network', // After Polygon rebranding
   DOT: 'polkadot',
   AVAX: 'avalanche-2',
   LINK: 'chainlink',
@@ -827,7 +827,7 @@ const SYMBOL_TO_COINGECKO_ID: Record<string, string> = {
   LTC: 'litecoin',
   APT: 'aptos',
 
-  // 2024-2025 热门 Layer 1/Layer 2
+  // 2024-2025 trending Layer 1/Layer 2
   SUI: 'sui',
   ARB: 'arbitrum',
   OP: 'optimism',
@@ -837,7 +837,7 @@ const SYMBOL_TO_COINGECKO_ID: Record<string, string> = {
   INJ: 'injective-protocol',
   TIA: 'celestia',
 
-  // DeFi 协议代币
+  // DeFi protocol tokens
   AAVE: 'aave',
   CRV: 'curve-dao-token',
   MKR: 'maker',
@@ -845,15 +845,15 @@ const SYMBOL_TO_COINGECKO_ID: Record<string, string> = {
   PENDLE: 'pendle',
   ONDO: 'ondo-finance',
 
-  // Meme 币
+  // Meme coins
   SHIB: 'shiba-inu',
   PEPE: 'pepe',
   WIF: 'dogwifcoin',
   BONK: 'bonk',
 
-  // 其他热门项目
-  HYPE: 'harrypotterhypermarioliquidfentjeffspecterinu',  // HarryPotterHyperMarioLiquidFentjeffspecterinu (Meme币)
-  HYPERLIQUID: 'hyperliquid',  // Hyperliquid (DEX平台) - 注意与 HYPE 不同
+  // Other popular projects
+  HYPE: 'harrypotterhypermarioliquidfentjeffspecterinu',  // HarryPotterHyperMarioLiquidFentjeffspecterinu (Meme coin)
+  HYPERLIQUID: 'hyperliquid',  // Hyperliquid (DEX platform) - Note: different from HYPE
   FTM: 'fantom',
   NEAR: 'near',
   ALGO: 'algorand',
@@ -865,23 +865,23 @@ const SYMBOL_TO_COINGECKO_ID: Record<string, string> = {
   MANA: 'decentraland',
   AXS: 'axie-infinity',
 
-  // 2025 新兴热门项目
-  VIRTUAL: 'virtuals-protocol',  // Virtuals Protocol (AI Agent平台)
+  // 2025 emerging popular projects
+  VIRTUAL: 'virtuals-protocol',  // Virtuals Protocol (AI Agent platform)
   AI16Z: 'ai16z',  // AI16Z (AI + DeFi)
   GRIFFAIN: 'griffain',  // Griffain (GameFi)
-  ZETA: 'zetachain',  // ZetaChain (跨链)
+  ZETA: 'zetachain',  // ZetaChain (Cross-chain)
   BLAST: 'blast',  // Blast (Layer 2)
-  MOVE: 'movement',  // Movement (Move语言链)
-  SAGA: 'saga-2',  // Saga (Gaming链)
-  PYTH: 'pyth-network',  // Pyth Network (预言机)
-  WLD: 'worldcoin-wld',  // Worldcoin (Sam Altman项目)
-  RENDER: 'render-token',  // Render Network (GPU渲染)
-  FET: 'fetch-ai',  // Fetch.ai (AI + 区块链)
-  OCEAN: 'ocean-protocol',  // Ocean Protocol (数据市场)
-  AGIX: 'singularitynet',  // SingularityNET (AI市场)
+  MOVE: 'movement',  // Movement (Move language chain)
+  SAGA: 'saga-2',  // Saga (Gaming chain)
+  PYTH: 'pyth-network',  // Pyth Network (Oracle)
+  WLD: 'worldcoin-wld',  // Worldcoin (Sam Altman project)
+  RENDER: 'render-token',  // Render Network (GPU rendering)
+  FET: 'fetch-ai',  // Fetch.ai (AI + blockchain)
+  OCEAN: 'ocean-protocol',  // Ocean Protocol (Data marketplace)
+  AGIX: 'singularitynet',  // SingularityNET (AI marketplace)
 };
 
-// 实时市场数据获取工具 (使用多数据源降级策略)
+// Real-time market data retrieval tool (using multiple data source fallback strategy)
 export const getMarketDataTool = tool({
   description: 'Get real-time market data for cryptocurrencies including price, volume, and market cap using multiple data sources (CoinGecko -> Mobula -> Nomics).',
   parameters: z.object({
@@ -889,11 +889,11 @@ export const getMarketDataTool = tool({
   }),
   execute: async ({ symbols }) => {
     try {
-      // 并行获取所有币种的价格数据（使用多数据源降级）
+      // Fetch price data for all coins in parallel (using multiple data source fallback)
       const priceDataPromises = symbols.map(symbol => fetchPriceWithFallback(symbol));
       const priceDataArray = await Promise.all(priceDataPromises);
 
-      // 转换数据格式
+      // Convert data format
       return symbols.map((symbol, index) => {
         const priceData = priceDataArray[index];
 
@@ -922,7 +922,7 @@ export const getMarketDataTool = tool({
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       console.error('[MarketData] Error:', errorMsg);
 
-      // 友好降级到模拟数据
+      // Graceful fallback to simulated data
       return symbols.map(symbol => ({
         symbol: symbol.toUpperCase(),
         dataSource: 'Fallback Data',
@@ -938,11 +938,11 @@ export const getMarketDataTool = tool({
   },
 });
 
-// ========== 新代币发现工具 ==========
+// ========== New Token Discovery Tool ==========
 
 /**
- * 新代币发现工具
- * 获取最近上线的代币列表,帮助用户发现新机会
+ * New Token Discovery Tool
+ * Get list of recently launched tokens to help users discover new opportunities
  */
 export const newTokensDiscoveryTool = tool({
   description: 'Discover recently launched tokens across 200+ blockchain networks using GeckoTerminal. Returns the latest tokens with price data, 24h changes, and network information.',
@@ -954,11 +954,11 @@ export const newTokensDiscoveryTool = tool({
     try {
       console.log(`[NewTokens] Fetching ${limit} new tokens (source: ${source})`);
 
-      // 调用内部 API (在服务端调用,避免 CORS 和速率限制)
+      // Call internal API (server-side, avoids CORS and rate limiting)
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/tokens/new?limit=${limit}&source=${source}`,
         {
-          next: { revalidate: 300 } // 缓存5分钟
+          next: { revalidate: 300 } // Cache for 5 minutes
         }
       );
 
@@ -972,7 +972,7 @@ export const newTokensDiscoveryTool = tool({
         throw new Error('Invalid API response');
       }
 
-      // 格式化返回数据
+      // Format return data
       const formattedTokens = data.tokens.map((token: any, index: number) => ({
         rank: index + 1,
         symbol: token.symbol.toUpperCase(),
@@ -1013,8 +1013,8 @@ export const newTokensDiscoveryTool = tool({
 });
 
 /**
- * 趋势代币工具
- * 获取当前市场热门/趋势代币
+ * Trending Coins Tool
+ * Get current market trending/hot tokens
  */
 export const trendingCoinsTool = tool({
   description: 'Get the top 7 trending cryptocurrencies in the last 24 hours from CoinGecko. These are the most searched and talked about coins.',
@@ -1023,7 +1023,7 @@ export const trendingCoinsTool = tool({
     try {
       console.log('[Trending] Fetching trending coins...');
 
-      // 使用 GeckoTerminal 的 fetchTrendingTokens 方法
+      // Use GeckoTerminal's fetchTrendingTokens method
       const { geckoTerminal } = await import('./data-sources');
       const tokens = await geckoTerminal.fetchTrendingTokens();
 
@@ -1064,7 +1064,7 @@ export const trendingCoinsTool = tool({
   },
 });
 
-// 导出所有工具
+// Export all tools
 export const allTools = {
   socialSentiment: socialSentimentTool,
   technicalAnalysis: technicalAnalysisTool,
