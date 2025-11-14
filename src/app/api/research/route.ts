@@ -34,7 +34,7 @@ function sanitizeMessages(messages: any[]): any[] {
   });
 }
 
-const researchSystemPrompt = `You are Surf AI Research Agent, specialized in producing comprehensive, publication-ready cryptocurrency research reports.
+const researchSystemPrompt = `You are FlowNet AI Research Agent, specialized in producing comprehensive, publication-ready cryptocurrency research reports.
 
 Your research methodology:
 1. **Multi-Source Analysis**: Gather data from social media, on-chain metrics, technical indicators, and project fundamentals

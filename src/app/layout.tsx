@@ -27,11 +27,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const initialLanguage = cookieStore.get("language")?.value as Language | undefined;
+  const cookieLanguage = cookieStore.get("language")?.value as Language | undefined;
+  const initialLanguage: Language = cookieLanguage ?? "en";
 
   return (
     <html
-      lang={initialLanguage ?? "en"}
+      lang={initialLanguage}
       className={`${geistSans.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >

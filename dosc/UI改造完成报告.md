@@ -105,7 +105,7 @@ const [currentMessage, setCurrentMessage] = useState<string>('');
 
 **新增**:
 - ✅ "今天" 分隔标题
-- ✅ "Surf 的功能咨询" 当前会话显示
+- ✅ "FlowNet 的功能咨询" 当前会话显示
 - ✅ 聊天图标 (消息气泡)
 - ✅ 粉色高亮颜色
 
@@ -126,7 +126,7 @@ const [currentMessage, setCurrentMessage] = useState<string>('');
 ### 开始聊天
 1. 输入框提交后,欢迎页消失
 2. 右侧显示聊天界面
-3. 侧边栏显示当前会话 "Surf 的功能咨询"
+3. 侧边栏显示当前会话 "FlowNet 的功能咨询"
 4. 悬浮输入框保持在底部
 
 ### 新建聊天
@@ -176,7 +176,7 @@ const [currentMessage, setCurrentMessage] = useState<string>('');
 聊天状态:
 ┌─────────────────────────────────────┐
 │  Sidebar  │  ChatInterface (右侧)  │
-│  [新聊天] │  ┌─ Surf AI ─────────┐ │
+│  [新聊天] │  ┌─ FlowNet AI ─────────┐ │
 │  ───────  │  │ User: 问题...    │ │
 │  今天      │  │ AI: 回答...      │ │
 │  Surf咨询 │  │                  │ │
@@ -243,7 +243,7 @@ z-40: Sidebar overlay (移动端遮罩)
 ## ⚠️ 已知限制和待优化
 
 ### 1. 聊天历史管理
-**当前**: 只显示一个固定的 "Surf 的功能咨询"
+**当前**: 只显示一个固定的 "FlowNet 的功能咨询"
 **待优化**:
 - 动态生成聊天历史列表
 - 保存多个会话
@@ -337,7 +337,7 @@ http://localhost:3001
 1. 访问主页,查看悬浮输入框
 2. 输入问题,点击 Ask
 3. 验证切换到聊天界面
-4. 检查侧边栏显示 "Surf 的功能咨询"
+4. 检查侧边栏显示 "FlowNet 的功能咨询"
 5. 测试深色模式切换
 
 ---

@@ -223,7 +223,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-2">Surf Grade</h3>
+            <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-2">FlowNet Grade</h3>
             <p className={`text-4xl font-bold ${
               project.grade === "A+" ? "text-green-500" : "text-gray-400"
             }`}>

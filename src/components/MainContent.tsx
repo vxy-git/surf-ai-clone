@@ -117,11 +117,11 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
         <div className="md:hidden flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
           <Image
             src="https://ext.same-assets.com/501684899/3670575781.svg"
-            alt="Surf"
+            alt="FlowNet"
             width={24}
             height={24}
           />
-          <span className="font-bold">Surf</span>
+          <span className="font-bold">FlowNet</span>
         </div>
         <div className="ml-auto">
           <WalletButton />
@@ -134,26 +134,6 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
         <h1 className="text-3xl md:text-5xl font-bold text-center mb-6 md:mb-8">
           {t("mainTitle")}
         </h1>
-
-        {/* Product Hunt Badge - Hidden by default, controlled by env */}
-        {process.env.NEXT_PUBLIC_SHOW_PRODUCT_HUNT === 'true' && (
-          <div className="flex justify-center mb-12">
-            <a
-              href="https://www.producthunt.com/products/surf-9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-900 rounded-full hover:shadow-md transition-shadow"
-            >
-              <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold">
-                🏆
-              </div>
-              <div className="text-left">
-                <div className="text-xs text-orange-500 font-semibold">Product Hunt</div>
-                <div className="text-sm font-bold text-orange-600">#1 Product of the Day</div>
-              </div>
-            </a>
-          </div>
-        )}
 
         {/* Search Input */}
         <ChatInput

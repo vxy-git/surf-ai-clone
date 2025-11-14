@@ -30,7 +30,7 @@
 1. 访问 [WalletConnect Cloud](https://cloud.walletconnect.com)
 2. 使用 GitHub 或 Email 注册/登录
 3. 点击 "Create New Project" 创建新项目
-4. 输入项目名称 (例如: Surf AI)
+4. 输入项目名称 (例如: FlowNet AI)
 5. 复制生成的 **Project ID**
 
 ### 第二步: 配置环境变量

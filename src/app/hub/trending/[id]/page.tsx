@@ -316,7 +316,7 @@ export default function TrendingDetailPage({ params }: TrendingDetailPageProps) 
           <div className="w-full flex items-center gap-3 bg-gray-100 dark:bg-gray-900 rounded-full px-4 py-3 border border-gray-200 dark:border-gray-700">
             <input
               type="text"
-              placeholder="Challenge Surf AI with your crypto curiosity"
+              placeholder="Challenge FlowNet AI with your crypto curiosity"
               className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-500 outline-none"
             />
             <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors flex-shrink-0">

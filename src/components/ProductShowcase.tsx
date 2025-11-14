@@ -1,8 +1,8 @@
 /**
  * ProductShowcase Component
  *
- * 产品功能展示组件，用于介绍 Surf AI 的核心功能
- * Product showcase component for introducing Surf AI's core features
+ * 产品功能展示组件，用于介绍 FlowNet AI 的核心功能
+ * Product showcase component for introducing FlowNet AI's core features
  */
 
 'use client';
@@ -83,12 +83,12 @@ export function ProductShowcase() {
         <div className="flex items-center justify-center gap-3 mb-4">
           <Image
             src="https://ext.same-assets.com/501684899/3670575781.svg"
-            alt="Surf AI"
+            alt="FlowNet AI"
             width={48}
             height={48}
           />
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Surf AI
+            FlowNet AI
           </h3>
         </div>
         <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">

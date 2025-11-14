@@ -19,6 +19,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, Plus, Sun, Moon, Monitor, Globe, Trash2, MessageSquare, Info, Check } from "@/components/icons";
 
+const VISIBLE_LANGUAGE_OPTIONS = [
+  { value: "zh-CN", label: "简体中文", flag: "🇨🇳" },
+  { value: "en", label: "English", flag: "🇺🇸" },
+] as const;
+
 interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
@@ -297,26 +302,13 @@ export default function Sidebar({
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem onClick={() => setLanguage("zh-CN")} className="gap-2">
-                  <span className="text-lg">🇨🇳</span>
-                  <span className="flex-1">简体中文</span>
-                  {language === "zh-CN" && <Check size={16} />}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage("en")} className="gap-2">
-                  <span className="text-lg">🇺🇸</span>
-                  <span className="flex-1">English</span>
-                  {language === "en" && <Check size={16} />}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage("ja")} className="gap-2">
-                  <span className="text-lg">🇯🇵</span>
-                  <span className="flex-1">日本語</span>
-                  {language === "ja" && <Check size={16} />}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage("ko")} className="gap-2">
-                  <span className="text-lg">🇰🇷</span>
-                  <span className="flex-1">한국어</span>
-                  {language === "ko" && <Check size={16} />}
-                </DropdownMenuItem>
+                {VISIBLE_LANGUAGE_OPTIONS.map(({ value, label, flag }) => (
+                  <DropdownMenuItem key={value} onClick={() => setLanguage(value)} className="gap-2">
+                    <span className="text-lg">{flag}</span>
+                    <span className="flex-1">{label}</span>
+                    {language === value && <Check size={16} />}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

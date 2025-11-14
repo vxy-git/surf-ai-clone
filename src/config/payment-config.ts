@@ -29,11 +29,11 @@ export const PAYMENT_CONFIG = {
   // ========== 支付描述 ==========
   // Payment Description
   get PAYMENT_DESCRIPTION() {
-    return `购买 ${this.PAYMENT_CREDITS} 次 Surf AI 使用机会`;
+    return `购买 ${this.PAYMENT_CREDITS} 次 FlowNet AI 使用机会`;
   },
 
   get PAYMENT_DESCRIPTION_EN() {
-    return `Purchase ${this.PAYMENT_CREDITS} Surf AI credits`;
+    return `Purchase ${this.PAYMENT_CREDITS} FlowNet AI credits`;
   }
 } as const;
 

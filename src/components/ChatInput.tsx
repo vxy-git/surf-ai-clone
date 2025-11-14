@@ -55,7 +55,7 @@ export default function ChatInput({
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Challenge Surf AI with your crypto curiosity"
+              placeholder="Challenge FlowNet AI with your crypto curiosity"
               disabled={disabled}
               className={`flex-1 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent dark:text-white disabled:opacity-50 ${
                 variant === 'inline' ? 'text-base md:text-lg' : 'text-base'

@@ -1,4 +1,4 @@
-# 🤖 Surf AI Agent 集成完成!
+# 🤖 FlowNet AI Agent 集成完成!
 
 ## ✅ 已完成的工作
 
@@ -453,6 +453,6 @@ pnpm run build
 
 ---
 
-**现在您可以开始使用 Surf AI Agent 了!** 🚀
+**现在您可以开始使用 FlowNet AI Agent 了!** 🚀
 
 有问题?查看日志或联系支持团队!
