@@ -117,11 +117,11 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
         <div className="md:hidden flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
           <Image
             src="https://ext.same-assets.com/501684899/3670575781.svg"
-            alt="FlowNet"
+            alt="Aqora"
             width={24}
             height={24}
           />
-          <span className="font-bold">FlowNet</span>
+          <span className="font-bold">Aqora</span>
         </div>
         <div className="ml-auto">
           <WalletButton />

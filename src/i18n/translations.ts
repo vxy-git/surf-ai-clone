@@ -7,7 +7,7 @@ export const translations = {
     preTgeReport: "Pre-tge 报告",
     appearance: "外观",
     language: "语言",
-    learnAboutSurf: "了解 FlowNet",
+    learnAboutSurf: "了解 Aqora",
     loadingHistory: "加载聊天记录...",
     noHistory: "暂无聊天记录",
     deleteSession: "删除会话",
@@ -21,7 +21,7 @@ export const translations = {
     mainTitle: "今天我们在加密世界探索什么？",
     productHunt: "Product Hunt",
     productOfDay: "#1 每日产品",
-    searchPlaceholder: "用你的加密好奇心挑战 FlowNet AI",
+    searchPlaceholder: "用你的加密好奇心挑战 Aqora AI",
     loading: "加载中...",
     newTokensTitle: "最近上线代币",
     realtimeData: "实时数据",
@@ -37,7 +37,7 @@ export const translations = {
     hottestQuestion: "热门问题",
 
     // Agent Tools
-    agentToolsTitle: "查看 FlowNet 为更智能的加密洞察量身定制的代理工具",
+    agentToolsTitle: "查看 Aqora 为更智能的加密洞察量身定制的代理工具",
     socialSentiment: "社交情绪分析",
     socialSentimentDesc: "实时跟踪 100,000+ 精选加密 KOL，分析情绪和关键观点。",
     technicalAnalysis: "技术分析",
@@ -45,10 +45,10 @@ export const translations = {
     onchainTracker: "链上追踪器",
     onchainTrackerDesc: "跟踪钱包行为、代币流动和链上活动，覆盖 40+ 兼容区块链网络。",
     deepSearch: "深度搜索代理",
-    deepSearchDesc: "每次查询果断扫描 200+ 网页，利用我们专有的 FlowNet 数据库捕捉实时趋势信号。",
+    deepSearchDesc: "每次查询果断扫描 200+ 网页，利用我们专有的 Aqora 数据库捕捉实时趋势信号。",
 
     // 报告功能
-    reportsTitle: "FlowNet AI 生成的顶级加密项目报告",
+    reportsTitle: "Aqora AI 生成的顶级加密项目报告",
     professionalLayout: "专业布局",
     professionalLayoutDesc: "简洁、可发布的格式，旨在实现最大的清晰度和影响力。",
     nerHighlighting: "NER 高亮",
@@ -76,7 +76,7 @@ export const translations = {
     clickForDetails: "点击查看详情和充值",
 
     // 支付弹窗
-    paymentModalTitle: "FlowNet AI 产品与充值",
+    paymentModalTitle: "Aqora AI 产品与充值",
     aboutProduct: "关于产品",
     purchaseCredits: "购买次数",
     purchasePackage: "使用次数套餐",
@@ -105,7 +105,7 @@ export const translations = {
     insufficientCredits: "额度不足，未扣除额度",
 
     // 产品展示
-    productIntro: "FlowNet AI 是专为加密货币投资者和研究者打造的智能分析助手，提供实时市场洞察、社交情绪分析、技术指标和链上数据追踪。",
+    productIntro: "Aqora AI 是专为加密货币投资者和研究者打造的智能分析助手，提供实时市场洞察、社交情绪分析、技术指标和链上数据追踪。",
     aiToolsTitle: "核心 AI 工具",
     reportFeaturesTitle: "专业报告功能",
     useCasesTitle: "适用场景",
@@ -121,19 +121,19 @@ export const translations = {
 
     // About 页面
     about: {
-      title: "关于 FlowNet AI",
+      title: "关于 Aqora AI",
       launchApp: "启动应用",
-      heroTitle: "FlowNet AI — 链上 AGI 基础层",
-      heroSubtitle: "赋能链上智能，让 AI 真正上链。FlowNet AI 作为连接 Web3 与 AI 的中间层基础设施，让 AI 代理进化为具备钱包 ID、可进行交易、可访问 x402 等最新协议的自治链上 AGI。",
+      heroTitle: "Aqora AI — 链上 AGI 基础层",
+      heroSubtitle: "赋能链上智能，让 AI 真正上链。Aqora AI 作为连接 Web3 与 AI 的中间层基础设施，让 AI 代理进化为具备钱包 ID、可进行交易、可访问 x402 等最新协议的自治链上 AGI。",
 
       visionTitle: "愿景",
-      visionText: "FlowNet AI 打造 AI 与区块链的融合层，使智能体能以\"链上用户\"的身份运行。它们拥有钱包、执行交易、学习网络数据、参与 DAO 治理，实现真正的去中心化自治智能。\n\n每个代理都是一个自进化身份，FlowNet AI 是通往链上 AGI 的起点。",
+      visionText: "Aqora AI 打造 AI 与区块链的融合层，使智能体能以\"链上用户\"的身份运行。它们拥有钱包、执行交易、学习网络数据、参与 DAO 治理，实现真正的去中心化自治智能。\n\n每个代理都是一个自进化身份，Aqora AI 是通往链上 AGI 的起点。",
 
       architectureTitle: "核心架构",
       agentLayer: "代理层（Agent Layer）",
       agentLayerDesc: "拥有钱包身份的 AI 代理执行交易、研究、治理与分析，直接接入包括 x402 在内的开放协议。",
       flowLayer: "流层（Flow Layer / 中间层）",
-      flowLayerDesc: "连接 AI 推理与链上执行的核心枢纽。FlowNet AI 将智能体意图转换为链上动作，并在多链间实时同步状态。",
+      flowLayerDesc: "连接 AI 推理与链上执行的核心枢纽。Aqora AI 将智能体意图转换为链上动作，并在多链间实时同步状态。",
       incentiveLayer: "激励层（Incentive Layer）",
       incentiveLayerDesc: "未来将开放的模块化激励系统，用于奖励向网络提供数据、算力或智能的贡献者。（详细信息将在即将发布的文档中公布。）",
 
@@ -161,7 +161,7 @@ export const translations = {
 
       buildersTitle: "面向开发者与高级用户",
       forDevelopers: "面向开发者",
-      developersDesc: "• SDK 与 API，快速创建链上 AI 代理\n• FlowNet AI 运行时连接模型与区块链行为\n• 模型与策略市场化，形成收益闭环\n• 协议费用与分润机制",
+      developersDesc: "• SDK 与 API，快速创建链上 AI 代理\n• Aqora AI 运行时连接模型与区块链行为\n• 模型与策略市场化，形成收益闭环\n• 协议费用与分润机制",
       forPowerUsers: "面向高阶用户",
       powerUsersDesc: "• 一键部署研究或交易代理\n• 实时监控代理表现与学习进化\n• 获取透明日志与链上凭证",
 
@@ -173,9 +173,9 @@ export const translations = {
       roadmap5: "治理与 AI 标准 DAO",
 
       partnersTitle: "合作伙伴与投资方",
-      partnersSubtitle: "展示生态与投资伙伴，构建 FlowNet AI 品牌墙",
+      partnersSubtitle: "展示生态与投资伙伴，构建 Aqora AI 品牌墙",
 
-      footerText: "© FlowNet AI. All rights reserved.",
+      footerText: "© Aqora AI. All rights reserved.",
       documentation: "文档",
       careers: "职位",
       terms: "条款",
@@ -194,7 +194,7 @@ export const translations = {
     preTgeReport: "Pre-tge Report",
     appearance: "Appearance",
     language: "Language",
-    learnAboutSurf: "Learn About FlowNet",
+    learnAboutSurf: "Learn About Aqora",
     loadingHistory: "Loading chat history...",
     noHistory: "No chat history",
     deleteSession: "Delete session",
@@ -208,7 +208,7 @@ export const translations = {
     mainTitle: "What are we exploring in crypto today?",
     productHunt: "Product Hunt",
     productOfDay: "#1 Product of the Day",
-    searchPlaceholder: "Challenge FlowNet AI with your crypto curiosity",
+    searchPlaceholder: "Challenge Aqora AI with your crypto curiosity",
     loading: "Loading...",
     newTokensTitle: "Recently Listed Tokens",
     realtimeData: "Real-time Data",
@@ -224,7 +224,7 @@ export const translations = {
     hottestQuestion: "Hottest Question",
 
     // Agent Tools
-    agentToolsTitle: "Check out FlowNet's tailored agent tools for smarter crypto insights",
+    agentToolsTitle: "Check out Aqora's tailored agent tools for smarter crypto insights",
     socialSentiment: "Social Sentiment Analysis",
     socialSentimentDesc: "Real-time tracking of 100,000+ curated crypto KOLs, analyzing sentiment and key opinions.",
     technicalAnalysis: "Technical Analysis",
@@ -232,10 +232,10 @@ export const translations = {
     onchainTracker: "Onchain Tracker",
     onchainTrackerDesc: "Track wallet behaviors, token flows, and onchain activity across 40+ compatible blockchain networks.",
     deepSearch: "Deep Search Agent",
-    deepSearchDesc: "Every query decisively scans over 200+ web pages and leverages our proprietary FlowNet database to capture live trend signals.",
+    deepSearchDesc: "Every query decisively scans over 200+ web pages and leverages our proprietary Aqora database to capture live trend signals.",
 
     // Reports
-    reportsTitle: "Top-tier crypto project reports generated by FlowNet AI",
+    reportsTitle: "Top-tier crypto project reports generated by Aqora AI",
     professionalLayout: "Professional layout",
     professionalLayoutDesc: "A sleek, publication-ready format designed for maximum clarity and impact.",
     nerHighlighting: "NER highlighting",
@@ -263,7 +263,7 @@ export const translations = {
     clickForDetails: "Click for details and top-up",
 
     // Payment Modal
-    paymentModalTitle: "FlowNet AI Product & Top-up",
+    paymentModalTitle: "Aqora AI Product & Top-up",
     aboutProduct: "About Product",
     purchaseCredits: "Purchase Credits",
     purchasePackage: "Usage Credits Package",
@@ -292,7 +292,7 @@ export const translations = {
     insufficientCredits: "Insufficient credits, no credits deducted",
 
     // Product Showcase
-    productIntro: "FlowNet AI is an intelligent analysis assistant built for cryptocurrency investors and researchers, providing real-time market insights, social sentiment analysis, technical indicators, and on-chain data tracking.",
+    productIntro: "Aqora AI is an intelligent analysis assistant built for cryptocurrency investors and researchers, providing real-time market insights, social sentiment analysis, technical indicators, and on-chain data tracking.",
     aiToolsTitle: "Core AI Tools",
     reportFeaturesTitle: "Professional Report Features",
     useCasesTitle: "Use Cases",
@@ -308,19 +308,19 @@ export const translations = {
 
     // About Page
     about: {
-      title: "About FlowNet AI",
+      title: "About Aqora AI",
       launchApp: "Launch App",
-      heroTitle: "FlowNet AI — The On-Chain AGI Infrastructure",
-      heroSubtitle: "Empowering on-chain intelligence. Flowing between AI and Web3. FlowNet AI acts as the middle layer that connects decentralized infrastructure and adaptive AI agents — enabling them to evolve into autonomous, on-chain AGIs with real wallet IDs, trading capabilities, and direct access to the latest protocols like x402.",
+      heroTitle: "Aqora AI — The On-Chain AGI Infrastructure",
+      heroSubtitle: "Empowering on-chain intelligence. Flowing between AI and Web3. Aqora AI acts as the middle layer that connects decentralized infrastructure and adaptive AI agents — enabling them to evolve into autonomous, on-chain AGIs with real wallet IDs, trading capabilities, and direct access to the latest protocols like x402.",
 
       visionTitle: "Vision",
-      visionText: "FlowNet AI bridges the gap between Web3 and AI by empowering AI agents to behave like real on-chain entities. These agents own wallets, trade, learn from network data, and participate in DAO governance — all transparently and autonomously.\n\nEvery agent becomes a self-evolving identity — the first true step toward on-chain AGI.",
+      visionText: "Aqora AI bridges the gap between Web3 and AI by empowering AI agents to behave like real on-chain entities. These agents own wallets, trade, learn from network data, and participate in DAO governance — all transparently and autonomously.\n\nEvery agent becomes a self-evolving identity — the first true step toward on-chain AGI.",
 
       architectureTitle: "Core Architecture",
       agentLayer: "Agent Layer",
       agentLayerDesc: "AI agents with wallet identities perform trading, research, analysis, and governance participation with direct access to open protocols like x402.",
-      flowLayer: "FlowNet Layer (Middle Layer)",
-      flowLayerDesc: "The connective tissue that links AI logic to blockchain execution. FlowNet AI translates agent intent into on-chain actions, validates results, and synchronizes agent states across chains in real time.",
+      flowLayer: "Aqora Layer (Middle Layer)",
+      flowLayerDesc: "The connective tissue that links AI logic to blockchain execution. Aqora AI translates agent intent into on-chain actions, validates results, and synchronizes agent states across chains in real time.",
       incentiveLayer: "Incentive Layer",
       incentiveLayerDesc: "A future modular incentive system that rewards contributors who supply data, compute, or intelligence to the network. (Details coming in upcoming documentation.)",
 
@@ -348,7 +348,7 @@ export const translations = {
 
       buildersTitle: "For Builders & Power Users",
       forDevelopers: "For Builders",
-      developersDesc: "• SDKs and APIs to create on-chain AI agents\n• FlowNet AI runtime to integrate off-chain models with blockchain actions\n• Marketplace for models, strategies, and intelligence modules\n• Early access to protocol incentives",
+      developersDesc: "• SDKs and APIs to create on-chain AI agents\n• Aqora AI runtime to integrate off-chain models with blockchain actions\n• Marketplace for models, strategies, and intelligence modules\n• Early access to protocol incentives",
       forPowerUsers: "For Power Users",
       powerUsersDesc: "• Deploy and manage trading or research agents with one click\n• Track performance and learning evolution on-chain\n• Access transparent logs, receipts, and audit trails",
 
@@ -362,7 +362,7 @@ export const translations = {
       partnersTitle: "Partners & Backers",
       partnersSubtitle: "Showcase of ecosystem and investment partners",
 
-      footerText: "© FlowNet AI. All rights reserved.",
+      footerText: "© Aqora AI. All rights reserved.",
       documentation: "Docs",
       careers: "Careers",
       terms: "Terms & Privacy",
@@ -381,7 +381,7 @@ export const translations = {
     preTgeReport: "Pre-tge レポート",
     appearance: "外観",
     language: "言語",
-    learnAboutSurf: "FlowNet について",
+    learnAboutSurf: "Aqora について",
 
     // テーマ
     themeSystem: "システム",
@@ -392,7 +392,7 @@ export const translations = {
     mainTitle: "今日は暗号で何を探索していますか？",
     productHunt: "Product Hunt",
     productOfDay: "#1 今日の製品",
-    searchPlaceholder: "暗号の好奇心で FlowNet AI に挑戦",
+    searchPlaceholder: "暗号の好奇心で Aqora AI に挑戦",
 
     // 検索ボタン
     ask: "質問",
@@ -404,7 +404,7 @@ export const translations = {
     hottestQuestion: "ホットな質問",
 
     // Agent Tools
-    agentToolsTitle: "よりスマートな暗号インサイトのための FlowNet のカスタマイズされたエージェントツールをご覧ください",
+    agentToolsTitle: "よりスマートな暗号インサイトのための Aqora のカスタマイズされたエージェントツールをご覧ください",
     socialSentiment: "ソーシャルセンチメント分析",
     socialSentimentDesc: "100,000以上の厳選された暗号KOLをリアルタイムで追跡し、センチメントと主要な意見を分析します。",
     technicalAnalysis: "テクニカル分析",
@@ -415,7 +415,7 @@ export const translations = {
     deepSearchDesc: "すべてのクエリは200以上のWebページを決定的にスキャンし、独自のSurfデータベースを活用してライブトレンド信号をキャプチャします。",
 
     // レポート
-    reportsTitle: "FlowNet AIによって生成されたトップティアの暗号プロジェクトレポート",
+    reportsTitle: "Aqora AIによって生成されたトップティアの暗号プロジェクトレポート",
     professionalLayout: "プロフェッショナルレイアウト",
     professionalLayoutDesc: "最大の明瞭さと影響力のために設計された洗練された出版準備完了形式。",
     nerHighlighting: "NERハイライト",
@@ -434,7 +434,7 @@ export const translations = {
     disconnect: "接続解除",
 
     // 支払いモーダル
-    paymentModalTitle: "FlowNet AI 製品とチャージ",
+    paymentModalTitle: "Aqora AI 製品とチャージ",
     aboutProduct: "製品について",
     purchaseCredits: "クレジット購入",
     purchasePackage: "使用クレジットパッケージ",
@@ -452,7 +452,7 @@ export const translations = {
     faqAnswer2: "いいえ！購入したクレジットは永久に有効で、いつでも使用できます。",
 
     // 製品紹介
-    productIntro: "FlowNet AI は、暗号通貨投資家と研究者向けに構築されたインテリジェント分析アシスタントで、リアルタイム市場インサイト、ソーシャルセンチメント分析、テクニカル指標、オンチェーンデータ追跡を提供します。",
+    productIntro: "Aqora AI は、暗号通貨投資家と研究者向けに構築されたインテリジェント分析アシスタントで、リアルタイム市場インサイト、ソーシャルセンチメント分析、テクニカル指標、オンチェーンデータ追跡を提供します。",
     aiToolsTitle: "コアAIツール",
     reportFeaturesTitle: "プロフェッショナルレポート機能",
     useCasesTitle: "使用ケース",
@@ -474,7 +474,7 @@ export const translations = {
     preTgeReport: "Pre-tge 리포트",
     appearance: "외관",
     language: "언어",
-    learnAboutSurf: "FlowNet 알아보기",
+    learnAboutSurf: "Aqora 알아보기",
 
     // 테마
     themeSystem: "시스템",
@@ -485,7 +485,7 @@ export const translations = {
     mainTitle: "오늘 암호화폐에서 무엇을 탐험하고 있나요?",
     productHunt: "Product Hunt",
     productOfDay: "#1 오늘의 제품",
-    searchPlaceholder: "암호화폐 호기심으로 FlowNet AI에 도전하세요",
+    searchPlaceholder: "암호화폐 호기심으로 Aqora AI에 도전하세요",
 
     // 검색 버튼
     ask: "질문",
@@ -497,7 +497,7 @@ export const translations = {
     hottestQuestion: "가장 핫한 질문",
 
     // Agent Tools
-    agentToolsTitle: "더 스마트한 암호화폐 인사이트를 위한 FlowNet 의 맞춤형 에이전트 도구를 확인하세요",
+    agentToolsTitle: "더 스마트한 암호화폐 인사이트를 위한 Aqora 의 맞춤형 에이전트 도구를 확인하세요",
     socialSentiment: "소셜 감정 분석",
     socialSentimentDesc: "100,000명 이상의 엄선된 암호화폐 KOL을 실시간으로 추적하여 감정과 주요 의견을 분석합니다.",
     technicalAnalysis: "기술적 분석",
@@ -505,10 +505,10 @@ export const translations = {
     onchainTracker: "온체인 트래커",
     onchainTrackerDesc: "40개 이상의 호환 가능한 블록체인 네트워크에서 지갑 동작, 토큰 흐름 및 온체인 활동을 추적합니다.",
     deepSearch: "딥 서치 에이전트",
-    deepSearchDesc: "모든 쿼리는 200개 이상의 웹 페이지를 결정적으로 스캔하고 독점 FlowNet 데이터베이스를 활용하여 실시간 트렌드 신호를 캡처합니다.",
+    deepSearchDesc: "모든 쿼리는 200개 이상의 웹 페이지를 결정적으로 스캔하고 독점 Aqora 데이터베이스를 활용하여 실시간 트렌드 신호를 캡처합니다.",
 
     // 리포트
-    reportsTitle: "FlowNet AI가 생성한 최고 수준의 암호화폐 프로젝트 리포트",
+    reportsTitle: "Aqora AI가 생성한 최고 수준의 암호화폐 프로젝트 리포트",
     professionalLayout: "전문적인 레이아웃",
     professionalLayoutDesc: "최대의 명확성과 영향력을 위해 설계된 세련되고 출판 준비가 완료된 형식.",
     nerHighlighting: "NER 하이라이팅",
@@ -527,7 +527,7 @@ export const translations = {
     disconnect: "연결 해제",
 
     // 결제 모달
-    paymentModalTitle: "FlowNet AI 제품 및 충전",
+    paymentModalTitle: "Aqora AI 제품 및 충전",
     aboutProduct: "제품 정보",
     purchaseCredits: "크레딧 구매",
     purchasePackage: "사용 크레딧 패키지",
@@ -545,7 +545,7 @@ export const translations = {
     faqAnswer2: "아니요! 구매한 크레딧은 영구적으로 유효하며 언제든지 사용할 수 있습니다.",
 
     // 제품 소개
-    productIntro: "FlowNet AI는 암호화폐 투자자와 연구자를 위해 구축된 지능형 분석 도우미로, 실시간 시장 인사이트, 소셜 감정 분석, 기술 지표 및 온체인 데이터 추적을 제공합니다.",
+    productIntro: "Aqora AI는 암호화폐 투자자와 연구자를 위해 구축된 지능형 분석 도우미로, 실시간 시장 인사이트, 소셜 감정 분석, 기술 지표 및 온체인 데이터 추적을 제공합니다.",
     aiToolsTitle: "핵심 AI 도구",
     reportFeaturesTitle: "전문 리포트 기능",
     useCasesTitle: "사용 사례",

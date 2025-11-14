@@ -303,11 +303,11 @@ export default function HubPage() {
         <div className="flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
           <Image
             src="https://ext.same-assets.com/501684899/3670575781.svg"
-            alt="FlowNet"
+            alt="Aqora"
             width={24}
             height={24}
           />
-          <span className="font-bold dark:text-white">FlowNet</span>
+          <span className="font-bold dark:text-white">Aqora</span>
         </div>
         <button className="ml-auto px-4 py-2 border-2 border-[#19c8ff] text-[#19c8ff] rounded-full font-medium hover:bg-[#19c8ff] hover:text-white transition-colors text-sm">
           {String(t("login"))}
@@ -406,7 +406,7 @@ export default function HubPage() {
                 <div className="col-span-3"></div>
                 <div className="col-span-3 text-center">Predicted FDV and Launch Mcap</div>
                 <div className="col-span-2 text-center">Binance listing probability</div>
-                <div className="col-span-2 text-center">FlowNet Grade by AI</div>
+                <div className="col-span-2 text-center">Aqora Grade by AI</div>
                 <div className="col-span-2 text-center">Actions</div>
               </div>
 

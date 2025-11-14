@@ -8,9 +8,9 @@ export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'Y
 
 // 2. 定义项目元数据
 const metadata = {
-  name: 'FlowNet AI',
+  name: 'Aqora AI',
   description: 'Crypto Data Hub & AI Assistant',
-  url: typeof window !== 'undefined' ? window.location.origin : 'https://flowNet.ai',
+  url: typeof window !== 'undefined' ? window.location.origin : 'https://aqora.ai',
   icons: ['https://ext.same-assets.com/501684899/3670575781.svg']
 }
 

@@ -1,4 +1,4 @@
-# FlowNet AI Clone - 待办事项
+# Aqora AI Clone - 待办事项
 
 ## 已完成
 - [x] 设置项目配置和样式

@@ -112,11 +112,11 @@ export default function Sidebar({
           <div className={`flex items-center gap-2 ${isOpen ? 'opacity-100' : 'opacity-0 md:hidden'}`}>
             <Image
               src="/images/logo.jpg"
-              alt="FlowNet AI"
+              alt="Aqora AI"
               width={32}
               height={32}
             />
-            <span className="text-xl font-bold whitespace-nowrap">FlowNet AI</span>
+            <span className="text-xl font-bold whitespace-nowrap">Aqora AI</span>
           </div>
           <button
             onClick={onToggle}

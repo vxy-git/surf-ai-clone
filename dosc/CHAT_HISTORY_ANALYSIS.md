@@ -1,4 +1,4 @@
-# FlowNet AI Clone 聊天历史功能探索分析报告
+# Aqora AI Clone 聊天历史功能探索分析报告
 
 ## 1. 聊天历史相关的组件和页面
 

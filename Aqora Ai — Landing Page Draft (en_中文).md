@@ -1,22 +1,22 @@
-FlowNet AI — The On-Chain AGI Infrastructure
+Aqora AI — The On-Chain AGI Infrastructure
 Tagline
 Empowering on-chain intelligence. Flowing between AI and Web3.
 Subhead
-FlowNet AI acts as the middle layer that connects decentralized infrastructure and adaptive AI agents — enabling them to evolve into autonomous, on-chain AGIs with real wallet IDs, trading capabilities, and direct access to the latest protocols like x402.
+Aqora AI acts as the middle layer that connects decentralized infrastructure and adaptive AI agents — enabling them to evolve into autonomous, on-chain AGIs with real wallet IDs, trading capabilities, and direct access to the latest protocols like x402.
 Primary CTAs
 - Launch App
 - Deploy Agent
 - Explore Docs
 
 Vision
-FlowNet AI bridges the gap between Web3 and AI by empowering AI agents to behave like real on-chain entities. These agents own wallets, trade, learn from network data, and interact with DeFi, NFT, and DAO ecosystems — all transparently and autonomously.
+Aqora AI bridges the gap between Web3 and AI by empowering AI agents to behave like real on-chain entities. These agents own wallets, trade, learn from network data, and interact with DeFi, NFT, and DAO ecosystems — all transparently and autonomously.
 Every agent becomes a self-evolving identity — the first true step toward on-chain AGI.
 
 Core Architecture
 Agent Layer
 AI agents with wallet identities perform trading, research, analysis, and governance participation. Each agent can deploy strategies and access any open protocol, including x402.
-FlowNet Layer (Middle Layer)
-The connective tissue that links AI logic to blockchain execution. FlowNet AI translates agent intent into on-chain actions, validates results, and synchronizes agent states across chains.
+Aqora Layer (Middle Layer)
+The connective tissue that links AI logic to blockchain execution. Aqora AI translates agent intent into on-chain actions, validates results, and synchronizes agent states across chains.
 Incentive Layer
 A modular system that in the future will reward users and operators who provide data, infrastructure, or intelligence to the network. (Details to be released in upcoming documentation.)
 
@@ -79,18 +79,18 @@ Footer
 
 X / Discord / GitHub
 
-FlowNet AI — 链上 AGI 基础层（中文）
+Aqora AI — 链上 AGI 基础层（中文）
 标语
 赋能链上智能，让 AI 真正上链。
 副标题
-FlowNet AI 作为连接 Web3 与 AI 的 中间层基础设施，让 AI 代理进化为具备钱包 ID、可进行交易、可访问 x402 等最新协议的自治链上 AGI。
+Aqora AI 作为连接 Web3 与 AI 的 中间层基础设施，让 AI 代理进化为具备钱包 ID、可进行交易、可访问 x402 等最新协议的自治链上 AGI。
 主要按钮
 - 启动应用
 - 部署代理
 - 查看文档
 
 愿景
-FlowNet AI 打造 AI 与区块链的融合层，使智能体能以“链上用户”的身份运行。它们拥有钱包、执行交易、学习网络数据、参与 DAO 治理，实现真正的去中心化自治智能。
+Aqora AI 打造 AI 与区块链的融合层，使智能体能以“链上用户”的身份运行。它们拥有钱包、执行交易、学习网络数据、参与 DAO 治理，实现真正的去中心化自治智能。
 每个代理都是一个自进化身份，Aqora AI 是通往 链上 AGI 的起点。
 
 核心架构
@@ -148,4 +148,4 @@ Incentive Layer（激励层）
 治理与标准化 DAO
 
 版权信息
-© FlowNet AI. All rights reserved.
+© Aqora AI. All rights reserved.
