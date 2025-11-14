@@ -110,7 +110,7 @@ const trendingProjects = [
   {
     id: 1,
     name: "Bitcoin",
-    logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png",
+    logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.jpg",
     ticker: "$BTC",
     price: "$98,450",
     change24h: "+5.2%",
@@ -131,7 +131,7 @@ const trendingProjects = [
   {
     id: 2,
     name: "Ethereum",
-    logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+    logo: "https://cryptologos.cc/logos/ethereum-eth-logo.jpg",
     ticker: "$ETH",
     price: "$3,245",
     change24h: "+3.8%",
@@ -152,7 +152,7 @@ const trendingProjects = [
   {
     id: 3,
     name: "Solana",
-    logo: "https://cryptologos.cc/logos/solana-sol-logo.png",
+    logo: "https://cryptologos.cc/logos/solana-sol-logo.jpg",
     ticker: "$SOL",
     price: "$185.20",
     change24h: "+8.5%",
@@ -197,7 +197,7 @@ const trendingProjects = [
   {
     id: 5,
     name: "Cardano",
-    logo: "https://cryptologos.cc/logos/cardano-ada-logo.png",
+    logo: "https://cryptologos.cc/logos/cardano-ada-logo.jpg",
     ticker: "$ADA",
     price: "$0.85",
     change24h: "+2.1%",
@@ -309,7 +309,7 @@ export default function HubPage() {
           />
           <span className="font-bold dark:text-white">Surf</span>
         </div>
-        <button className="ml-auto px-4 py-2 border-2 border-[#A78BFA] text-[#A78BFA] rounded-full font-medium hover:bg-[#A78BFA] hover:text-white transition-colors text-sm">
+        <button className="ml-auto px-4 py-2 border-2 border-[#19c8ff] text-[#19c8ff] rounded-full font-medium hover:bg-[#19c8ff] hover:text-white transition-colors text-sm">
           {String(t("login"))}
         </button>
       </header>
@@ -318,7 +318,7 @@ export default function HubPage() {
         {/* Floating icons background */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-20 w-16 h-16 bg-blue-200 dark:bg-blue-900 rounded-full blur-xl" />
-          <div className="absolute top-32 right-32 w-20 h-20 bg-purple-200 dark:bg-purple-900 rounded-full blur-xl" />
+          <div className="absolute top-32 right-32 w-20 h-20 bg-sky-200 dark:bg-sky-900 rounded-full blur-xl" />
           <div className="absolute bottom-20 left-1/3 w-24 h-24 bg-pink-200 dark:bg-pink-900 rounded-full blur-xl" />
           <div className="absolute top-20 right-1/4 w-16 h-16 bg-green-200 dark:bg-green-900 rounded-full blur-xl" />
         </div>
@@ -338,7 +338,7 @@ export default function HubPage() {
               placeholder="Search a project, token, or CA"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-6 py-4 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white outline-none focus:border-[#A78BFA] transition-colors text-lg"
+              className="w-full px-6 py-4 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white outline-none focus:border-[#19c8ff] transition-colors text-lg"
             />
           </div>
         </div>
@@ -352,7 +352,7 @@ export default function HubPage() {
               onClick={() => setActiveTab("pre-tge")}
               className={`py-4 px-2 font-medium border-b-2 transition-colors ${
                 activeTab === "pre-tge"
-                  ? "border-[#A78BFA] text-[#A78BFA]"
+                  ? "border-[#19c8ff] text-[#19c8ff]"
                   : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
               }`}
             >
@@ -365,7 +365,7 @@ export default function HubPage() {
               onClick={() => setActiveTab("trending")}
               className={`py-4 px-2 font-medium border-b-2 transition-colors ${
                 activeTab === "trending"
-                  ? "border-[#A78BFA] text-[#A78BFA]"
+                  ? "border-[#19c8ff] text-[#19c8ff]"
                   : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
               }`}
             >
@@ -378,7 +378,7 @@ export default function HubPage() {
               onClick={() => setActiveTab("watchlist")}
               className={`py-4 px-2 font-medium border-b-2 transition-colors ${
                 activeTab === "watchlist"
-                  ? "border-[#A78BFA] text-[#A78BFA]"
+                  ? "border-[#19c8ff] text-[#19c8ff]"
                   : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
               }`}
             >
@@ -430,9 +430,9 @@ export default function HubPage() {
                         />
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold dark:text-white hover:text-[#A78BFA] dark:hover:text-[#A78BFA] transition-colors">{project.name}</span>
+                            <span className="font-semibold dark:text-white hover:text-[#19c8ff] dark:hover:text-[#19c8ff] transition-colors">{project.name}</span>
                             {project.featured && (
-                              <span className="text-xs bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white px-2 py-0.5 rounded-full">
+                              <span className="text-xs bg-gradient-to-r from-[#19c8ff] to-[#0aa3d8] text-white px-2 py-0.5 rounded-full">
                                 Featured
                               </span>
                             )}
@@ -489,7 +489,7 @@ export default function HubPage() {
                         </button>
                         <Link
                           href={`/hub/project/${project.id}`}
-                          className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[#A78BFA] transition-colors"
+                          className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[#19c8ff] transition-colors"
                           title="View Details"
                         >
                           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -512,9 +512,9 @@ export default function HubPage() {
                         />
                         <Link href={`/hub/project/${project.id}`} className="flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold dark:text-white hover:text-[#A78BFA] dark:hover:text-[#A78BFA] transition-colors">{project.name}</span>
+                            <span className="font-semibold dark:text-white hover:text-[#19c8ff] dark:hover:text-[#19c8ff] transition-colors">{project.name}</span>
                             {project.featured && (
-                              <span className="text-xs bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white px-2 py-0.5 rounded-full">
+                              <span className="text-xs bg-gradient-to-r from-[#19c8ff] to-[#0aa3d8] text-white px-2 py-0.5 rounded-full">
                                 Featured
                               </span>
                             )}
@@ -757,7 +757,7 @@ export default function HubPage() {
 
                           {/* Status */}
                           <div className="col-span-2 flex items-center justify-center">
-                            <span className="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 px-3 py-1 rounded text-sm font-medium">
+                            <span className="bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300 px-3 py-1 rounded text-sm font-medium">
                               {project.status}
                             </span>
                           </div>
@@ -803,7 +803,7 @@ export default function HubPage() {
                           <div className="space-y-2">
                             <div className="flex justify-between">
                               <span className="text-xs text-gray-500 dark:text-gray-400">Status:</span>
-                              <span className="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded text-xs font-medium">
+                              <span className="bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300 px-2 py-0.5 rounded text-xs font-medium">
                                 {project.status}
                               </span>
                             </div>

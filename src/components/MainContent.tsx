@@ -179,7 +179,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
           {/* Loading State */}
           {loadingTokens && (
             <div className="flex items-center justify-center py-8">
-              <div className="inline-flex h-2 w-2 rounded-full bg-[#A78BFA] animate-pulse" />
+              <div className="inline-flex h-2 w-2 rounded-full bg-[#19c8ff] animate-pulse" />
               <p className="text-sm text-gray-500 dark:text-gray-400 ml-3">{t("loading")}</p>
             </div>
           )}
@@ -191,7 +191,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
                 <button
                   key={`${token.symbol}-${index}`}
                   onClick={() => handleTokenClick(token)}
-                  className="group relative backdrop-blur-lg backdrop-saturate-150 bg-white/75 dark:bg-gray-900/75 rounded-xl p-4 border-2 border-white/30 dark:border-gray-700/40 shadow-lg transition-all duration-300 hover:backdrop-blur-2xl hover:bg-white/90 dark:hover:bg-gray-900/90 hover:border-[#A78BFA]/80 hover:shadow-[0_12px_32px_rgba(167,139,250,0.4)] hover:scale-[1.05] hover:ring-2 hover:ring-[#A78BFA]/40"
+                  className="group relative backdrop-blur-lg backdrop-saturate-150 bg-white/75 dark:bg-gray-900/75 rounded-xl p-4 border-2 border-white/30 dark:border-gray-700/40 shadow-lg transition-all duration-300 hover:backdrop-blur-2xl hover:bg-white/90 dark:hover:bg-gray-900/90 hover:border-[#19c8ff]/80 hover:shadow-[0_12px_32px_rgba(25,200,255,0.4)] hover:scale-[1.05] hover:ring-2 hover:ring-[#19c8ff]/40"
                 >
                   {/* Token Icon/Network Badge */}
                   <div className="flex items-center justify-between mb-2">
@@ -206,7 +206,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
                           }}
                         />
                       ) : (
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] flex items-center justify-center text-white text-xs font-bold">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#19c8ff] to-[#0aa3d8] flex items-center justify-center text-white text-xs font-bold">
                           {token.symbol.charAt(0)}
                         </div>
                       )}
@@ -240,7 +240,7 @@ export default function MainContent({ onToggleSidebar, onStartChat }: MainConten
 
                   {/* Hover Effect Arrow */}
                   <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ArrowRight size={14} className="text-[#A78BFA]" />
+                    <ArrowRight size={14} className="text-[#19c8ff]" />
                   </div>
                 </button>
               ))}

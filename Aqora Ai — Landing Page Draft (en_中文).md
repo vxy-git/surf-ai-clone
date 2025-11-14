@@ -1,22 +1,22 @@
-Flow AI — The On-Chain AGI Infrastructure
+Aqora AI — The On-Chain AGI Infrastructure
 Tagline
 Empowering on-chain intelligence. Flowing between AI and Web3.
 Subhead
-Flow AI acts as the middle layer that connects decentralized infrastructure and adaptive AI agents — enabling them to evolve into autonomous, on-chain AGIs with real wallet IDs, trading capabilities, and direct access to the latest protocols like x402.
+Aqora AI acts as the middle layer that connects decentralized infrastructure and adaptive AI agents — enabling them to evolve into autonomous, on-chain AGIs with real wallet IDs, trading capabilities, and direct access to the latest protocols like x402.
 Primary CTAs
 - Launch App
 - Deploy Agent
 - Explore Docs
 
 Vision
-Flow AI bridges the gap between Web3 and AI by empowering AI agents to behave like real on-chain entities. These agents own wallets, trade, learn from network data, and interact with DeFi, NFT, and DAO ecosystems — all transparently and autonomously.
+Aqora AI bridges the gap between Web3 and AI by empowering AI agents to behave like real on-chain entities. These agents own wallets, trade, learn from network data, and interact with DeFi, NFT, and DAO ecosystems — all transparently and autonomously.
 Every agent becomes a self-evolving identity — the first true step toward on-chain AGI.
 
 Core Architecture
 Agent Layer
 AI agents with wallet identities perform trading, research, analysis, and governance participation. Each agent can deploy strategies and access any open protocol, including x402.
-Flow Layer (Middle Layer)
-The connective tissue that links AI logic to blockchain execution. Flow AI translates agent intent into on-chain actions, validates results, and synchronizes agent states across chains.
+Aqora Layer (Middle Layer)
+The connective tissue that links AI logic to blockchain execution. Aqora AI translates agent intent into on-chain actions, validates results, and synchronizes agent states across chains.
 Incentive Layer
 A modular system that in the future will reward users and operators who provide data, infrastructure, or intelligence to the network. (Details to be released in upcoming documentation.)
 
@@ -43,7 +43,7 @@ What You Can Do
 For Builders
 SDKs and APIs to create on-chain AI agents.
 
-Flow AI runtime to integrate off-chain models with blockchain actions.
+Aqora AI runtime to integrate off-chain models with blockchain actions.
 
 Marketplace for models, strategies, and intelligence modules.
 
@@ -79,25 +79,25 @@ Footer
 
 X / Discord / GitHub
 
-Flow AI — 链上 AGI 基础层（中文）
+Aqora AI — 链上 AGI 基础层（中文）
 标语
 赋能链上智能，让 AI 真正上链。
 副标题
-Flow AI 作为连接 Web3 与 AI 的 中间层基础设施，让 AI 代理进化为具备钱包 ID、可进行交易、可访问 x402 等最新协议的自治链上 AGI。
+Aqora AI 作为连接 Web3 与 AI 的 中间层基础设施，让 AI 代理进化为具备钱包 ID、可进行交易、可访问 x402 等最新协议的自治链上 AGI。
 主要按钮
 - 启动应用
 - 部署代理
 - 查看文档
 
 愿景
-Flow AI 打造 AI 与区块链的融合层，使智能体能以“链上用户”的身份运行。它们拥有钱包、执行交易、学习网络数据、参与 DAO 治理，实现真正的去中心化自治智能。
-每个代理都是一个自进化身份，Flow AI 是通往 链上 AGI 的起点。
+Aqora AI 打造 AI 与区块链的融合层，使智能体能以“链上用户”的身份运行。它们拥有钱包、执行交易、学习网络数据、参与 DAO 治理，实现真正的去中心化自治智能。
+每个代理都是一个自进化身份，Aqora AI 是通往 链上 AGI 的起点。
 
 核心架构
 Agent Layer（代理层）
 拥有钱包身份的 AI 代理执行交易、研究、治理与分析，直接接入包括 x402 在内的开放协议。
 Flow Layer（流层 / 中间层）
-连接 AI 推理与链上执行的核心枢纽。Flow AI 将智能体的意图转换为链上动作，并在多链间实时同步状态。
+连接 AI 推理与链上执行的核心枢纽。Aqora AI 将智能体的意图转换为链上动作，并在多链间实时同步状态。
 Incentive Layer（激励层）
 未来将开放的激励体系，用于奖励数据、算力与智能贡献者。（细节将于后续公布。）
 
@@ -124,7 +124,7 @@ Incentive Layer（激励层）
 面向开发者
 提供 SDK 与 API，快速创建链上 AI 代理。
 
-Flow AI 运行时连接模型与区块链行为。
+Aqora AI 运行时连接模型与区块链行为。
 
 模型与策略市场化，形成收益闭环。
 
@@ -148,4 +148,4 @@ Incentive Layer（激励层）
 治理与标准化 DAO
 
 版权信息
-© Flow AI. All rights reserved.
+© Aqora AI. All rights reserved.

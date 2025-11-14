@@ -88,7 +88,7 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
           href={href}
           target={isExternal ? '_blank' : undefined}
           rel={isExternal ? 'noopener noreferrer' : undefined}
-          className="text-purple-600 dark:text-purple-400 hover:underline font-medium inline-flex items-center gap-1"
+          className="text-sky-600 dark:text-sky-400 hover:underline font-medium inline-flex items-center gap-1"
           {...props}
         >
           {children}
@@ -126,7 +126,7 @@ export function MarkdownRenderer({ children }: MarkdownRendererProps) {
     blockquote({ children, ...props }: HTMLAttributes<HTMLElement> & { children?: ReactNode }) {
       return (
         <blockquote
-          className="border-l-4 border-purple-500 bg-purple-50 dark:bg-purple-900/20 pl-4 pr-4 py-3 my-4 rounded-r-lg"
+          className="border-l-4 border-sky-500 bg-sky-50 dark:bg-sky-900/20 pl-4 pr-4 py-3 my-4 rounded-r-lg"
           {...props}
         >
           {children}

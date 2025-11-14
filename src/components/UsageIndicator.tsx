@@ -35,7 +35,7 @@ export function UsageIndicator({ onClick }: UsageIndicatorProps) {
     return (
       <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2">
-          <Loader2 size={16} className="text-[#A78BFA] animate-spin" />
+          <Loader2 size={16} className="text-[#19c8ff] animate-spin" />
           <span className="text-sm text-gray-600 dark:text-gray-400">{t("loading")}</span>
         </div>
       </div>
@@ -85,7 +85,7 @@ export function UsageIndicator({ onClick }: UsageIndicatorProps) {
           <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 dark:text-gray-400">{t("purchasedCredits")}</span>
-              <span className="text-sm font-semibold text-[#A78BFA]">
+              <span className="text-sm font-semibold text-[#19c8ff]">
                 {usage.paidCredits}
               </span>
             </div>
@@ -94,12 +94,12 @@ export function UsageIndicator({ onClick }: UsageIndicatorProps) {
 
         {/* 超额提示 */}
         {usage.exceeded && usage.paidCredits === 0 && (
-          <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded text-xs text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
+          <div className="p-2 bg-sky-50 dark:bg-sky-900/20 rounded text-xs text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800">
             <div className="flex items-start gap-2">
               <AlertCircle size={14} className="shrink-0 mt-0.5" />
               <div>
                 <div className="font-medium mb-1">{t("limitReached")}</div>
-                <div className="text-purple-600 dark:text-purple-300">
+                <div className="text-sky-600 dark:text-sky-300">
                   {t("nextUsageWillCost", { price: PAYMENT_CONFIG.PAYMENT_PRICE, symbol: "USDC" })}
                 </div>
               </div>

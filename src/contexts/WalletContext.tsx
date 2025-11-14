@@ -37,7 +37,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
         enableOnramp: false,
         themeMode: 'light',
         themeVariables: {
-          '--w3m-accent': '#A78BFA',
+          '--w3m-accent': '#19c8ff',
         }
       })
       setInitialized(true)

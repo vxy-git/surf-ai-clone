@@ -47,7 +47,7 @@ export default function ChatInput({
 
   return (
     <div className={containerClass}>
-      <div className={`backdrop-blur-3xl backdrop-saturate-200 bg-white/90 dark:bg-gray-900/90 rounded-2xl border-2 border-white/40 dark:border-gray-700/60 ${shadowClass} shadow-[0_16px_48px_rgba(0,0,0,0.15)] dark:shadow-[0_16px_48px_rgba(0,0,0,0.5)] ring-2 ring-white/50 dark:ring-gray-700/50 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(167,139,250,0.3)] hover:border-[#A78BFA]/70 hover:ring-[#A78BFA]/30`}>
+      <div className={`backdrop-blur-3xl backdrop-saturate-200 bg-white/90 dark:bg-gray-900/90 rounded-2xl border-2 border-white/40 dark:border-gray-700/60 ${shadowClass} shadow-[0_16px_48px_rgba(0,0,0,0.15)] dark:shadow-[0_16px_48px_rgba(0,0,0,0.5)] ring-2 ring-white/50 dark:ring-gray-700/50 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(25,200,255,0.3)] hover:border-[#19c8ff]/70 hover:ring-[#19c8ff]/30`}>
         <div className={inputPaddingClass}>
           <div className="flex items-center gap-3">
             <input
@@ -64,7 +64,7 @@ export default function ChatInput({
             <button
               onClick={() => handleSubmit('ask')}
               disabled={disabled || !inputValue.trim()}
-              className="px-6 py-2 rounded-full text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white hover:shadow-md hover:scale-105 disabled:hover:scale-100 whitespace-nowrap"
+              className="px-6 py-2 rounded-full text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-[#19c8ff] to-[#0aa3d8] text-white hover:shadow-md hover:scale-105 disabled:hover:scale-100 whitespace-nowrap"
             >
               Ask
             </button>

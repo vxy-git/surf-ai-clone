@@ -177,7 +177,7 @@ export default function ChatInterface({
             <div className="h-full flex items-center justify-center">
               <div className="text-center max-w-md">
                 <div className="mb-4 flex justify-center">
-                  <Bot size={48} className="text-[#A78BFA]" />
+                  <Bot size={48} className="text-[#19c8ff]" />
                 </div>
                 <h3 className="text-xl font-bold mb-2 dark:text-white">
                   {mode === 'research' ? 'Ready to Research' : 'How can I help you?'}
@@ -223,7 +223,7 @@ export default function ChatInterface({
               <div
                 className={`max-w-[80%] md:max-w-[75%] rounded-2xl p-4 text-sm leading-relaxed ${
                   message.role === 'user'
-                    ? 'bg-[#A78BFA] text-white rounded-br-none'
+                    ? 'bg-[#19c8ff] text-white rounded-br-none'
                     : 'bg-white dark:bg-gray-800 dark:text-white rounded-bl-none shadow-sm border border-gray-100 dark:border-gray-700'
                 }`}
               >
@@ -242,7 +242,7 @@ export default function ChatInterface({
             <div className="flex justify-start">
               <div className="bg-white dark:bg-gray-800 dark:text-white rounded-2xl rounded-bl-none p-3 text-sm shadow-sm border border-gray-100 dark:border-gray-700">
                 <div className="flex items-center gap-2">
-                  <Loader2 size={16} className="text-[#A78BFA] animate-spin" />
+                  <Loader2 size={16} className="text-[#19c8ff] animate-spin" />
                   <span className="text-gray-500 dark:text-gray-400 text-xs">
                     {mode === 'research' ? 'Researching...' : 'Thinking...'}
                   </span>

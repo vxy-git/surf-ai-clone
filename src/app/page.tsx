@@ -74,12 +74,12 @@ export default function Home() {
       <div className="flex h-screen bg-[#f7f7f7] dark:bg-gray-900 relative overflow-hidden">
         {/* 🌈 装饰性背景层 - 超强玻璃效果 */}
         <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-          {/* 主紫色渐变圆 - 左上角 */}
-          <div className="absolute -top-20 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-purple-400/70 to-pink-400/70 dark:from-purple-500/50 dark:to-pink-500/50 rounded-full blur-3xl animate-pulse" style={{animationDuration: '4s'}} />
+          {/* 主主题渐变圆 - 左上角 */}
+          <div className="absolute -top-20 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-sky-400/70 to-cyan-400/70 dark:from-sky-500/50 dark:to-cyan-500/50 rounded-full blur-3xl animate-pulse" style={{animationDuration: '4s'}} />
           {/* 主蓝色渐变圆 - 右侧 */}
           <div className="absolute top-1/4 -right-32 w-[500px] h-[500px] bg-gradient-to-br from-blue-400/60 to-cyan-400/60 dark:from-blue-500/40 dark:to-cyan-500/40 rounded-full blur-3xl" />
-          {/* 主粉色渐变圆 - 底部 */}
-          <div className="absolute bottom-0 left-1/4 w-[550px] h-[550px] bg-gradient-to-br from-pink-400/65 to-purple-400/65 dark:from-pink-500/45 dark:to-purple-500/45 rounded-full blur-3xl" />
+          {/* 主青色渐变圆 - 底部 */}
+          <div className="absolute bottom-0 left-1/4 w-[550px] h-[550px] bg-gradient-to-br from-cyan-400/65 to-sky-400/65 dark:from-cyan-500/45 dark:to-sky-500/45 rounded-full blur-3xl" />
           {/* 辅助橙色渐变圆 - 右下角 */}
           <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-gradient-to-br from-orange-300/50 to-red-300/50 dark:from-orange-500/35 dark:to-red-500/35 rounded-full blur-3xl" />
           {/* 辅助青色渐变圆 - 左中 */}

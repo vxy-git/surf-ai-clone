@@ -1,8 +1,7 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-
-type Language = "zh-CN" | "en" | "ja" | "ko";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { type Language } from "@/i18n/languages";
 
 interface LanguageContextType {
   language: Language;
@@ -11,39 +10,72 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en");
+export function LanguageProvider({
+  children,
+  initialLanguage = "en",
+}: {
+  children: ReactNode;
+  initialLanguage?: Language;
+}) {
+  const [language, setLanguageState] = useState<Language>(initialLanguage);
 
-  useEffect(() => {
-    // Read language setting from localStorage
-    const savedLanguage = localStorage.getItem("language") as Language | null;
-    if (savedLanguage) {
-      setLanguage(savedLanguage);
-    } else {
-      // Detect browser language
-      const browserLang = navigator.language;
-      if (browserLang.startsWith("zh")) {
-        setLanguage("zh-CN");
-      } else if (browserLang.startsWith("ja")) {
-        setLanguage("ja");
-      } else if (browserLang.startsWith("ko")) {
-        setLanguage("ko");
-      } else {
-        setLanguage("en");
-      }
-    }
+  const persistLanguage = useCallback((value: Language) => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("language", value);
+    document.cookie = `language=${value}; path=/; max-age=31536000`;
+    document.documentElement.lang = value;
   }, []);
 
-  useEffect(() => {
-    // Save to localStorage
-    localStorage.setItem("language", language);
+  const updateLanguage = useCallback(
+    (value: Language) => {
+      setLanguageState(value);
+      persistLanguage(value);
+    },
+    [persistLanguage]
+  );
 
-    // Sync HTML lang attribute to avoid hydration errors
-    document.documentElement.lang = language;
-  }, [language]);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const savedLanguage = localStorage.getItem("language") as Language | null;
+    if (savedLanguage) {
+      updateLanguage(savedLanguage);
+      return;
+    }
+
+    if (!initialLanguage) {
+      const browserLang = navigator.language;
+      if (browserLang.startsWith("zh")) {
+        updateLanguage("zh-CN");
+      } else if (browserLang.startsWith("ja")) {
+        updateLanguage("ja");
+      } else if (browserLang.startsWith("ko")) {
+        updateLanguage("ko");
+      } else {
+        updateLanguage("en");
+      }
+    }
+  }, [initialLanguage, updateLanguage]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const savedLanguage = localStorage.getItem("language");
+    if (!savedLanguage) {
+      persistLanguage(language);
+    }
+  }, [language, persistLanguage]);
+
+  const contextValue = useMemo(
+    () => ({
+      language,
+      setLanguage: updateLanguage,
+    }),
+    [language, updateLanguage]
+  );
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={contextValue}>
       {children}
     </LanguageContext.Provider>
   );

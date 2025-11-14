@@ -69,7 +69,7 @@ function WalletButtonInner() {
     return (
       <button
         onClick={() => open()}
-        className="px-4 md:px-6 py-2 border-2 border-[#A78BFA] text-[#A78BFA] rounded-full font-medium hover:bg-[#A78BFA] hover:text-white transition-colors text-sm md:text-base"
+        className="px-4 md:px-6 py-2 border-2 border-[#19c8ff] text-[#19c8ff] rounded-full font-medium hover:bg-[#19c8ff] hover:text-white transition-colors text-sm md:text-base"
       >
         {t("connectWallet")}
       </button>
@@ -81,7 +81,7 @@ function WalletButtonInner() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setShowDropdown(!showDropdown)}
-        className="flex items-center gap-2 px-4 md:px-6 py-2 bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white rounded-full font-medium hover:shadow-lg transition-all text-sm md:text-base"
+        className="flex items-center gap-2 px-4 md:px-6 py-2 bg-gradient-to-r from-[#19c8ff] to-[#0aa3d8] text-white rounded-full font-medium hover:shadow-lg transition-all text-sm md:text-base"
       >
         <Wallet size={16} />
         <span className="hidden sm:inline">{formatAddress(address!)}</span>

@@ -196,7 +196,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
         <div className="flex-1 overflow-y-auto p-6">
           <div className="space-y-6">
               {/* 购买卡片 */}
-              <div className="backdrop-blur-lg bg-gradient-to-br from-purple-100/60 to-pink-100/60 dark:from-purple-900/40 dark:to-pink-900/40 rounded-xl p-6 border-2 border-[#A78BFA]/50 shadow-[0_8px_32px_rgba(167,139,250,0.2)]">
+              <div className="backdrop-blur-lg bg-gradient-to-br from-sky-100/60 to-cyan-100/60 dark:from-sky-900/40 dark:to-cyan-900/40 rounded-xl p-6 border-2 border-[#19c8ff]/50 shadow-[0_8px_32px_rgba(25,200,255,0.2)]">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
@@ -207,7 +207,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
                     </p>
                   </div>
                   <div className="text-right">
-                    <div className="text-3xl font-bold text-[#A78BFA]">
+                    <div className="text-3xl font-bold text-[#19c8ff]">
                       {PAYMENT_CONFIG.PAYMENT_PRICE}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -218,7 +218,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
 
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#A78BFA] text-white flex items-center justify-center font-bold">
+                    <div className="w-8 h-8 rounded-full bg-[#19c8ff] text-white flex items-center justify-center font-bold">
                       {PAYMENT_CONFIG.PAYMENT_CREDITS}
                     </div>
                     <span className="text-gray-700 dark:text-gray-300">
@@ -253,7 +253,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
                       ? 'bg-green-500 hover:bg-green-600'
                       : paymentStatus === 'error'
                       ? 'bg-red-500 hover:bg-red-600'
-                      : 'bg-[#A78BFA] hover:bg-[#9270F0]'
+                      : 'bg-[#19c8ff] hover:bg-[#9270F0]'
                   } text-white`}
                 >
                   {paymentStatus === 'pending' || isConfirming ? (

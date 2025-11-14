@@ -153,7 +153,7 @@ export default function Sidebar({
                 <rect x="3" y="16" width="7" height="5" rx="1" />
               </svg>
               <span className={`font-medium whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>{t("cryptoDataHub")}</span>
-              <span className={`ml-auto bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white text-xs px-2 py-1 rounded-full whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>
+              <span className={`ml-auto bg-gradient-to-r from-[#19c8ff] to-[#0aa3d8] text-white text-xs px-2 py-1 rounded-full whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>
                 {t("preTgeReport")}
               </span>
             </Link> */}
@@ -167,7 +167,7 @@ export default function Sidebar({
                 {/* Loading State */}
                 {loading && (
                   <div className="px-3 py-4 text-center">
-                    <div className="inline-flex h-2 w-2 rounded-full bg-[#A78BFA] animate-pulse" />
+                    <div className="inline-flex h-2 w-2 rounded-full bg-[#19c8ff] animate-pulse" />
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{t("loadingHistory")}</p>
                   </div>
                 )}
@@ -195,7 +195,7 @@ export default function Sidebar({
                     >
                       <MessageSquare
                         size={16}
-                        className={`shrink-0 ${currentSessionId === session.id ? 'text-[#A78BFA]' : ''}`}
+                        className={`shrink-0 ${currentSessionId === session.id ? 'text-[#19c8ff]' : ''}`}
                       />
                       <span className="text-sm font-medium truncate">{session.title}</span>
                     </button>

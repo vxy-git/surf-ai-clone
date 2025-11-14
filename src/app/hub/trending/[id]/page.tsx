@@ -11,7 +11,7 @@ const trendingProjects = [
   {
     id: 1,
     name: "Bitcoin",
-    logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png",
+    logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.jpg",
     ticker: "$BTC",
     price: "$98,450",
     change24h: "+5.2%",
@@ -35,7 +35,7 @@ const trendingProjects = [
   {
     id: 2,
     name: "Ethereum",
-    logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+    logo: "https://cryptologos.cc/logos/ethereum-eth-logo.jpg",
     ticker: "$ETH",
     price: "$3,245",
     change24h: "+3.8%",
@@ -59,7 +59,7 @@ const trendingProjects = [
   {
     id: 3,
     name: "Solana",
-    logo: "https://cryptologos.cc/logos/solana-sol-logo.png",
+    logo: "https://cryptologos.cc/logos/solana-sol-logo.jpg",
     ticker: "$SOL",
     price: "$185.20",
     change24h: "+8.5%",
@@ -131,7 +131,7 @@ const trendingProjects = [
   {
     id: 6,
     name: "Cardano",
-    logo: "https://cryptologos.cc/logos/cardano-ada-logo.png",
+    logo: "https://cryptologos.cc/logos/cardano-ada-logo.jpg",
     ticker: "$ADA",
     price: "$0.85",
     change24h: "+2.1%",
@@ -169,7 +169,7 @@ export default function TrendingDetailPage({ params }: TrendingDetailPageProps) 
       <div className="min-h-screen bg-[#f7f7f7] dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold dark:text-white mb-4">Project Not Found</h1>
-          <Link href="/hub" className="text-[#A78BFA] hover:underline">
+          <Link href="/hub" className="text-[#19c8ff] hover:underline">
             Back to Hub
           </Link>
         </div>
@@ -216,7 +216,7 @@ export default function TrendingDetailPage({ params }: TrendingDetailPageProps) 
         </Link>
         <button
           onClick={handleWatchlistToggle}
-          className="text-[#A78BFA] hover:text-[#6D28D9] flex items-center gap-1 transition-colors"
+          className="text-[#19c8ff] hover:text-[#087aa9] flex items-center gap-1 transition-colors"
         >
           <span className="hidden md:inline">Add to watchlist</span>
           <Star className="w-5 h-5" />
@@ -225,7 +225,7 @@ export default function TrendingDetailPage({ params }: TrendingDetailPageProps) 
           href={`https://twitter.com/${project.socialAccounts.twitter.handle.replace('@', '')}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#A78BFA] hover:text-[#6D28D9] transition-colors"
+          className="text-[#19c8ff] hover:text-[#087aa9] transition-colors"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -302,7 +302,7 @@ export default function TrendingDetailPage({ params }: TrendingDetailPageProps) 
               </div>
             </div>
             {project.socialAccounts.twitter.isInfluential && (
-              <span className="text-xs bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 text-white px-3 py-1 rounded-full font-medium whitespace-nowrap flex-shrink-0">
+              <span className="text-xs bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-400 text-white px-3 py-1 rounded-full font-medium whitespace-nowrap flex-shrink-0">
                 Influential
               </span>
             )}

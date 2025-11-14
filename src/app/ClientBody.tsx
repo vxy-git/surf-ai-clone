@@ -6,11 +6,14 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { WatchlistProvider } from "@/contexts/WatchlistContext";
 import { WalletProvider } from "@/contexts/WalletContext";
 import { UsageProvider } from "@/hooks/useUsage";
+import type { Language } from "@/i18n/languages";
 
 export default function ClientBody({
   children,
+  initialLanguage,
 }: {
   children: React.ReactNode;
+  initialLanguage?: Language;
 }) {
   // Remove any extension-added classes during hydration
   useEffect(() => {
@@ -22,7 +25,7 @@ export default function ClientBody({
     <WalletProvider>
       <UsageProvider>
         <ThemeProvider>
-          <LanguageProvider>
+          <LanguageProvider initialLanguage={initialLanguage}>
             <WatchlistProvider>
               <div className="antialiased">{children}</div>
             </WatchlistProvider>
