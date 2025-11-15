@@ -6,11 +6,15 @@ import MainContent from "@/components/MainContent";
 import ChatInterface from "@/components/ChatInterface";
 import { useChatSessions } from "@/hooks/useChatSessions";
 import { PaymentModalProvider } from "@/contexts/PaymentModalContext";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Home() {
   // 默认为 false,避免 hydration 不匹配
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [initialMessage, setInitialMessage] = useState<string | undefined>(undefined);
+  const [isChatInitializing, setIsChatInitializing] = useState(false);
+  const [pendingMode, setPendingMode] = useState<'ask' | 'research' | null>(null);
+  const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
   const lastSessionIdRef = useRef<string | null>(null);
 
   // 使用会话管理 hook
@@ -51,10 +55,31 @@ export default function Home() {
       }
     }
 
-    // 创建新会话并保存初始消息
-    const { sessionId, initialMessage: msg } = await createSession(title, mode, message);
-    setInitialMessage(msg);
+    setIsChatInitializing(true);
+    setPendingMode(mode);
+    setPendingPrompt(message);
+
+    try {
+      // 创建新会话并保存初始消息
+      const { initialMessage: msg } = await createSession(title, mode, message);
+      setInitialMessage(msg);
+    } catch (error) {
+      console.error('[Home] Failed to create session:', error);
+      setPendingMode(null);
+      setPendingPrompt(null);
+    } finally {
+      // 即使当前会话尚未返回,也结束本地加载标记,由 currentSessionId 判定是否继续展示占位
+      setIsChatInitializing(false);
+    }
   };
+
+  // 当成功拿到当前会话时,清除待显示的提示
+  useEffect(() => {
+    if (currentSession) {
+      setPendingMode(null);
+      setPendingPrompt(null);
+    }
+  }, [currentSession]);
 
   // 切换会话时清除初始消息
   useEffect(() => {
@@ -68,6 +93,17 @@ export default function Home() {
       }
     }
   }, [currentSessionId, currentSession]);
+
+  const handleNewChat = () => {
+    setIsChatInitializing(false);
+    setPendingMode(null);
+    setPendingPrompt(null);
+    startNewChat();
+  };
+
+  const shouldShowLoadingPane =
+    !currentSession &&
+    (isChatInitializing || !!currentSessionId);
 
   return (
     <PaymentModalProvider>
@@ -91,7 +127,7 @@ export default function Home() {
         sessions={sessions}
         currentSessionId={currentSessionId}
         onSelectSession={selectSession}
-        onNewChat={startNewChat}
+        onNewChat={handleNewChat}
         onDeleteSession={deleteSession}
         loading={loading}
         error={error}
@@ -107,6 +143,8 @@ export default function Home() {
           initialMessage={initialMessage}
           onUpdateMessages={updateSessionMessages}
         />
+      ) : shouldShowLoadingPane ? (
+        <ChatLoadingPane mode={pendingMode} prompt={pendingPrompt} />
       ) : (
         <MainContent
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
@@ -115,5 +153,30 @@ export default function Home() {
       )}
       </div>
     </PaymentModalProvider>
+  );
+}
+
+function ChatLoadingPane({ mode, prompt }: { mode: 'ask' | 'research' | null; prompt: string | null }) {
+  const { t } = useTranslation();
+  const displayPrompt = prompt && prompt.length > 160 ? `${prompt.slice(0, 160)}...` : prompt;
+
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
+      <div className="w-16 h-16 border-4 border-[#19c8ff]/30 border-t-[#19c8ff] rounded-full animate-spin" />
+      <h2 className="mt-6 text-2xl font-semibold text-gray-900 dark:text-white">
+        {t("chatPreparing")}
+      </h2>
+      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+        {mode === 'research'
+          ? t("chatPreparingResearch")
+          : t("chatPreparingAsk")}
+      </p>
+      {displayPrompt && (
+        <div className="mt-6 max-w-xl bg-white/80 dark:bg-gray-800/80 border border-white/60 dark:border-gray-700/60 rounded-2xl px-6 py-4 shadow-inner">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t("chatYourQuestion")}</p>
+          <p className="text-base text-gray-900 dark:text-white break-words">{displayPrompt}</p>
+        </div>
+      )}
+    </div>
   );
 }

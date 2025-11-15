@@ -26,6 +26,10 @@ export const translations = {
     newTokensTitle: "最近上线代币",
     realtimeData: "实时数据",
     noTokenData: "暂无新代币数据",
+    chatPreparing: "正在为您准备沟通...",
+    chatPreparingResearch: "正在加载 Research 模式，稍等片刻",
+    chatPreparingAsk: "正在建立新的提问会话",
+    chatYourQuestion: "您的问题",
 
     // 搜索按钮
     ask: "提问",
@@ -173,7 +177,6 @@ export const translations = {
       roadmap5: "治理与 AI 标准 DAO",
 
       partnersTitle: "合作伙伴与投资方",
-      partnersSubtitle: "展示生态与投资伙伴，构建 Aqora AI 品牌墙",
 
       footerText: "© Aqora AI. All rights reserved.",
       documentation: "文档",
@@ -213,6 +216,10 @@ export const translations = {
     newTokensTitle: "Recently Listed Tokens",
     realtimeData: "Real-time Data",
     noTokenData: "No new token data available",
+    chatPreparing: "Preparing your conversation...",
+    chatPreparingResearch: "Loading Research mode, hang tight",
+    chatPreparingAsk: "Creating your question session",
+    chatYourQuestion: "Your question",
 
     // Search buttons
     ask: "Ask",
@@ -360,7 +367,6 @@ export const translations = {
       roadmap5: "Governance and AI standards DAO",
 
       partnersTitle: "Partners & Backers",
-      partnersSubtitle: "Showcase of ecosystem and investment partners",
 
       footerText: "© Aqora AI. All rights reserved.",
       documentation: "Docs",

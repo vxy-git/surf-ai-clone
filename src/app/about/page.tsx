@@ -208,16 +208,13 @@ export default function AboutPage() {
                 <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white text-center">
                   {about.partnersTitle}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 text-center mb-8">
-                  {about.partnersSubtitle}
-                </p>
                 <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
                   <div className="w-8 h-10 relative group cursor-pointer">
                     <img
                       src="/images/b1v.png"
                       alt="B1V"
                       className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-all duration-300"
-                      style={{ filter: 'brightness(0) saturate(100%) invert(58%) sepia(28%) saturate(1449%) hue-rotate(215deg) brightness(98%) contrast(96%)' }}
+                      style={{ filter: 'brightness(0) saturate(100%) invert(74%) sepia(20%) saturate(2000%) hue-rotate(172deg) brightness(98%) contrast(97%)' }}
                     />
                   </div>
                   <div className="w-20 h-10 relative group cursor-pointer">
@@ -225,7 +222,7 @@ export default function AboutPage() {
                       src="/images/fenbushi.png"
                       alt="Fenbushi Capital"
                       className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-all duration-300"
-                      style={{ filter: 'brightness(0) saturate(100%) invert(58%) sepia(28%) saturate(1449%) hue-rotate(215deg) brightness(98%) contrast(96%)' }}
+                      style={{ filter: 'brightness(0) saturate(100%) invert(74%) sepia(20%) saturate(2000%) hue-rotate(172deg) brightness(98%) contrast(97%)' }}
                     />
                   </div>
                   <div className="w-20 h-10 relative group cursor-pointer">
@@ -233,7 +230,7 @@ export default function AboutPage() {
                       src="/images/ledger.png"
                       alt="Ledger"
                       className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-all duration-300"
-                      style={{ filter: 'brightness(0) saturate(100%) invert(58%) sepia(28%) saturate(1449%) hue-rotate(215deg) brightness(98%) contrast(96%)' }}
+                      style={{ filter: 'brightness(0) saturate(100%) invert(74%) sepia(20%) saturate(2000%) hue-rotate(172deg) brightness(98%) contrast(97%)' }}
                     />
                   </div>
                   <div className="w-20 h-10 relative group cursor-pointer">
@@ -241,7 +238,7 @@ export default function AboutPage() {
                       src="/images/mask.png"
                       alt="Mask Network"
                       className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-all duration-300"
-                      style={{ filter: 'brightness(0) saturate(100%) invert(58%) sepia(28%) saturate(1449%) hue-rotate(215deg) brightness(98%) contrast(96%)' }}
+                      style={{ filter: 'brightness(0) saturate(100%) invert(74%) sepia(20%) saturate(2000%) hue-rotate(172deg) brightness(98%) contrast(97%)' }}
                     />
                   </div>
                   <div className="w-20 h-10 relative group cursor-pointer">
@@ -249,7 +246,7 @@ export default function AboutPage() {
                       src="/images/republic.png"
                       alt="Republic"
                       className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-all duration-300"
-                      style={{ filter: 'brightness(0) saturate(100%) invert(58%) sepia(28%) saturate(1449%) hue-rotate(215deg) brightness(98%) contrast(96%)' }}
+                      style={{ filter: 'brightness(0) saturate(100%) invert(74%) sepia(20%) saturate(2000%) hue-rotate(172deg) brightness(98%) contrast(97%)' }}
                     />
                   </div>
                   <div className="w-24 h-10 relative group cursor-pointer">
@@ -257,7 +254,7 @@ export default function AboutPage() {
                       src="/images/skyland.png"
                       alt="Skyland Ventures"
                       className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-all duration-300"
-                      style={{ filter: 'brightness(0) saturate(100%) invert(58%) sepia(28%) saturate(1449%) hue-rotate(215deg) brightness(98%) contrast(96%)' }}
+                      style={{ filter: 'brightness(0) saturate(100%) invert(74%) sepia(20%) saturate(2000%) hue-rotate(172deg) brightness(98%) contrast(97%)' }}
                     />
                   </div>
                   <div className="w-24 h-10 relative group cursor-pointer">
@@ -265,7 +262,7 @@ export default function AboutPage() {
                       src="/images/uphonest.png"
                       alt="Uphonest Capital"
                       className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-all duration-300"
-                      style={{ filter: 'brightness(0) saturate(100%) invert(58%) sepia(28%) saturate(1449%) hue-rotate(215deg) brightness(98%) contrast(96%)' }}
+                      style={{ filter: 'brightness(0) saturate(100%) invert(74%) sepia(20%) saturate(2000%) hue-rotate(172deg) brightness(98%) contrast(97%)' }}
                     />
                   </div>
                 </div>
