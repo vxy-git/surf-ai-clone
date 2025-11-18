@@ -7,7 +7,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi';
 import { parseUnits } from 'viem';
 import { baseSepolia } from 'wagmi/chains';
@@ -46,12 +46,28 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   // 写入合约（转账）
-  const { writeContract, data: hash } = useWriteContract();
+  const { writeContract, data: hash, error: writeError, reset: resetWrite } = useWriteContract();
 
   // 等待交易确认
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
     hash,
   });
+
+  // 监听写入合约错误（用户取消或其他错误）
+  useEffect(() => {
+    if (writeError && paymentStatus === 'pending') {
+      console.error('Write contract error:', writeError);
+
+      // 检查是否是用户取消
+      const errorMsg = writeError.message || '';
+      const isUserRejection = errorMsg.toLowerCase().includes('user rejected') ||
+                             errorMsg.toLowerCase().includes('user denied') ||
+                             errorMsg.toLowerCase().includes('user cancelled');
+
+      setPaymentStatus('error');
+      setErrorMessage(isUserRejection ? '支付已取消' : '支付失败，请重试');
+    }
+  }, [writeError, paymentStatus]);
 
   // 当交易确认成功时
   if (isConfirmed && paymentStatus === 'pending') {
@@ -104,6 +120,10 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
 
   const handlePayment = async () => {
     try {
+      // 重置之前的错误状态
+      resetWrite();
+      setErrorMessage('');
+
       // 1. 检查钱包连接
       if (!address) {
         setErrorMessage('请先连接钱包');
@@ -135,13 +155,12 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
 
       // 4. 执行转账
       setPaymentStatus('pending');
-      setErrorMessage('');
 
       // USDC 是 6 位小数
       const amount = parseUnits('0.01', 6);
       const usdcContractAddress = PAYMENT_CONFIG.USDC_CONTRACT[PAYMENT_CONFIG.NETWORK];
 
-      await writeContract({
+      writeContract({
         address: usdcContractAddress as `0x${string}`,
         abi: USDC_ABI,
         functionName: 'transfer',
@@ -157,11 +176,22 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
 
   // 禁止在验证过程中关闭弹窗
   const handleClose = () => {
-    if (paymentStatus === 'verifying' || paymentStatus === 'pending' || isConfirming) {
-      // 验证中不允许关闭
+    if (paymentStatus === 'verifying' || (paymentStatus === 'pending' && !writeError) || isConfirming) {
+      // 验证中或真正支付中不允许关闭（但如果有错误则允许）
       return;
     }
+    // 重置所有状态
+    setPaymentStatus('idle');
+    setErrorMessage('');
+    resetWrite();
     onClose();
+  };
+
+  // 重试支付
+  const handleRetry = () => {
+    setPaymentStatus('idle');
+    setErrorMessage('');
+    resetWrite();
   };
 
   return (
@@ -181,9 +211,9 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
           </h2>
           <button
             onClick={handleClose}
-            disabled={paymentStatus === 'verifying' || paymentStatus === 'pending' || isConfirming}
+            disabled={paymentStatus === 'verifying' || (paymentStatus === 'pending' && !writeError) || isConfirming}
             className={`p-2 rounded-lg transition-colors ${
-              paymentStatus === 'verifying' || paymentStatus === 'pending' || isConfirming
+              paymentStatus === 'verifying' || (paymentStatus === 'pending' && !writeError) || isConfirming
                 ? 'opacity-50 cursor-not-allowed'
                 : 'hover:bg-gray-100 dark:hover:bg-gray-700'
             }`}
@@ -244,19 +274,19 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
                 </div>
 
                 <button
-                  onClick={handlePayment}
-                  disabled={paymentStatus === 'pending' || isConfirming || paymentStatus === 'verifying'}
+                  onClick={paymentStatus === 'error' ? handleRetry : handlePayment}
+                  disabled={(paymentStatus === 'pending' && !writeError) || isConfirming || paymentStatus === 'verifying'}
                   className={`w-full font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 ${
-                    paymentStatus === 'pending' || isConfirming || paymentStatus === 'verifying'
+                    (paymentStatus === 'pending' && !writeError) || isConfirming || paymentStatus === 'verifying'
                       ? 'bg-gray-400 cursor-not-allowed'
                       : paymentStatus === 'success'
                       ? 'bg-green-500 hover:bg-green-600'
                       : paymentStatus === 'error'
-                      ? 'bg-red-500 hover:bg-red-600'
+                      ? 'bg-orange-500 hover:bg-orange-600'
                       : 'bg-[#19c8ff] hover:bg-[#9270F0]'
                   } text-white`}
                 >
-                  {paymentStatus === 'pending' || isConfirming ? (
+                  {(paymentStatus === 'pending' && !writeError) || isConfirming ? (
                     <>
                       <Loader2 size={20} className="animate-spin" />
                       <span>{isConfirming ? '确认中...' : '支付中...'}</span>
@@ -270,6 +300,11 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
                     <>
                       <CheckCircle size={20} />
                       <span>支付成功！</span>
+                    </>
+                  ) : paymentStatus === 'error' ? (
+                    <>
+                      <Clock size={20} />
+                      <span>重试</span>
                     </>
                   ) : (
                     <>
