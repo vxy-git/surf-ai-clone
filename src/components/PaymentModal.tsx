@@ -193,7 +193,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
         </div>
 
         {/* 内容区域 */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto px-6 pb-6">
           <div className="space-y-6">
               {/* 购买卡片 */}
               <div className="backdrop-blur-lg bg-gradient-to-br from-sky-100/60 to-cyan-100/60 dark:from-sky-900/40 dark:to-cyan-900/40 rounded-xl p-6 border-2 border-[#19c8ff]/50 shadow-[0_8px_32px_rgba(25,200,255,0.2)]">
@@ -310,7 +310,7 @@ function PaymentModalInner({ isOpen, onClose, onPaymentSuccess }: PaymentModalPr
             )}
 
             {/* 网络信息 */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+            <div className=" hidden bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
               <div className="flex items-start gap-3">
                 <Info
                   size={20}

@@ -9,6 +9,7 @@ import { prisma } from '@/lib/db';
 import { Prisma } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 10; // 路由最大执行时间 10秒
 
 /**
  * PATCH /api/sessions/[id]
@@ -39,41 +40,54 @@ export async function PATCH(
     }
 
     // 使用事务更新会话
-    const updatedSession = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      // 更新会话标题
-      const session = await tx.chatSession.update({
-        where: { id: sessionId },
-        data: {
-          ...(title && { title }),
-          updatedAt: new Date()
-        }
-      });
+    const startTime = Date.now();
+    const messageCount = messages?.length || 0;
+    console.log(`[Sessions API] Starting transaction for session ${sessionId}, messages: ${messageCount}`);
 
-      // 如果提供了消息,先删除旧消息再创建新消息
-      if (messages && Array.isArray(messages)) {
-        await tx.chatMessage.deleteMany({
-          where: { sessionId }
-        });
-
-        await tx.chatMessage.createMany({
-          data: messages.map((msg: { role: string; content: string }) => ({
-            sessionId,
-            role: msg.role,
-            content: msg.content
-          }))
-        });
-      }
-
-      // 获取完整会话数据
-      return await tx.chatSession.findUnique({
-        where: { id: sessionId },
-        include: {
-          messages: {
-            orderBy: { createdAt: 'asc' }
+    const updatedSession = await prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        // 更新会话标题
+        const session = await tx.chatSession.update({
+          where: { id: sessionId },
+          data: {
+            ...(title && { title }),
+            updatedAt: new Date()
           }
+        });
+
+        // 如果提供了消息,先删除旧消息再创建新消息
+        if (messages && Array.isArray(messages)) {
+          await tx.chatMessage.deleteMany({
+            where: { sessionId }
+          });
+
+          await tx.chatMessage.createMany({
+            data: messages.map((msg: { role: string; content: string }) => ({
+              sessionId,
+              role: msg.role,
+              content: msg.content
+            }))
+          });
         }
-      });
-    });
+
+        // 获取完整会话数据
+        return await tx.chatSession.findUnique({
+          where: { id: sessionId },
+          include: {
+            messages: {
+              orderBy: { createdAt: 'asc' }
+            }
+          }
+        });
+      },
+      {
+        maxWait: 10000, // 等待事务开始的最大时间 10秒
+        timeout: 20000, // 事务执行的最大时间 20秒 (Prisma 默认 5秒)
+      }
+    );
+
+    const duration = Date.now() - startTime;
+    console.log(`[Sessions API] Transaction completed in ${duration}ms for session ${sessionId}`);
 
     if (!updatedSession) {
       throw new Error('Failed to update session');

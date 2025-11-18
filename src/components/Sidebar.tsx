@@ -20,8 +20,9 @@ import {
 import { Menu, Plus, Sun, Moon, Monitor, Globe, Trash2, MessageSquare, Info, Check } from "@/components/icons";
 
 const VISIBLE_LANGUAGE_OPTIONS = [
-  { value: "zh-CN", label: "简体中文", flag: "🇨🇳" },
   { value: "en", label: "English", flag: "🇺🇸" },
+  { value: "ja", label: "日本語", flag: "🇯🇵" },
+  { value: "zh-CN", label: "简体中文", flag: "🇨🇳" },
 ] as const;
 
 interface SidebarProps {
@@ -61,10 +62,8 @@ export default function Sidebar({
         return "English";
       case "ja":
         return "日本語";
-      case "ko":
-        return "한국어";
       default:
-        return "简体中文";
+        return "English";
     }
   };
 

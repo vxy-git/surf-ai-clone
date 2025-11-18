@@ -33,7 +33,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
       createWeb3Modal({
         wagmiConfig: config,
         projectId,
-        enableAnalytics: true,
+        enableAnalytics: false, // 禁用 Coinbase Analytics 避免 cca-lite.coinbase.com 连接错误
         enableOnramp: false,
         themeMode: 'light',
         themeVariables: {

@@ -16,7 +16,7 @@ export const PAYMENT_CONFIG = {
 
   // ========== 区块链配置 ==========
   // Blockchain Configuration
-  NETWORK: (process.env.NEXT_PUBLIC_NETWORK || 'base-sepolia') as 'base' | 'base-sepolia',
+  NETWORK: (process.env.NEXT_PUBLIC_NETWORK || 'base') as 'base' | 'base-sepolia',
   RECEIVER_ADDRESS: process.env.NEXT_PUBLIC_RECEIVER_ADDRESS as `0x${string}`,
 
   // ========== USDC 合约地址 ==========

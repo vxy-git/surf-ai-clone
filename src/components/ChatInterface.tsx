@@ -9,7 +9,7 @@ import { usePaymentModal } from '@/contexts/PaymentModalContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import type { Message } from 'ai/react';
-import { Bot, AlertTriangle, Loader2 } from '@/components/icons';
+import { Bot, AlertTriangle, Loader2, Menu } from '@/components/icons';
 
 interface ChatInterfaceProps {
   mode: 'ask' | 'research';
@@ -17,6 +17,7 @@ interface ChatInterfaceProps {
   initialMessages: Message[];
   initialMessage?: string;
   onUpdateMessages: (sessionId: string, messages: Message[]) => void;
+  onToggleSidebar?: () => void;
 }
 
 export default function ChatInterface({
@@ -24,7 +25,8 @@ export default function ChatInterface({
   sessionId,
   initialMessages,
   initialMessage,
-  onUpdateMessages
+  onUpdateMessages,
+  onToggleSidebar
 }: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hasAutoSent = useRef(false);
@@ -171,6 +173,22 @@ export default function ChatInterface({
 
   return (
     <div className="flex-1 flex flex-col bg-[#f7f7f7] dark:bg-gray-900 h-full overflow-hidden relative">
+        {/* 移动端顶部导航 - 仅在移动端显示 */}
+        {onToggleSidebar && (
+          <div className="md:hidden sticky top-0 z-40 backdrop-blur-2xl backdrop-saturate-150 bg-white/90 dark:bg-gray-900/90 border-b-2 border-white/30 dark:border-gray-700/60 shadow-lg px-4 py-3 flex items-center">
+            <button
+              onClick={onToggleSidebar}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              aria-label="Toggle sidebar"
+            >
+              <Menu size={24} className="text-gray-700 dark:text-gray-300" />
+            </button>
+            <div className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+              {mode === 'research' ? 'Research Mode' : 'Chat'}
+            </div>
+          </div>
+        )}
+
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 && (

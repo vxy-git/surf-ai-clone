@@ -49,8 +49,6 @@ export function LanguageProvider({
         updateLanguage("zh-CN");
       } else if (browserLang.startsWith("ja")) {
         updateLanguage("ja");
-      } else if (browserLang.startsWith("ko")) {
-        updateLanguage("ko");
       } else {
         updateLanguage("en");
       }

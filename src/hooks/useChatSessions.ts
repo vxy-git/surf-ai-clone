@@ -10,11 +10,21 @@ export function useChatSessions() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const sessionsRef = useRef<ChatSession[]>(sessions);
+  const updateTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // 保持 ref 同步
   useEffect(() => {
     sessionsRef.current = sessions;
   }, [sessions]);
+
+  // 清理定时器
+  useEffect(() => {
+    return () => {
+      if (updateTimerRef.current) {
+        clearTimeout(updateTimerRef.current);
+      }
+    };
+  }, []);
 
   // 从数据库加载会话
   useEffect(() => {
@@ -88,44 +98,62 @@ export function useChatSessions() {
     }
   }, [address]);
 
-  // 更新会话消息
-  const updateSessionMessages = useCallback(async (sessionId: string, messages: Message[]) => {
+  // 更新会话消息 (带防抖)
+  const updateSessionMessages = useCallback((sessionId: string, messages: Message[]) => {
     if (!address) {
       console.warn('[useChatSessions] Cannot update session: wallet not connected');
       return;
     }
 
-    try {
-      const response = await fetch(`/api/sessions/${sessionId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          walletAddress: address,
-          messages,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update session');
-      }
-
-      const data = await response.json();
-
-      // 更新本地状态
-      setSessions(prev =>
-        prev.map(session =>
-          session.id === sessionId
-            ? { ...session, messages, updatedAt: data.session.updatedAt }
-            : session
-        )
-      );
-      console.log('[useChatSessions] Updated session:', sessionId, 'with', messages.length, 'messages');
-    } catch (err) {
-      console.error('[useChatSessions] Error updating session:', err);
-      // 不抛出错误,允许会话继续(但数据不会保存到数据库)
+    // 清除之前的定时器
+    if (updateTimerRef.current) {
+      clearTimeout(updateTimerRef.current);
     }
+
+    // 立即更新本地状态(保证 UI 流畅)
+    setSessions(prev =>
+      prev.map(session =>
+        session.id === sessionId
+          ? { ...session, messages, updatedAt: new Date().toISOString() }
+          : session
+      )
+    );
+
+    // 防抖延迟 2 秒后再同步到数据库
+    updateTimerRef.current = setTimeout(async () => {
+      try {
+        console.log('[useChatSessions] Syncing session to DB:', sessionId, 'with', messages.length, 'messages');
+        const response = await fetch(`/api/sessions/${sessionId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            walletAddress: address,
+            messages,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update session');
+        }
+
+        const data = await response.json();
+
+        // 更新数据库返回的时间戳
+        setSessions(prev =>
+          prev.map(session =>
+            session.id === sessionId
+              ? { ...session, updatedAt: data.session.updatedAt }
+              : session
+          )
+        );
+        console.log('[useChatSessions] Successfully synced session:', sessionId);
+      } catch (err) {
+        console.error('[useChatSessions] Error syncing session:', err);
+        // 不抛出错误,允许会话继续(但数据不会保存到数据库)
+      }
+    }, 2000); // 2秒防抖
   }, [address]);
 
   // 删除会话

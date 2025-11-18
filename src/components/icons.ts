@@ -11,6 +11,9 @@ export {
   TrendingUp,         // Technical Analysis
   Activity,           // On-chain Tracker
   Search,             // Deep Search
+  Zap,                // Fast / Power
+  GitBranch,          // Git / Branching
+  Package,            // Package / Bundle
 
   // Navigation & Actions
   Menu,               // Mobile menu toggle

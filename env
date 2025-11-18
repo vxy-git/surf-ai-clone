@@ -1,0 +1,75 @@
+# WalletConnect Project ID
+# 获取方法: 访问 https://cloud.walletconnect.com 注册并创建项目
+# 复制项目ID后,将此文件重命名为 .env.local 并填入你的项目ID
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=5bebb311ac1355467550071e67946b25
+
+# AI API 配置
+# CometAPI - AI模型聚合平台 (兼容OpenAI格式)
+# 获取方法: 访问 https://api.cometapi.com 注册并充值获取API Key
+# 注意: 保留现有的OpenAI Key作为备用,如需切换到CometAPI,请替换下面的key
+OPENAI_API_KEY=sk-OVcURhRv2iyHBDttviqFENzEf7HP9GSZwRj6ISOVhJIrnZur
+
+# 可选: 如需使用CometAPI,取消下面这行的注释并设置CometAPI的base URL
+OPENAI_BASE_URL=https://api.cometapi.com/v1
+
+# 数据源 API Keys (三层降级策略: CoinGecko -> Mobula -> CoinCap)
+
+# CoinGecko API (市场数据) - 主数据源
+# 免费版无需key,专业版需要 (30次/分钟限制)
+# 获取方法: https://www.coingecko.com/en/api/pricing
+COINGECKO_API_KEY=CG-9tJBKj97fj4AxNSVqAjYodtB
+NEXT_PUBLIC_COINGECKO_API_KEY=CG-9tJBKj97fj4AxNSVqAjYodtB
+
+# Mobula API (备用数据源 1) - 300K credits/月,无速率限制
+# 获取方法: https://admin.mobula.io/
+# 注意: 免费版可选,有key会有更高配额
+MOBULA_API_KEY=e871da0a-e686-4f7a-a2b9-b212ef7116cb
+
+# CoinCap API (备用数据源 2) - 完全免费,无需 API Key
+# 官方文档: https://docs.coincap.io/
+# 注意: 无需配置,开箱即用!支持 1000+ 加密货币
+
+# Etherscan API (以太坊链上数据)
+# 获取方法: https://etherscan.io/myapikey
+ETHERSCAN_API_KEY=NRHMW34R8R6MKJ6FTXCKZV9DQTN8Z6PM88
+
+# LunarCrush API (社交情绪分析)
+# 获取方法: https://lunarcrush.com/developers/api
+LUNARCRUSH_API_KEY=0xt4n92ndr3dcehrjirr9vc715kmh2emnetcats6q9
+
+# ============ x402 支付配置 ============
+# Base Sepolia 测试网收款地址（接收 USDC）
+# 请替换为你的 Base Sepolia 钱包地址
+NEXT_PUBLIC_RECEIVER_ADDRESS=0x9d0f0ea5171390bb82d73555ff478b82c882e603
+
+# 支付参数（可配置）
+NEXT_PUBLIC_PAYMENT_PRICE=$0.01
+NEXT_PUBLIC_PAYMENT_CREDITS=5
+NEXT_PUBLIC_FREE_TIER_LIMIT=5
+NEXT_PUBLIC_FREE_TIER_RESET_DAYS=30
+
+# 网络配置
+NEXT_PUBLIC_NETWORK=base-sepolia
+
+# Base Sepolia USDC 合约地址
+NEXT_PUBLIC_USDC_CONTRACT=0x036CbD53842c5426634e7929541eC2318f3dCF7e
+
+# ============ 功能开关 ============
+NEXT_PUBLIC_SHOW_PRODUCT_HUNT=false
+
+
+# This was inserted by `prisma init`:
+# Environment variables declared in this file are NOT automatically loaded by Prisma.
+# Please add `import "dotenv/config";` to your `prisma.config.ts` file, or use the Prisma CLI with Bun
+# to load environment variables from .env files: https://pris.ly/prisma-config-env-vars.
+
+# Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
+# See the documentation for all the connection string options: https://pris.ly/d/connection-strings
+
+# The following `prisma+postgres` URL is similar to the URL produced by running a local Prisma Postgres 
+# server with the `prisma dev` CLI command, when not choosing any non-default ports or settings. The API key, unlike the 
+# one found in a remote Prisma Postgres URL, does not contain any sensitive information.
+
+DATABASE_URL=postgresql://neondb_owner:npg_Oq5rAINa6dBR@ep-snowy-rice-a1r0pmss-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connect_timeout=15&pool_timeout=20&connection_limit=10
+DIRECT_URL=postgresql://neondb_owner:npg_Oq5rAINa6dBR@ep-snowy-rice-a1r0pmss.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+NEXT_TELEMETRY_DISABLED=1

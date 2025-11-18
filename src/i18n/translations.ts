@@ -188,6 +188,48 @@ export const translations = {
       discord: "Discord",
       github: "GitHub",
     },
+
+    // 首页
+    home: {
+      brand: "Aqora.ai",
+      bannerTitle: "Aqora 即将发布",
+      bannerButton: "启动应用",
+      gitbookLabel: "Gitbook",
+      xLabel: "X",
+      telegramLabel: "Telegram",
+      heroTitle: ["链上", "AGI 基础层"],
+      heroSubtitle: "赋能链上智能，让 AI 真正上链。",
+      heroButton: "开始使用",
+      welcomeTitle: "Aqora.ai",
+      welcomeLine1: "连接 Web3 与 AI 的中间层基础设施",
+      welcomeLine2: "让 AI 代理进化为自治链上 AGI",
+      welcomeButton: "加入社区",
+      agentTypes: [
+        "研究代理",
+        "交易代理",
+        "治理代理",
+        "数据代理",
+        "跨链代理",
+      ],
+      archTitle: "核心架构",
+      archSubtitle: "你的链上 AI 基础层",
+      archButton: "开始构建",
+      feature1Title: "代理层",
+      feature1Desc:
+        "拥有钱包身份的 AI 代理执行交易、研究、治理与分析，直接接入包括 x402 在内的开放协议。",
+      feature2Title: "流层",
+      feature2Desc:
+        "连接 AI 推理与链上执行的核心枢纽。Aqora AI 将智能体意图转换为链上动作，并在多链间实时同步状态。",
+      feature3Title: "激励层",
+      feature3Desc:
+        "未来将开放的模块化激励系统，用于奖励向网络提供数据、算力或智能的贡献者。",
+      feature4Title: "链上身份",
+      feature4Desc:
+        "每个代理都拥有独立钱包、交易历史与可验证 ID，实现真正的去中心化自治智能。",
+      buildTitle: "构建未来",
+      buildButton: "立即开始",
+      footerTagline: "链上 AGI 基础层",
+    },
   },
   en: {
     // Sidebar
@@ -378,6 +420,48 @@ export const translations = {
       discord: "Discord",
       github: "GitHub",
     },
+
+    // Home Page
+    home: {
+      brand: "Aqora.ai",
+      bannerTitle: "Aqora Launching Soon",
+      bannerButton: "Launch App",
+      gitbookLabel: "Gitbook",
+      xLabel: "X",
+      telegramLabel: "Telegram",
+      heroTitle: ["On-Chain", "AGI Infrastructure"],
+      heroSubtitle: "Empowering on-chain intelligence. Bringing AI truly on-chain.",
+      heroButton: "Get Started",
+      welcomeTitle: "Aqora.ai",
+      welcomeLine1: "The middle layer infrastructure connecting Web3 and AI",
+      welcomeLine2: "Evolving AI agents into autonomous on-chain AGIs",
+      welcomeButton: "Join Community",
+      agentTypes: [
+        "Research Agent",
+        "Trading Agent",
+        "Governance Agent",
+        "Data Agent",
+        "Cross-Chain Agent",
+      ],
+      archTitle: "Core Architecture",
+      archSubtitle: "Your On-Chain AI Infrastructure",
+      archButton: "Start Building",
+      feature1Title: "Agent Layer",
+      feature1Desc:
+        "AI agents with wallet identities execute trading, research, governance, and analysis with direct access to open protocols including x402.",
+      feature2Title: "Flow Layer",
+      feature2Desc:
+        "The core hub connecting AI reasoning and on-chain execution. Aqora AI translates agent intent into on-chain actions and synchronizes states across chains in real-time.",
+      feature3Title: "Incentive Layer",
+      feature3Desc:
+        "A future modular incentive system that rewards contributors who supply data, compute, or intelligence to the network.",
+      feature4Title: "On-Chain Identity",
+      feature4Desc:
+        "Each agent has its own wallet, transaction history, and verifiable ID, achieving true decentralized autonomous intelligence.",
+      buildTitle: "Build The Future",
+      buildButton: "Start Now",
+      footerTagline: "On-Chain AGI Infrastructure",
+    },
   },
   ja: {
     // サイドバー
@@ -471,6 +555,114 @@ export const translations = {
     useCase4Title: "プロジェクト詳細調査",
     useCase4Desc: "プロジェクトチーム、テクノロジー、開発ロードマップの深い理解",
     techStackTitle: "技術サポート",
+
+    // About ページ
+    about: {
+      title: "Aqora AI について",
+      launchApp: "アプリを起動",
+      heroTitle: "Aqora AI — オンチェーン AGI インフラストラクチャ",
+      heroSubtitle: "オンチェーンインテリジェンスを強化し、AI を真にオンチェーンに。Aqora AI は Web3 と AI を接続するミドルレイヤーインフラストラクチャとして、AI エージェントをウォレット ID、取引機能、x402 などの最新プロトコルへのアクセスを備えた自律的なオンチェーン AGI に進化させます。",
+
+      visionTitle: "ビジョン",
+      visionText: "Aqora AI は AI とブロックチェーンの融合層を構築し、インテリジェント・エージェントが「オンチェーンユーザー」として動作できるようにします。これらのエージェントはウォレットを所有し、取引を実行し、ネットワークデータから学習し、DAO ガバナンスに参加することで、真の分散型自律インテリジェンスを実現します。\n\n各エージェントは自己進化するアイデンティティであり、Aqora AI はオンチェーン AGI への起点です。",
+
+      architectureTitle: "コアアーキテクチャ",
+      agentLayer: "エージェントレイヤー",
+      agentLayerDesc: "ウォレット ID を持つ AI エージェントが、x402 を含むオープンプロトコルへの直接アクセスで取引、研究、ガバナンス、分析を実行します。",
+      flowLayer: "フローレイヤー（ミドルレイヤー）",
+      flowLayerDesc: "AI 推論とオンチェーン実行を接続するコアハブ。Aqora AI はエージェントの意図をオンチェーンアクションに変換し、マルチチェーン間でリアルタイムに状態を同期します。",
+      incentiveLayer: "インセンティブレイヤー",
+      incentiveLayerDesc: "将来オープンされるモジュラーインセンティブシステムで、ネットワークにデータ、計算能力、またはインテリジェンスを提供する貢献者に報酬を与えます。（詳細は今後のドキュメントで公開されます）",
+
+      capabilitiesTitle: "主な機能",
+      capability1: "オンチェーン ID",
+      capability1Desc: "各エージェントは独立したウォレット、トランザクション履歴、検証可能な ID を持ちます。",
+      capability2: "プロトコルアクセス",
+      capability2Desc: "x402 を含む最新プロトコルへの直接アクセスで、取引、収益、データ操作をカバーします。",
+      capability3: "適応学習",
+      capability3Desc: "エージェントはオンチェーンデータとユーザーフィードバックから継続的に戦略を最適化します。",
+      capability4: "コンポーザブルインテリジェンス",
+      capability4Desc: "複数のエージェント、ツール、シグナルを組み合わせて、マルチエージェント AGI ネットワークを構築します。",
+      capability5: "クロスチェーンフロー",
+      capability5Desc: "モデル状態とトークンがマルチチェーンエコシステム間でリアルタイムに同期されます。",
+
+      useCasesTitle: "できること",
+      useCase1: "エージェントをデプロイ",
+      useCase1Desc: "研究、取引、キュレーションテンプレートに基づいて、ロジックをカスタマイズし、ツールを接続し、稼働させます。",
+      useCase2: "データをステーク",
+      useCase2Desc: "ラベル付きデータや実世界のシグナルを提供して、モデルトレーニングを支援し、将来のインセンティブに参加します。",
+      useCase3: "計算能力を提供",
+      useCase3Desc: "推論、検証、またはシミュレーションノードを実行します。",
+      useCase4: "インテリジェントネットワークを設計",
+      useCase4Desc: "DeFi と AI プロトコルを横断して動作する相互運用可能な自律インテリジェントネットワークを構築します。",
+
+      buildersTitle: "開発者と上級ユーザー向け",
+      forDevelopers: "開発者向け",
+      developersDesc: "• SDK と API でオンチェーン AI エージェントを迅速に作成\n• Aqora AI ランタイムがモデルとブロックチェーン動作を接続\n• モデルと戦略のマーケットプレイス化による収益クローズループ\n• プロトコル料金と収益分配メカニズム",
+      forPowerUsers: "上級ユーザー向け",
+      powerUsersDesc: "• ワンクリックで研究または取引エージェントをデプロイ\n• エージェントのパフォーマンスと学習進化をリアルタイムで監視\n• 透明なログとオンチェーン証明を取得",
+
+      roadmapTitle: "ロードマップ",
+      roadmap1: "x402 プロトコル統合",
+      roadmap2: "マルチチェーンフローレイヤー起動",
+      roadmap3: "データステーキングと AGI レジストリ",
+      roadmap4: "エージェントマーケットプレイス",
+      roadmap5: "ガバナンスと AI 標準 DAO",
+
+      partnersTitle: "パートナーと投資家",
+
+      footerText: "© Aqora AI. All rights reserved.",
+      documentation: "ドキュメント",
+      careers: "採用",
+      terms: "利用規約",
+      privacy: "プライバシーポリシー",
+      social: "フォローする",
+      twitter: "X (Twitter)",
+      discord: "Discord",
+      github: "GitHub",
+    },
+
+    // ホームページ
+    home: {
+      brand: "Aqora.ai",
+      bannerTitle: "Aqora まもなく公開",
+      bannerButton: "アプリを起動",
+      gitbookLabel: "Gitbook",
+      xLabel: "X",
+      telegramLabel: "Telegram",
+      heroTitle: ["オンチェーン", "AGI インフラストラクチャ"],
+      heroSubtitle: "オンチェーンインテリジェンスを強化。AI を真にオンチェーンに。",
+      heroButton: "はじめる",
+      welcomeTitle: "Aqora.ai",
+      welcomeLine1: "Web3 と AI を接続するミドルレイヤーインフラストラクチャ",
+      welcomeLine2: "AI エージェントを自律的なオンチェーン AGI に進化",
+      welcomeButton: "コミュニティに参加",
+      agentTypes: [
+        "リサーチエージェント",
+        "トレーディングエージェント",
+        "ガバナンスエージェント",
+        "データエージェント",
+        "クロスチェーンエージェント",
+      ],
+      archTitle: "コアアーキテクチャ",
+      archSubtitle: "あなたのオンチェーン AI インフラストラクチャ",
+      archButton: "今すぐ構築",
+      feature1Title: "エージェントレイヤー",
+      feature1Desc:
+        "ウォレット ID を持つ AI エージェントが、x402 を含むオープンプロトコルへの直接アクセスで取引、研究、ガバナンス、分析を実行します。",
+      feature2Title: "フローレイヤー",
+      feature2Desc:
+        "AI 推論とオンチェーン実行を接続するコアハブ。Aqora AI はエージェントの意図をオンチェーンアクションに変換し、マルチチェーン間でリアルタイムに状態を同期します。",
+      feature3Title: "インセンティブレイヤー",
+      feature3Desc:
+        "将来オープンされるモジュラーインセンティブシステムで、ネットワークにデータ、計算能力、またはインテリジェンスを提供する貢献者に報酬を与えます。",
+      feature4Title: "オンチェーン ID",
+      feature4Desc:
+        "各エージェントは独立したウォレット、トランザクション履歴、検証可能な ID を持ち、真の分散型自律インテリジェンスを実現します。",
+      buildTitle: "未来を構築",
+      buildButton: "今すぐ開始",
+      footerTagline: "オンチェーン AGI インフラストラクチャ",
+    },
   },
   ko: {
     // 사이드바
