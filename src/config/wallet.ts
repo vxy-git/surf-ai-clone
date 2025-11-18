@@ -17,7 +17,7 @@ const metadata = {
 }
 
 // 3. 配置支持的区块链网络
-export const chains = [bsc, bscTestnet, base, baseSepolia] as const
+export const chains = [base] as const
 
 // 4. 创建 Wagmi 配置 - 懒加载,可在服务端和客户端复用
 let cachedConfig: Config | null = null

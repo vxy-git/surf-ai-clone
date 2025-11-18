@@ -11,7 +11,7 @@ export const PAYMENT_CONFIG = {
 
   // ========== 付费配置 ==========
   // Payment Configuration
-  PAYMENT_PRICE: process.env.NEXT_PUBLIC_PAYMENT_PRICE || '$0.01',
+  PAYMENT_PRICE: '$' + process.env.NEXT_PUBLIC_PAYMENT_PRICE || '1',
   PAYMENT_CREDITS: parseInt(process.env.NEXT_PUBLIC_PAYMENT_CREDITS || '5'),
 
   // ========== 区块链配置 ==========
