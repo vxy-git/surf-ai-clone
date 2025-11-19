@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { Language } from "@/i18n/languages";
 import { useTranslation } from "@/hooks/useTranslation";
+import BrandCarousel from "@/components/BrandCarousel";
 
 export default function HomePage() {
   const { language, setLanguage } = useLanguage();
@@ -172,11 +173,10 @@ export default function HomePage() {
                           setLanguage(code as Language);
                           setIsMobileOpen(false);
                         }}
-                        className={`px-3 py-2 rounded text-left border ${
-                          language === (code as Language)
+                        className={`px-3 py-2 rounded text-left border ${language === (code as Language)
                             ? "bg-purple-600 border-purple-600 text-white"
                             : "bg-transparent border-purple-500/30 text-white hover:bg-white hover:text-black dark:hover:bg-gray-800 dark:hover:text-white"
-                        }`}
+                          }`}
                       >
                         {label}
                       </button>
@@ -192,7 +192,7 @@ export default function HomePage() {
       {/* Hero 区域 */}
       <section className="relative bg-gradient-to-br from-purple-900 via-blue-900 to-black py-20 md:py-32 overflow-hidden">
         {/* 装饰性背景 */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20" />
+        {/* <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20" /> */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
 
         <div className="container mx-auto px-4 relative z-10">
@@ -205,6 +205,8 @@ export default function HomePage() {
             </p>
             <a
               href="/chat"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:scale-105 transition-transform"
             >
               {home.heroButton}
@@ -276,6 +278,8 @@ export default function HomePage() {
             </p>
             <a
               href="/chat"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-block bg-white text-purple-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors"
             >
               {home.archButton}
@@ -333,11 +337,16 @@ export default function HomePage() {
           </h2>
           <a
             href="/chat"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block bg-white border-2 border-white text-black px-8 py-4 rounded-lg font-semibold text-lg hover:scale-105 transition-transform"
           >
             {home.buildButton}
           </a>
         </div>
+
+        {/* 品牌Logo轮播 */}
+        <BrandCarousel />
       </section>
 
       {/* Footer */}

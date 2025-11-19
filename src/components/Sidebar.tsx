@@ -138,7 +138,7 @@ export default function Sidebar({
             </button>
 
             {/* About Project */}
-            <a
+            {/* <a
               href="/about"
               target="_blank"
               rel="noopener noreferrer"
@@ -146,7 +146,7 @@ export default function Sidebar({
             >
               <Info size={20} className="shrink-0" />
               <span className={`font-medium whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>{t("aboutProject")}</span>
-            </a>
+            </a> */}
 
             {/* Crypto Data Hub */}
             {/* <Link href="/hub" className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg mt-1 transition-all ${isOpen ? 'gap-3 px-3 py-2.5' : 'justify-center px-3 py-2.5 md:justify-center md:px-0'}`}>
@@ -163,7 +163,7 @@ export default function Sidebar({
             </Link> */}
 
             {/* Divider */}
-            {isOpen && <div className="my-3 border-t border-white/20 dark:border-gray-700/50" />}
+            {/* {isOpen && <div className="my-3 border-t border-white/20 dark:border-gray-700/50" />} */}
 
             {/* Chat History */}
             {isOpen && (

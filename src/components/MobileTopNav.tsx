@@ -143,7 +143,7 @@ export default function MobileTopNav() {
             </div>
 
             {/* 快捷链接 */}
-            <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            {/* <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
               <a
                 href="/about"
                 onClick={() => setIsOpen(false)}
@@ -151,7 +151,7 @@ export default function MobileTopNav() {
               >
                 {t("aboutProject")}
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       )}
